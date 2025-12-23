@@ -5,12 +5,11 @@ Scrapes TikTok user profiles and creates time series datasets showing
 engagement metrics over time (daily/weekly/monthly aggregation).
 
 Usage:
-    python run_profile_timeseries.py                    # Scrape all profiles, daily aggregation
-    python run_profile_timeseries.py --period weekly    # Use weekly aggregation
-    python run_profile_timeseries.py --period monthly   # Use monthly aggregation
-    python run_profile_timeseries.py --test             # Test mode (2 profiles)
-    python run_profile_timeseries.py --lookback 180     # Last 6 months instead of 1 year
-    python run_profile_timeseries.py --max-profiles 50  # Limit to 50 profiles
+    python run_crawler.py                    # Scrape all profiles, daily aggregation
+    python run_crawler.py --no-resume        # Rerun scrape for scraped profiles
+    python run_crawler.py --test             # Test mode (2 profiles)
+    python run_crawler.py --lookback 180     # Last 6 months instead of 1 year
+    python run_crawler.py --max-profiles 50  # Limit to 50 profiles
 """
 
 import asyncio
@@ -526,11 +525,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
             Examples:
-            python run_profile_timeseries.py --lookback 180     # Last 6 months
-            python run_profile_timeseries.py --test             # Test mode (2 profiles)
-            python run_profile_timeseries.py --status           # Show progress
-            python run_profile_timeseries.py --reset            # Reset all progress
-            python run_profile_timeseries.py --no-resume        # Start fresh
+            python run_crawler.py --lookback 180     # Last 6 months
+            python run_crawler.py --test             # Test mode (2 profiles)
+            python run_crawler.py --status           # Show progress
+            python run_crawler.py --reset            # Reset all progress
+            python run_crawler.py --no-resume        # Start fresh
         """
     )
     

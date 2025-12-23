@@ -600,15 +600,13 @@ class PlaywrightProfileScraper:
     
     def create_time_series(
         self,
-        videos: List[VideoData],
-        period: str = 'daily'
+        videos: List[VideoData]
     ) -> List[TimeSeriesPoint]:
         """
-        Aggregate video stats into time series.
+        Aggregate video stats into time series (daily aggregation).
         
         Args:
             videos: List of video data
-            period: 'daily', 'weekly', or 'monthly'
         
         Returns:
             List of time series points
@@ -619,23 +617,12 @@ class PlaywrightProfileScraper:
         # Sort videos by timestamp
         videos_sorted = sorted(videos, key=lambda v: v.create_timestamp)
         
-        # Group videos by period
+        # Group videos by day
         period_groups = defaultdict(list)
         
         for video in videos_sorted:
             dt = datetime.fromtimestamp(video.create_timestamp)
-            
-            if period == 'daily':
-                period_key = dt.strftime('%Y-%m-%d')
-            elif period == 'weekly':
-                # ISO week (Monday as first day)
-                iso_year, iso_week, _ = dt.isocalendar()
-                period_key = f"{iso_year}-W{iso_week:02d}"
-            elif period == 'monthly':
-                period_key = dt.strftime('%Y-%m')
-            else:
-                raise ValueError(f"Invalid period: {period}")
-            
+            period_key = dt.strftime('%Y-%m-%d')
             period_groups[period_key].append(video)
         
         # Create time series points
@@ -692,16 +679,14 @@ class PlaywrightProfileScraper:
     async def scrape_user_time_series(
         self,
         username: str,
-        period: str = 'daily',
         max_videos: int = 1000,
         lookback_days: int = 365
     ) -> Dict[str, Any]:
         """
-        Scrape user profile and create time series dataset.
+        Scrape user profile and create time series dataset (daily aggregation).
         
         Args:
             username: TikTok username (without @)
-            period: 'daily', 'weekly', or 'monthly'
             max_videos: Maximum videos to fetch
             lookback_days: Days to look back (default 365 = 1 year)
         
@@ -709,7 +694,7 @@ class PlaywrightProfileScraper:
             Dictionary with videos, time series, and metadata
         """
         logger.info(f"Starting time series scrape for @{username}")
-        logger.info(f"Period: {period}, Lookback: {lookback_days} days")
+        logger.info(f"Lookback: {lookback_days} days")
         
         # Calculate date range
         now = datetime.now()
@@ -727,10 +712,7 @@ class PlaywrightProfileScraper:
             logger.error("No videos fetched")
             return {"error": "No videos found"}
         
-        logger.info(f"Fetched {len(videos)} videos, creating time series...")
-        
-        # Generate time series
-        time_series = self.create_time_series(videos, period)
+        logger.info(f"Fetched {len(videos)} videos")
         
         # Save raw videos
         videos_file = username_dir / f"videos_raw_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -739,21 +721,9 @@ class PlaywrightProfileScraper:
         
         logger.info(f"Saved {len(videos)} videos to {videos_file}")
         
-        # Save time series
-        ts_file = username_dir / f"time_series_{period}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(ts_file, 'w', encoding='utf-8') as f:
-            json.dump([asdict(ts) for ts in time_series], f, ensure_ascii=False, indent=2)
-        
-        logger.info(f"Saved time series with {len(time_series)} points to {ts_file}")
-        
-        # Save CSV for easy analysis
-        csv_file = username_dir / f"time_series_{period}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-        self._save_time_series_csv(time_series, csv_file)
-        
         # Generate summary
         summary = {
             "username": username,
-            "period": period,
             "lookback_days": lookback_days,
             "date_range": {
                 "start": cutoff_date.strftime('%Y-%m-%d'),
@@ -765,7 +735,6 @@ class PlaywrightProfileScraper:
                 "earliest": min(v.create_time for v in videos) if videos else None,
                 "latest": max(v.create_time for v in videos) if videos else None,
             },
-            "time_series_points": len(time_series),
             "total_stats": {
                 "total_views": sum(v.stats['playCount'] for v in videos),
                 "total_likes": sum(v.stats['diggCount'] for v in videos),
@@ -779,8 +748,6 @@ class PlaywrightProfileScraper:
             },
             "files": {
                 "videos": str(videos_file.name),
-                "time_series_json": str(ts_file.name),
-                "time_series_csv": str(csv_file.name),
             },
             "scraper_stats": self.stats
         }
