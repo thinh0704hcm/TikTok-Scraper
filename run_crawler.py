@@ -49,9 +49,8 @@ OUTPUT_DIR = "data/profile_time_series/"
 PROGRESS_DB_DIR = "progress_tracking/"
 
 # Scraping parameters
-DEFAULT_LOOKBACK_DAYS = 365      # 1 year
-DEFAULT_MAX_VIDEOS = 1000        # Max videos per profile
-DEFAULT_PERIOD = 'daily'         # 'daily', 'weekly', or 'monthly'
+DEFAULT_LOOKBACK_DAYS = 180      # 6 months
+DEFAULT_MAX_VIDEOS = 10000       # Max videos per profile
 PROFILE_DELAY = 2.0              # Delay between profiles (seconds)
 
 # Browser settings
@@ -286,7 +285,6 @@ def setup_logging(run_name: str, log_dir: str = "logs/", verbose: bool = False) 
 
 async def scrape_profile_time_series(
     account_ids: List[str],
-    period: str = 'daily',
     lookback_days: int = 365,
     max_videos: int = 1000,
     resume: bool = True,
@@ -298,7 +296,6 @@ async def scrape_profile_time_series(
     
     Args:
         account_ids: List of account IDs or usernames
-        period: 'daily', 'weekly', or 'monthly'
         lookback_days: How many days back to scrape
         max_videos: Max videos per profile
         resume: Skip already completed profiles
@@ -308,18 +305,17 @@ async def scrape_profile_time_series(
         Summary of scraping results
     """
     if logger is None:
-        logger = setup_logging(f"profile_timeseries_{period}", verbose=verbose)
+        logger = setup_logging("profile_timeseries", verbose=verbose)
     
     logger.info("=" * 70)
     logger.info("TIKTOK PROFILE TIME SERIES SCRAPING")
-    logger.info(f"Period: {period}")
     logger.info(f"Lookback: {lookback_days} days")
     logger.info(f"Max videos per profile: {max_videos}")
     logger.info(f"Total profiles: {len(account_ids)}")
     logger.info("=" * 70)
     
     # Initialize progress tracker
-    run_name = f"timeseries_{period}_{datetime.now().strftime('%Y%m%d')}"
+    run_name = f"timeseries_{datetime.now().strftime('%Y%m%d')}"
     tracker = ProfileTracker(run_name)
     
     # Add all profiles to tracker
@@ -339,13 +335,12 @@ async def scrape_profile_time_series(
     
     # Create output directory
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_dir = Path(OUTPUT_DIR) / f"{period}_{timestamp}"
+    output_dir = Path(OUTPUT_DIR) / f"{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Results tracking
     results = {
         "run_name": run_name,
-        "period": period,
         "lookback_days": lookback_days,
         "output_dir": str(output_dir),
         "started_at": datetime.now().isoformat(),
@@ -381,7 +376,6 @@ async def scrape_profile_time_series(
                 
                 summary = await scraper.scrape_user_time_series(
                     username=account_id if is_username else None,
-                    period=period,
                     max_videos=max_videos,
                     lookback_days=lookback_days
                 )
@@ -531,22 +525,17 @@ def main():
         description="TikTok Profile Time Series Scraper",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Examples:
-  python run_profile_timeseries.py                    # Daily aggregation, 1 year
-  python run_profile_timeseries.py --period weekly    # Weekly aggregation
-  python run_profile_timeseries.py --period monthly   # Monthly aggregation
-  python run_profile_timeseries.py --lookback 180     # Last 6 months
-  python run_profile_timeseries.py --test             # Test mode (2 profiles)
-  python run_profile_timeseries.py --status           # Show progress
-  python run_profile_timeseries.py --reset            # Reset all progress
-  python run_profile_timeseries.py --no-resume        # Start fresh
+            Examples:
+            python run_profile_timeseries.py --lookback 180     # Last 6 months
+            python run_profile_timeseries.py --test             # Test mode (2 profiles)
+            python run_profile_timeseries.py --status           # Show progress
+            python run_profile_timeseries.py --reset            # Reset all progress
+            python run_profile_timeseries.py --no-resume        # Start fresh
         """
     )
     
-    parser.add_argument("--period", type=str, choices=['daily', 'weekly', 'monthly'],
-                        default=DEFAULT_PERIOD, help="Time series aggregation period")
     parser.add_argument("--lookback", type=int, default=DEFAULT_LOOKBACK_DAYS,
-                        help="Days to look back (default: 365 = 1 year)")
+                        help="Days to look back (default: 180 days)")
     parser.add_argument("--max-videos", type=int, default=DEFAULT_MAX_VIDEOS,
                         help="Max videos per profile")
     parser.add_argument("--max-profiles", type=int, default=None,
@@ -634,7 +623,6 @@ Examples:
     print("TikTok Profile Time Series Scraper")
     print(f"{'='*60}")
     print(f"Profiles: {len(account_ids)}")
-    print(f"Period: {args.period}")
     print(f"Lookback: {args.lookback} days")
     print(f"Max videos: {args.max_videos}")
     print(f"Resume: {not args.no_resume}")
@@ -650,7 +638,6 @@ Examples:
         # Run scraping
         asyncio.run(scrape_profile_time_series(
             account_ids=account_ids,
-            period=args.period,
             lookback_days=args.lookback,
             max_videos=args.max_videos,
             resume=not args.no_resume,

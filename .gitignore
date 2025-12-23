@@ -12,4 +12,3 @@ test_folder/
 db_connection.py
 *.db
 logs/
-data/
