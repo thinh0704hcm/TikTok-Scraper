@@ -1,0 +1,28 @@
+# List of TikTok account IDs to crawl
+# One account ID per line, no @
+
+# Singers - Em xinh say hi / Anh trai say hi / Sao nhập ngũ 2025
+phuongmychiofficial
+ising52hz
+hansara.official
+jukysan
+ocean.gill
+congb_
+qh.masterd
+bnh.trng.lui
+atusmain
+dieplamanh
+haidang_doo
+dieunhiofficial
+
+# Athletes - Cầu thủ U22 VN
+bac_hello2
+fhn2812
+lyduc17
+ngthanhnhan2807
+
+# Actors - Diễn viên Mưa đỏ
+donhathoang13
+huynguyen.3101
+phuongnam.dv
+lehoanglong4493
