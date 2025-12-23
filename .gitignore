@@ -13,3 +13,4 @@ test_folder/
 db_connection.py
 *.db
 data/
+logs/
