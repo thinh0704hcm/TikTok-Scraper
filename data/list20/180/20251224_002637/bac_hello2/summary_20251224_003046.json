@@ -1,0 +1,34 @@
+{
+  "username": "bac_hello2",
+  "lookback_days": 180,
+  "date_range": {
+    "start": "2025-06-27",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T00:30:46.426130",
+  "total_videos": 37,
+  "date_range_actual": {
+    "earliest": "2025-07-20T09:40:23",
+    "latest": "2025-12-19T19:21:38"
+  },
+  "total_stats": {
+    "total_views": 27319400,
+    "total_likes": 1516940,
+    "total_comments": 27517,
+    "total_shares": 67465
+  },
+  "average_stats": {
+    "avg_views": 738362.1621621621,
+    "avg_likes": 40998.37837837838,
+    "avg_comments": 743.7027027027027
+  },
+  "files": {
+    "videos": "videos_raw_20251224_003046.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1059,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

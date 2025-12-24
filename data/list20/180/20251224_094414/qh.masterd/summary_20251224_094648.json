@@ -1,0 +1,34 @@
+{
+  "username": "qh.masterd",
+  "lookback_days": 180,
+  "date_range": {
+    "start": "2025-06-27",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T09:46:48.431201",
+  "total_videos": 22,
+  "date_range_actual": {
+    "earliest": "2025-07-07T19:34:58",
+    "latest": "2025-12-17T19:36:22"
+  },
+  "total_stats": {
+    "total_views": 62758200,
+    "total_likes": 6107500,
+    "total_comments": 208730,
+    "total_shares": 567587
+  },
+  "average_stats": {
+    "avg_views": 2852645.4545454546,
+    "avg_likes": 277613.63636363635,
+    "avg_comments": 9487.727272727272
+  },
+  "files": {
+    "videos": "videos_raw_20251224_094648.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 776,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

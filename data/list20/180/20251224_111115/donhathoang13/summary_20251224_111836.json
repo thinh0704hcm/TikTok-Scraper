@@ -1,0 +1,34 @@
+{
+  "username": "donhathoang13",
+  "lookback_days": 180,
+  "date_range": {
+    "start": "2025-06-27",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T11:18:36.957965",
+  "total_videos": 113,
+  "date_range_actual": {
+    "earliest": "2025-07-04T12:05:09",
+    "latest": "2025-12-21T12:03:58"
+  },
+  "total_stats": {
+    "total_views": 172887800,
+    "total_likes": 10118290,
+    "total_comments": 69255,
+    "total_shares": 472438
+  },
+  "average_stats": {
+    "avg_views": 1529980.5309734512,
+    "avg_likes": 89542.38938053098,
+    "avg_comments": 612.8761061946902
+  },
+  "files": {
+    "videos": "videos_raw_20251224_111836.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1143,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

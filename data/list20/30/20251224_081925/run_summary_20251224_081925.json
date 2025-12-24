@@ -1,0 +1,260 @@
+{
+  "run_name": "timeseries_20251224",
+  "lookback_days": 30,
+  "output_dir": "data\\profile_time_series\\20251224_081925",
+  "started_at": "2025-12-24T08:19:25.989286",
+  "profiles_processed": 20,
+  "profiles_success": 20,
+  "profiles_failed": 0,
+  "total_videos": 245,
+  "total_time_points": 0,
+  "profile_summaries": {
+    "phuongmychiofficial": {
+      "username": "phuongmychiofficial",
+      "videos": 16,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_081942.json"
+      }
+    },
+    "ising52hz": {
+      "username": "ising52hz",
+      "videos": 8,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_081954.json"
+      }
+    },
+    "hansara.official": {
+      "username": "hansara.official",
+      "videos": 10,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082005.json"
+      }
+    },
+    "jukysan": {
+      "username": "jukysan",
+      "videos": 22,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082016.json"
+      }
+    },
+    "ocean.gill": {
+      "username": "ocean.gill",
+      "videos": 13,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082027.json"
+      }
+    },
+    "congb_": {
+      "username": "congb_",
+      "videos": 35,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082039.json"
+      }
+    },
+    "qh.masterd": {
+      "username": "qh.masterd",
+      "videos": 1,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082052.json"
+      }
+    },
+    "bnh.trng.lui": {
+      "username": "bnh.trng.lui",
+      "videos": 8,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082108.json"
+      }
+    },
+    "atusmain": {
+      "username": "atusmain",
+      "videos": 1,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082119.json"
+      }
+    },
+    "dieplamanh": {
+      "username": "dieplamanh",
+      "videos": 28,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082131.json"
+      }
+    },
+    "haidang_doo": {
+      "username": "haidang_doo",
+      "videos": 7,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082142.json"
+      }
+    },
+    "dieunhiofficial": {
+      "username": "dieunhiofficial",
+      "videos": 11,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082154.json"
+      }
+    },
+    "bac_hello2": {
+      "username": "bac_hello2",
+      "videos": 9,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082205.json"
+      }
+    },
+    "fhn2812": {
+      "username": "fhn2812",
+      "videos": 6,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082217.json"
+      }
+    },
+    "lyduc17": {
+      "username": "lyduc17",
+      "videos": 4,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082230.json"
+      }
+    },
+    "ngthanhnhan2807": {
+      "username": "ngthanhnhan2807",
+      "videos": 5,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082241.json"
+      }
+    },
+    "donhathoang13": {
+      "username": "donhathoang13",
+      "videos": 15,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082253.json"
+      }
+    },
+    "huynguyen.3101": {
+      "username": "huynguyen.3101",
+      "videos": 8,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082305.json"
+      }
+    },
+    "phuongnam.dv": {
+      "username": "phuongnam.dv",
+      "videos": 12,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082319.json"
+      }
+    },
+    "lehoanglong4493": {
+      "username": "lehoanglong4493",
+      "videos": 26,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-11-24",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_082330.json"
+      }
+    }
+  },
+  "completed_at": "2025-12-24T08:23:31.541412",
+  "scraper_stats": {
+    "videos_scraped": 245,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

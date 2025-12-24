@@ -1,0 +1,34 @@
+{
+  "username": "phuongmychiofficial",
+  "lookback_days": 180,
+  "date_range": {
+    "start": "2025-06-27",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T19:39:40.857027",
+  "total_videos": 243,
+  "date_range_actual": {
+    "earliest": "2025-06-28T11:00:00",
+    "latest": "2025-12-24T11:13:18"
+  },
+  "total_stats": {
+    "total_views": 416364700,
+    "total_likes": 27740611,
+    "total_comments": 283768,
+    "total_shares": 705941
+  },
+  "average_stats": {
+    "avg_views": 1713434.9794238682,
+    "avg_likes": 114158.89300411522,
+    "avg_comments": 1167.7695473251028
+  },
+  "files": {
+    "videos": "videos_raw_20251224_193940.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 243,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

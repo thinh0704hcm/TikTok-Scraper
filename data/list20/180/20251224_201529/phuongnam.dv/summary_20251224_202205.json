@@ -1,0 +1,34 @@
+{
+  "username": "phuongnam.dv",
+  "lookback_days": 180,
+  "date_range": {
+    "start": "2025-06-27",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T20:22:05.996446",
+  "total_videos": 132,
+  "date_range_actual": {
+    "earliest": "2025-06-29T09:38:57",
+    "latest": "2025-12-24T19:21:21"
+  },
+  "total_stats": {
+    "total_views": 326736753,
+    "total_likes": 16498531,
+    "total_comments": 113049,
+    "total_shares": 790160
+  },
+  "average_stats": {
+    "avg_views": 2475278.4318181816,
+    "avg_likes": 124988.87121212122,
+    "avg_comments": 856.4318181818181
+  },
+  "files": {
+    "videos": "videos_raw_20251224_202205.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1168,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

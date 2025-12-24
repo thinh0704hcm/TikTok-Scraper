@@ -1,0 +1,34 @@
+{
+  "username": "atusmain",
+  "lookback_days": 180,
+  "date_range": {
+    "start": "2025-06-27",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T09:30:08.624680",
+  "total_videos": 10,
+  "date_range_actual": {
+    "earliest": "2025-07-18T12:00:15",
+    "latest": "2025-12-20T17:53:15"
+  },
+  "total_stats": {
+    "total_views": 25421300,
+    "total_likes": 998000,
+    "total_comments": 6887,
+    "total_shares": 36537
+  },
+  "average_stats": {
+    "avg_views": 2542130.0,
+    "avg_likes": 99800.0,
+    "avg_comments": 688.7
+  },
+  "files": {
+    "videos": "videos_raw_20251224_093008.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 832,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

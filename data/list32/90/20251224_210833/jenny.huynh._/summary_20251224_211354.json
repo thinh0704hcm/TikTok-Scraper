@@ -1,0 +1,34 @@
+{
+  "username": "jenny.huynh._",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-25",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T21:13:54.956829",
+  "total_videos": 33,
+  "date_range_actual": {
+    "earliest": "2025-09-27T12:07:31",
+    "latest": "2025-12-24T12:00:59"
+  },
+  "total_stats": {
+    "total_views": 25342300,
+    "total_likes": 1907138,
+    "total_comments": 12027,
+    "total_shares": 59619
+  },
+  "average_stats": {
+    "avg_views": 767948.4848484849,
+    "avg_likes": 57792.06060606061,
+    "avg_comments": 364.45454545454544
+  },
+  "files": {
+    "videos": "videos_raw_20251224_211354.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 960,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

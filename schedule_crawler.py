@@ -3,18 +3,19 @@ import time
 from datetime import datetime
 import sys
 
-INTERVAL_SECONDS = 3600  # 1 hour
+INTERVAL_SECONDS = 1800
 
 while True:
-    print(f"\n{'='*60}")
+    print(f"\n{'='*23}")
     print(f"Starting crawler at {datetime.now()}")
-    print(f"{'='*60}\n")
+    print(f"{'='*23}\n")
 
     subprocess.run([
-        sys.executable,      # <-- venv python
+        sys.executable,
         "run_crawler.py",
+        "--list", "list32",
         "--no-resume"
     ])
 
-    print("\nNext run in 1 hour...")
+    print(f"\nNext run in {INTERVAL_SECONDS/3600} hour...")
     time.sleep(INTERVAL_SECONDS)

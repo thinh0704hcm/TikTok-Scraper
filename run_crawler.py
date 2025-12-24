@@ -40,15 +40,15 @@ from TT_Content_Scraper.src.object_tracker_db import ObjectTracker, ObjectStatus
 # CONFIGURATION
 # ============================================================================
 
-# Account ID file
-ACCOUNT_ID_FILE = "dataset/account_ids.txt"
+# Account list directory
+ACCOUNT_LIST_DIR = "crawl_account/"
 
 # Output settings
-OUTPUT_DIR = "data/profile_time_series/"
+OUTPUT_BASE_DIR = "data/"
 PROGRESS_DB_DIR = "progress_tracking/"
 
 # Scraping parameters
-DEFAULT_LOOKBACK_DAYS = 180
+DEFAULT_LOOKBACK_DAYS = 90
 DEFAULT_MAX_VIDEOS = 10000       # Max videos per profile
 PROFILE_DELAY = 2.0              # Delay between profiles (seconds)
 
@@ -288,7 +288,8 @@ async def scrape_profile_time_series(
     max_videos: int = 1000,
     resume: bool = True,
     verbose: bool = False,
-    logger = None
+    logger = None,
+    list_name: str = "default"
 ) -> Dict[str, Any]:
     """
     Scrape time series data for multiple TikTok profiles.
@@ -334,7 +335,7 @@ async def scrape_profile_time_series(
     
     # Create output directory
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_dir = Path(OUTPUT_DIR) / f"{lookback_days}" / f"{timestamp}"
+    output_dir = Path(OUTPUT_BASE_DIR) / list_name / f"{lookback_days}" / f"{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Results tracking
@@ -539,8 +540,10 @@ def main():
                         help="Max videos per profile")
     parser.add_argument("--max-profiles", type=int, default=None,
                         help="Limit number of profiles to scrape")
-    parser.add_argument("--account-file", type=str, default=ACCOUNT_ID_FILE,
-                        help="Path to account IDs file")
+    parser.add_argument("--list", type=str, default="list20",
+                        help="List name (e.g., list20, list32) - loads from crawl_account/{list}.txt")
+    parser.add_argument("--account-file", type=str, default=None,
+                        help="Direct path to account IDs file (overrides --list)")
     parser.add_argument("--no-resume", action="store_true",
                         help="Start fresh (don't skip completed profiles)")
     parser.add_argument("--status", action="store_true",
@@ -602,11 +605,21 @@ def main():
     if args.proxy:
         globals()['PROXY'] = args.proxy
     
+    # Determine account file path and list name
+    if args.account_file:
+        # Direct file path specified
+        account_file = args.account_file
+        list_name = Path(account_file).stem  # Use filename as list name
+    else:
+        # Use list name to construct path
+        list_name = args.list
+        account_file = str(Path(ACCOUNT_LIST_DIR) / f"{list_name}.txt")
+    
     # Load account IDs
-    account_ids = load_account_ids(args.account_file)
+    account_ids = load_account_ids(account_file)
     
     if not account_ids:
-        print(f"ERROR: No account IDs loaded from {args.account_file}")
+        print(f"ERROR: No account IDs loaded from {account_file}")
         if xvfb:
             xvfb.stop()
         return
@@ -621,6 +634,8 @@ def main():
     print(f"\n{'='*60}")
     print("TikTok Profile Time Series Scraper")
     print(f"{'='*60}")
+    print(f"List: {list_name}")
+    print(f"Account file: {account_file}")
     print(f"Profiles: {len(account_ids)}")
     print(f"Lookback: {args.lookback} days")
     print(f"Max videos: {args.max_videos}")
@@ -640,7 +655,8 @@ def main():
             lookback_days=args.lookback,
             max_videos=args.max_videos,
             resume=not args.no_resume,
-            verbose=args.verbose
+            verbose=args.verbose,
+            list_name=list_name
         ))
     finally:
         # Cleanup

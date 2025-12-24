@@ -1,0 +1,34 @@
+{
+  "username": "dieplamanh",
+  "lookback_days": 30,
+  "date_range": {
+    "start": "2025-11-24",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T08:21:31.112354",
+  "total_videos": 28,
+  "date_range_actual": {
+    "earliest": "2025-11-27T18:53:23",
+    "latest": "2025-12-23T21:13:28"
+  },
+  "total_stats": {
+    "total_views": 3845300,
+    "total_likes": 135784,
+    "total_comments": 2250,
+    "total_shares": 1851
+  },
+  "average_stats": {
+    "avg_views": 137332.14285714287,
+    "avg_likes": 4849.428571428572,
+    "avg_comments": 80.35714285714286
+  },
+  "files": {
+    "videos": "videos_raw_20251224_082131.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 142,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

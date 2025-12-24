@@ -1,0 +1,260 @@
+{
+  "run_name": "timeseries_20251224",
+  "lookback_days": 180,
+  "output_dir": "data\\profile_time_series\\180\\20251224_094414",
+  "started_at": "2025-12-24T09:44:14.507100",
+  "profiles_processed": 20,
+  "profiles_success": 20,
+  "profiles_failed": 0,
+  "total_videos": 1455,
+  "total_time_points": 0,
+  "profile_summaries": {
+    "phuongmychiofficial": {
+      "username": "phuongmychiofficial",
+      "videos": 244,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094458.json"
+      }
+    },
+    "ising52hz": {
+      "username": "ising52hz",
+      "videos": 59,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094515.json"
+      }
+    },
+    "hansara.official": {
+      "username": "hansara.official",
+      "videos": 71,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094533.json"
+      }
+    },
+    "jukysan": {
+      "username": "jukysan",
+      "videos": 190,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094602.json"
+      }
+    },
+    "ocean.gill": {
+      "username": "ocean.gill",
+      "videos": 61,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094616.json"
+      }
+    },
+    "congb_": {
+      "username": "congb_",
+      "videos": 129,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094635.json"
+      }
+    },
+    "qh.masterd": {
+      "username": "qh.masterd",
+      "videos": 22,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094648.json"
+      }
+    },
+    "bnh.trng.lui": {
+      "username": "bnh.trng.lui",
+      "videos": 30,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094701.json"
+      }
+    },
+    "atusmain": {
+      "username": "atusmain",
+      "videos": 10,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094713.json"
+      }
+    },
+    "dieplamanh": {
+      "username": "dieplamanh",
+      "videos": 81,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094731.json"
+      }
+    },
+    "haidang_doo": {
+      "username": "haidang_doo",
+      "videos": 63,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094745.json"
+      }
+    },
+    "dieunhiofficial": {
+      "username": "dieunhiofficial",
+      "videos": 62,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094759.json"
+      }
+    },
+    "bac_hello2": {
+      "username": "bac_hello2",
+      "videos": 37,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094813.json"
+      }
+    },
+    "fhn2812": {
+      "username": "fhn2812",
+      "videos": 18,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094826.json"
+      }
+    },
+    "lyduc17": {
+      "username": "lyduc17",
+      "videos": 18,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094838.json"
+      }
+    },
+    "ngthanhnhan2807": {
+      "username": "ngthanhnhan2807",
+      "videos": 17,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094849.json"
+      }
+    },
+    "donhathoang13": {
+      "username": "donhathoang13",
+      "videos": 112,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094908.json"
+      }
+    },
+    "huynguyen.3101": {
+      "username": "huynguyen.3101",
+      "videos": 63,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094922.json"
+      }
+    },
+    "phuongnam.dv": {
+      "username": "phuongnam.dv",
+      "videos": 130,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_094951.json"
+      }
+    },
+    "lehoanglong4493": {
+      "username": "lehoanglong4493",
+      "videos": 38,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-06-27",
+        "end": "2025-12-24"
+      },
+      "files": {
+        "videos": "videos_raw_20251224_095003.json"
+      }
+    }
+  },
+  "completed_at": "2025-12-24T09:50:03.696741",
+  "scraper_stats": {
+    "videos_scraped": 1455,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}
