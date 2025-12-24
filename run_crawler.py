@@ -48,7 +48,7 @@ OUTPUT_DIR = "data/profile_time_series/"
 PROGRESS_DB_DIR = "progress_tracking/"
 
 # Scraping parameters
-DEFAULT_LOOKBACK_DAYS = 180      # 6 months
+DEFAULT_LOOKBACK_DAYS = 180
 DEFAULT_MAX_VIDEOS = 10000       # Max videos per profile
 PROFILE_DELAY = 2.0              # Delay between profiles (seconds)
 
@@ -334,7 +334,7 @@ async def scrape_profile_time_series(
     
     # Create output directory
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_dir = Path(OUTPUT_DIR) / f"{timestamp}"
+    output_dir = Path(OUTPUT_DIR) / f"{lookback_days}" / f"{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Results tracking
