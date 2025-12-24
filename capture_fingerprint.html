@@ -1,0 +1,124 @@
+cat > capture_fingerprint.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Browser Fingerprint Capture</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        button { padding: 15px 30px; font-size: 16px; background: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #45a049; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .status { margin: 20px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Browser Fingerprint Capture</h1>
+    <p>Click the button below to capture your browser's fingerprint for use with the TikTok scraper.</p>
+    
+    <button onclick="captureFingerprint()">Capture My Fingerprint</button>
+    
+    <div id="status"></div>
+    <pre id="output"></pre>
+
+    <script>
+    async function captureFingerprint() {
+        const statusDiv = document.getElementById('status');
+        const outputPre = document.getElementById('output');
+        
+        statusDiv.innerHTML = '<div class="status">Capturing fingerprint...</div>';
+        
+        try {
+            const fingerprint = {
+                // Basic info
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                hardwareConcurrency: navigator.hardwareConcurrency,
+                deviceMemory: navigator.deviceMemory,
+                maxTouchPoints: navigator.maxTouchPoints,
+                languages: [...navigator.languages],
+                
+                // WebGL (most important for bot detection)
+                webgl: await captureWebGL(),
+                
+                // Screen
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    availWidth: screen.availWidth,
+                    availHeight: screen.availHeight,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth,
+                },
+                
+                // Plugins
+                plugins: [...navigator.plugins].map(p => ({
+                    name: p.name,
+                    description: p.description,
+                    filename: p.filename,
+                    length: p.length
+                })),
+                
+                // Timezone
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                timezoneOffset: new Date().getTimezoneOffset(),
+                
+                // Additional
+                cookieEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack,
+                oscpu: navigator.oscpu || 'N/A',
+                
+                // Captured at
+                capturedAt: new Date().toISOString(),
+            };
+            
+            // Display
+            const jsonStr = JSON.stringify(fingerprint, null, 2);
+            outputPre.textContent = jsonStr;
+            
+            // Auto-download
+            downloadJSON(fingerprint, 'browser_fingerprint.json');
+            
+            statusDiv.innerHTML = '<div class="status success">✅ Fingerprint captured and downloaded!</div>';
+            
+        } catch (error) {
+            statusDiv.innerHTML = `<div class="status" style="background:#f8d7da;color:#721c24">❌ Error: ${error.message}</div>`;
+        }
+    }
+    
+    async function captureWebGL() {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        
+        if (!gl) {
+            return {error: 'WebGL not supported'};
+        }
+        
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        
+        return {
+            vendor: gl.getParameter(debugInfo ? debugInfo.UNMASKED_VENDOR_WEBGL : gl.VENDOR),
+            renderer: gl.getParameter(debugInfo ? debugInfo.UNMASKED_RENDERER_WEBGL : gl.RENDERER),
+            version: gl.getParameter(gl.VERSION),
+            shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
+            maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
+            maxViewportDims: gl.getParameter(gl.MAX_VIEWPORT_DIMS),
+        };
+    }
+    
+    function downloadJSON(data, filename) {
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    </script>
+</body>
+</html>
+EOF

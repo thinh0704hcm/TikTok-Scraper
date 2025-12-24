@@ -288,6 +288,8 @@ async def scrape_profile_time_series(
     max_videos: int = 1000,
     resume: bool = True,
     verbose: bool = False,
+    headless: bool = True,
+    proxy: Optional[str] = None,
     logger = None
 ) -> Dict[str, Any]:
     """
@@ -298,6 +300,8 @@ async def scrape_profile_time_series(
         lookback_days: How many days back to scrape
         max_videos: Max videos per profile
         resume: Skip already completed profiles
+        headless: Run browser in headless mode
+        proxy: Proxy URL (optional)
         logger: Logger instance
     
     Returns:
@@ -311,6 +315,7 @@ async def scrape_profile_time_series(
     logger.info(f"Lookback: {lookback_days} days")
     logger.info(f"Max videos per profile: {max_videos}")
     logger.info(f"Total profiles: {len(account_ids)}")
+    logger.info(f"Headless mode: {headless}")
     logger.info("=" * 70)
     
     # Initialize progress tracker
@@ -354,10 +359,11 @@ async def scrape_profile_time_series(
     # Start scraping
     async with PlaywrightProfileScraper(
         output_dir=str(output_dir),
-        headless=HEADLESS,
+        headless=headless,
         slow_mo=SLOW_MO,
         wait_time=1.0,
-        proxy=PROXY
+        proxy=proxy or PROXY,
+        fingerprint_file='browser_fingerprint.json'
     ) as scraper:
         
         for i, account_id in enumerate(account_ids):
@@ -572,12 +578,14 @@ def main():
         reset_progress()
         return
     
-    # Handle headless mode
+    # Determine headless mode
     headless_mode = HEADLESS
     if args.headless:
         headless_mode = True
     elif args.no_headless:
         headless_mode = False
+    elif args.xvfb:
+        headless_mode = False  # Xvfb requires non-headless mode
     
     # Initialize Xvfb if requested
     xvfb = None
@@ -592,15 +600,7 @@ def main():
             print("ERROR: Failed to start Xvfb")
             return
         
-        headless_mode = False
-        print("Xvfb started - using pseudo-headless mode")
-    
-    # Set global settings
-    if args.headless or args.no_headless:
-        globals()['HEADLESS'] = headless_mode
-    
-    if args.proxy:
-        globals()['PROXY'] = args.proxy
+        print("Xvfb started - using pseudo-headless mode (headless=False with virtual display)")
     
     # Load account IDs
     account_ids = load_account_ids(args.account_file)
@@ -640,7 +640,9 @@ def main():
             lookback_days=args.lookback,
             max_videos=args.max_videos,
             resume=not args.no_resume,
-            verbose=args.verbose
+            verbose=args.verbose,
+            headless=headless_mode,
+            proxy=args.proxy
         ))
     finally:
         # Cleanup
