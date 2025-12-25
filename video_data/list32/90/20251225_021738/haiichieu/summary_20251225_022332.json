@@ -1,0 +1,34 @@
+{
+  "username": "haiichieu",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-26",
+    "end": "2025-12-25"
+  },
+  "scraped_at": "2025-12-25T02:23:32.959913",
+  "total_videos": 78,
+  "date_range_actual": {
+    "earliest": "2025-09-26T17:14:51",
+    "latest": "2025-12-22T18:35:09"
+  },
+  "total_stats": {
+    "total_views": 50114900,
+    "total_likes": 2116235,
+    "total_comments": 24435,
+    "total_shares": 100480
+  },
+  "average_stats": {
+    "avg_views": 642498.717948718,
+    "avg_likes": 27131.21794871795,
+    "avg_comments": 313.2692307692308
+  },
+  "files": {
+    "videos": "videos_raw_20251225_022332.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1146,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

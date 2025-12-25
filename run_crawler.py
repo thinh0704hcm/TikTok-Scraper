@@ -44,7 +44,7 @@ from TT_Content_Scraper.src.object_tracker_db import ObjectTracker, ObjectStatus
 ACCOUNT_LIST_DIR = "crawl_account/"
 
 # Output settings
-OUTPUT_BASE_DIR = "data/"
+OUTPUT_BASE_DIR = "video_data/"
 PROGRESS_DB_DIR = "progress_tracking/"
 
 # Scraping parameters
@@ -354,7 +354,6 @@ async def scrape_profile_time_series(
     
     # Start scraping
     async with PlaywrightProfileScraper(
-        output_dir=str(output_dir),
         headless=HEADLESS,
         slow_mo=SLOW_MO,
         wait_time=1.0,

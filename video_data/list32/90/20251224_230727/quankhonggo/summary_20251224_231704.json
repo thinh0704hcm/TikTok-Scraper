@@ -1,0 +1,34 @@
+{
+  "username": "quankhonggo",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-25",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T23:17:04.640986",
+  "total_videos": 48,
+  "date_range_actual": {
+    "earliest": "2025-09-26T10:50:31",
+    "latest": "2025-12-22T16:53:16"
+  },
+  "total_stats": {
+    "total_views": 44329800,
+    "total_likes": 2235214,
+    "total_comments": 12071,
+    "total_shares": 169616
+  },
+  "average_stats": {
+    "avg_views": 923537.5,
+    "avg_likes": 46566.958333333336,
+    "avg_comments": 251.47916666666666
+  },
+  "files": {
+    "videos": "videos_raw_20251224_231704.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1194,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

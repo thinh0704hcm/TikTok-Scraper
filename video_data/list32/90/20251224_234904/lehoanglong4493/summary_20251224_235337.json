@@ -1,0 +1,34 @@
+{
+  "username": "lehoanglong4493",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-25",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T23:53:37.439160",
+  "total_videos": 92,
+  "date_range_actual": {
+    "earliest": "2025-09-26T09:57:30",
+    "latest": "2025-12-24T17:09:39"
+  },
+  "total_stats": {
+    "total_views": 17729600,
+    "total_likes": 1045622,
+    "total_comments": 21044,
+    "total_shares": 31598
+  },
+  "average_stats": {
+    "avg_views": 192713.04347826086,
+    "avg_likes": 11365.45652173913,
+    "avg_comments": 228.7391304347826
+  },
+  "files": {
+    "videos": "videos_raw_20251224_235337.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 870,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

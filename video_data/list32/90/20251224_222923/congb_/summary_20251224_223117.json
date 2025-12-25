@@ -1,0 +1,34 @@
+{
+  "username": "congb_",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-25",
+    "end": "2025-12-24"
+  },
+  "scraped_at": "2025-12-24T22:31:17.517455",
+  "total_videos": 99,
+  "date_range_actual": {
+    "earliest": "2025-09-26T19:53:16",
+    "latest": "2025-12-22T18:18:31"
+  },
+  "total_stats": {
+    "total_views": 60893400,
+    "total_likes": 6844875,
+    "total_comments": 50142,
+    "total_shares": 234204
+  },
+  "average_stats": {
+    "avg_views": 615084.8484848485,
+    "avg_likes": 69140.15151515152,
+    "avg_comments": 506.4848484848485
+  },
+  "files": {
+    "videos": "videos_raw_20251224_223117.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 431,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

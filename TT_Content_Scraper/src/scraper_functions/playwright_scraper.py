@@ -103,14 +103,12 @@ class PlaywrightProfileScraper:
     
     def __init__(
         self,
-        output_dir: str = "data/profile_time_series/",
         headless: bool = False,
         slow_mo: int = 50,
         wait_time: float = 1.0,
         max_captcha_wait: int = 120,
         proxy: Optional[str] = None
     ):
-        self.output_dir = Path(output_dir)
         self.headless = headless
         self.slow_mo = slow_mo
         self.wait_time = wait_time
@@ -793,7 +791,6 @@ async def main():
     username = "example_user"  # Replace with actual username
     
     async with PlaywrightProfileScraper(
-        output_dir="data/profile_time_series/",
         headless=False,
     ) as scraper:
         
