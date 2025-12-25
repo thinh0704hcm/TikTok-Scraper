@@ -1,0 +1,34 @@
+{
+  "username": "jukysan",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-26",
+    "end": "2025-12-25"
+  },
+  "scraped_at": "2025-12-25T15:33:05.951036",
+  "total_videos": 83,
+  "date_range_actual": {
+    "earliest": "2025-09-26T17:43:06",
+    "latest": "2025-12-22T11:20:31"
+  },
+  "total_stats": {
+    "total_views": 74534500,
+    "total_likes": 5871682,
+    "total_comments": 40113,
+    "total_shares": 270849
+  },
+  "average_stats": {
+    "avg_views": 898006.0240963856,
+    "avg_likes": 70743.15662650602,
+    "avg_comments": 483.28915662650604
+  },
+  "files": {
+    "videos": "videos_raw_20251225_153305.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 208,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

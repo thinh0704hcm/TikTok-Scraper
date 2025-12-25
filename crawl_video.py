@@ -375,6 +375,7 @@ async def scrape_profile_time_series(
                 
                 summary = await scraper.scrape_user_time_series(
                     username=account_id if is_username else None,
+                    output_dir=output_dir,
                     max_videos=max_videos,
                     lookback_days=lookback_days
                 )
@@ -534,12 +535,12 @@ def main():
     )
     
     parser.add_argument("--lookback", type=int, default=DEFAULT_LOOKBACK_DAYS,
-                        help="Days to look back (default: 180 days)")
+                        help="Days to look back (default: 90 days)")
     parser.add_argument("--max-videos", type=int, default=DEFAULT_MAX_VIDEOS,
                         help="Max videos per profile")
     parser.add_argument("--max-profiles", type=int, default=None,
                         help="Limit number of profiles to scrape")
-    parser.add_argument("--list", type=str, default="list20",
+    parser.add_argument("--list", type=str, default="list32",
                         help="List name (e.g., list20, list32) - loads from crawl_account/{list}.txt")
     parser.add_argument("--account-file", type=str, default=None,
                         help="Direct path to account IDs file (overrides --list)")

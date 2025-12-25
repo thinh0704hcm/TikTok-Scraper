@@ -1,0 +1,34 @@
+{
+  "username": "ribisachi36",
+  "lookback_days": 720,
+  "date_range": {
+    "start": "2024-01-05",
+    "end": "2025-12-25"
+  },
+  "scraped_at": "2025-12-25T15:49:57.624236",
+  "total_videos": 234,
+  "date_range_actual": {
+    "earliest": "2024-01-08T22:05:56",
+    "latest": "2025-12-24T16:48:24"
+  },
+  "total_stats": {
+    "total_views": 258018200,
+    "total_likes": 7915348,
+    "total_comments": 63175,
+    "total_shares": 97927
+  },
+  "average_stats": {
+    "avg_views": 1102641.8803418803,
+    "avg_likes": 33826.27350427351,
+    "avg_comments": 269.9786324786325
+  },
+  "files": {
+    "videos": "videos_raw_20251225_154957.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 4892,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

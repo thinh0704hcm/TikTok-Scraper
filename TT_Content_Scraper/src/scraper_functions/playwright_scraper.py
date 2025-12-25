@@ -677,6 +677,7 @@ class PlaywrightProfileScraper:
     async def scrape_user_time_series(
         self,
         username: str,
+        output_dir: Path,
         max_videos: int = 1000,
         lookback_days: int = 365
     ) -> Dict[str, Any]:
@@ -685,6 +686,7 @@ class PlaywrightProfileScraper:
         
         Args:
             username: TikTok username (without @)
+            output_dir: Directory to save output files
             max_videos: Maximum videos to fetch
             lookback_days: Days to look back (default 365 = 1 year)
         
@@ -700,7 +702,7 @@ class PlaywrightProfileScraper:
         logger.info(f"Date range: {cutoff_date.strftime('%Y-%m-%d')} to {now.strftime('%Y-%m-%d')}")
         
         # Create output directory
-        username_dir = self.output_dir / username
+        username_dir = output_dir / username
         username_dir.mkdir(parents=True, exist_ok=True)
         
         # Fetch all videos
