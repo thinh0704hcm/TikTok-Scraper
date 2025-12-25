@@ -1,0 +1,21 @@
+{
+  "run_name": "profile_list32_20251225",
+  "output_dir": "profile_data\\20251225_130114",
+  "started_at": "2025-12-25T13:01:14.913085",
+  "profiles_processed": 32,
+  "profiles_success": 31,
+  "profiles_failed": 1,
+  "errors": [
+    {
+      "username": "haidang_doo",
+      "error": "Failed to extract profile data"
+    }
+  ],
+  "completed_at": "2025-12-25T13:04:11.710398",
+  "tracker_stats": {
+    "total": 0,
+    "completed": 31,
+    "pending": 0,
+    "error": 0
+  }
+}

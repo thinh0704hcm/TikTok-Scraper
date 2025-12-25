@@ -7,12 +7,12 @@ INTERVAL_SECONDS = 1800
 
 while True:
     print(f"\n{'='*23}")
-    print(f"Starting crawler at {datetime.now()}")
+    print(f"Starting video crawler at {datetime.now()}")
     print(f"{'='*23}\n")
 
     subprocess.run([
         sys.executable,
-        "run_crawler.py",
+        "crawl_video.py",
         "--list", "list32",
         "--no-resume"
     ])
