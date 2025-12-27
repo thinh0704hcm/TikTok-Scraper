@@ -19,51 +19,51 @@
   "sequence_length": 4,
   "min_snapshots": 6,
   "max_days": 7,
-  "train_samples": 28952,
-  "val_samples": 6312,
-  "test_samples": 6546,
+  "train_samples": 27928,
+  "val_samples": 5784,
+  "test_samples": 6520,
   "account_statistics": {
     "atusmain": {
-      "total_videos": 32,
-      "total_sequences": 1376,
-      "train_sequences": 946,
+      "total_videos": 31,
+      "total_sequences": 1333,
+      "train_sequences": 903,
       "val_sequences": 215,
       "test_sequences": 215
     },
     "bac_hello2": {
-      "total_videos": 39,
-      "total_sequences": 870,
-      "train_sequences": 600,
-      "val_sequences": 135,
-      "test_sequences": 135
+      "total_videos": 37,
+      "total_sequences": 845,
+      "train_sequences": 585,
+      "val_sequences": 115,
+      "test_sequences": 145
     },
     "bnh.trng.lui": {
-      "total_videos": 33,
-      "total_sequences": 627,
-      "train_sequences": 437,
-      "val_sequences": 95,
-      "test_sequences": 95
+      "total_videos": 39,
+      "total_sequences": 741,
+      "train_sequences": 513,
+      "val_sequences": 114,
+      "test_sequences": 114
     },
     "congb_": {
-      "total_videos": 34,
-      "total_sequences": 1190,
-      "train_sequences": 838,
-      "val_sequences": 168,
-      "test_sequences": 184
+      "total_videos": 40,
+      "total_sequences": 1323,
+      "train_sequences": 919,
+      "val_sequences": 214,
+      "test_sequences": 190
     },
     "dieplamanh": {
-      "total_videos": 36,
-      "total_sequences": 1204,
-      "train_sequences": 853,
-      "val_sequences": 167,
-      "test_sequences": 184
+      "total_videos": 30,
+      "total_sequences": 928,
+      "train_sequences": 655,
+      "val_sequences": 117,
+      "test_sequences": 156
     },
     "dieunhiofficial": {
-      "total_videos": 40,
-      "total_sequences": 1443,
-      "train_sequences": 1057,
-      "val_sequences": 207,
-      "test_sequences": 179
+      "total_videos": 35,
+      "total_sequences": 1309,
+      "train_sequences": 926,
+      "val_sequences": 167,
+      "test_sequences": 216
     },
     "donhathoang13": {
       "total_videos": 38,
@@ -73,204 +73,204 @@
       "test_sequences": 258
     },
     "duyyy.real.channel": {
-      "total_videos": 34,
-      "total_sequences": 1200,
-      "train_sequences": 831,
-      "val_sequences": 163,
-      "test_sequences": 206
+      "total_videos": 31,
+      "total_sequences": 1097,
+      "train_sequences": 750,
+      "val_sequences": 158,
+      "test_sequences": 189
     },
     "fhn2812": {
-      "total_videos": 34,
-      "total_sequences": 1462,
-      "train_sequences": 989,
+      "total_videos": 31,
+      "total_sequences": 1333,
+      "train_sequences": 903,
       "val_sequences": 215,
-      "test_sequences": 258
+      "test_sequences": 215
     },
     "haidang_doo": {
-      "total_videos": 33,
-      "total_sequences": 518,
-      "train_sequences": 358,
-      "val_sequences": 80,
-      "test_sequences": 80
+      "total_videos": 38,
+      "total_sequences": 598,
+      "train_sequences": 406,
+      "val_sequences": 96,
+      "test_sequences": 96
     },
     "haiichieu": {
-      "total_videos": 34,
-      "total_sequences": 1182,
-      "train_sequences": 786,
-      "val_sequences": 184,
+      "total_videos": 40,
+      "total_sequences": 1554,
+      "train_sequences": 1136,
+      "val_sequences": 206,
       "test_sequences": 212
     },
     "hansara.official": {
       "total_videos": 40,
-      "total_sequences": 801,
-      "train_sequences": 547,
-      "val_sequences": 148,
-      "test_sequences": 106
+      "total_sequences": 815,
+      "train_sequences": 589,
+      "val_sequences": 92,
+      "test_sequences": 134
     },
     "hieuthuhai2222": {
-      "total_videos": 39,
-      "total_sequences": 1677,
-      "train_sequences": 1161,
-      "val_sequences": 258,
-      "test_sequences": 258
-    },
-    "huynguyen.3101": {
-      "total_videos": 33,
-      "total_sequences": 1419,
-      "train_sequences": 989,
-      "val_sequences": 215,
-      "test_sequences": 215
-    },
-    "ising52hz": {
-      "total_videos": 20,
-      "total_sequences": 351,
-      "train_sequences": 263,
-      "val_sequences": 57,
-      "test_sequences": 31
-    },
-    "jenny.huynh._": {
-      "total_videos": 31,
-      "total_sequences": 1157,
-      "train_sequences": 849,
-      "val_sequences": 188,
-      "test_sequences": 120
-    },
-    "jukysan": {
-      "total_videos": 36,
+      "total_videos": 35,
       "total_sequences": 1505,
       "train_sequences": 1032,
       "val_sequences": 215,
       "test_sequences": 258
     },
-    "khanhvyccf": {
-      "total_videos": 39,
-      "total_sequences": 1677,
-      "train_sequences": 1161,
-      "val_sequences": 258,
-      "test_sequences": 258
+    "huynguyen.3101": {
+      "total_videos": 30,
+      "total_sequences": 1290,
+      "train_sequences": 903,
+      "val_sequences": 172,
+      "test_sequences": 215
     },
-    "khoailangthang": {
+    "ising52hz": {
+      "total_videos": 27,
+      "total_sequences": 593,
+      "train_sequences": 474,
+      "val_sequences": 19,
+      "test_sequences": 100
+    },
+    "jenny.huynh._": {
+      "total_videos": 31,
+      "total_sequences": 1157,
+      "train_sequences": 795,
+      "val_sequences": 147,
+      "test_sequences": 215
+    },
+    "jukysan": {
+      "total_videos": 33,
+      "total_sequences": 1376,
+      "train_sequences": 946,
+      "val_sequences": 215,
+      "test_sequences": 215
+    },
+    "khanhvyccf": {
       "total_videos": 36,
-      "total_sequences": 1525,
-      "train_sequences": 1052,
+      "total_sequences": 1548,
+      "train_sequences": 1075,
       "val_sequences": 215,
       "test_sequences": 258
     },
+    "khoailangthang": {
+      "total_videos": 30,
+      "total_sequences": 1267,
+      "train_sequences": 903,
+      "val_sequences": 149,
+      "test_sequences": 215
+    },
     "lehoanglong4493": {
-      "total_videos": 32,
-      "total_sequences": 1236,
-      "train_sequences": 848,
-      "val_sequences": 194,
-      "test_sequences": 194
+      "total_videos": 39,
+      "total_sequences": 1440,
+      "train_sequences": 972,
+      "val_sequences": 229,
+      "test_sequences": 239
     },
     "linhbarbie": {
-      "total_videos": 37,
-      "total_sequences": 1536,
-      "train_sequences": 1032,
-      "val_sequences": 252,
-      "test_sequences": 252
-    },
-    "lyduc17": {
-      "total_videos": 40,
-      "total_sequences": 1687,
-      "train_sequences": 1175,
-      "val_sequences": 257,
-      "test_sequences": 255
-    },
-    "ngthanhnhan2807": {
-      "total_videos": 39,
-      "total_sequences": 1517,
-      "train_sequences": 1041,
-      "val_sequences": 238,
-      "test_sequences": 238
-    },
-    "ocean.gill": {
       "total_videos": 32,
-      "total_sequences": 1124,
-      "train_sequences": 782,
-      "val_sequences": 127,
-      "test_sequences": 215
-    },
-    "phuongmychiofficial": {
-      "total_videos": 36,
-      "total_sequences": 1177,
-      "train_sequences": 799,
-      "val_sequences": 191,
-      "test_sequences": 187
-    },
-    "phuongnam.dv": {
-      "total_videos": 40,
-      "total_sequences": 1316,
-      "train_sequences": 831,
-      "val_sequences": 258,
-      "test_sequences": 227
-    },
-    "quankhonggo": {
-      "total_videos": 34,
-      "total_sequences": 1227,
-      "train_sequences": 834,
-      "val_sequences": 201,
+      "total_sequences": 1326,
+      "train_sequences": 924,
+      "val_sequences": 210,
       "test_sequences": 192
     },
-    "realpewpew": {
-      "total_videos": 40,
-      "total_sequences": 1319,
-      "train_sequences": 915,
+    "lyduc17": {
+      "total_videos": 33,
+      "total_sequences": 1388,
+      "train_sequences": 981,
+      "val_sequences": 194,
+      "test_sequences": 213
+    },
+    "ngthanhnhan2807": {
+      "total_videos": 35,
+      "total_sequences": 1345,
+      "train_sequences": 912,
+      "val_sequences": 175,
+      "test_sequences": 258
+    },
+    "ocean.gill": {
+      "total_videos": 34,
+      "total_sequences": 1212,
+      "train_sequences": 826,
       "val_sequences": 195,
-      "test_sequences": 209
+      "test_sequences": 191
+    },
+    "phuongmychiofficial": {
+      "total_videos": 37,
+      "total_sequences": 1290,
+      "train_sequences": 893,
+      "val_sequences": 170,
+      "test_sequences": 227
+    },
+    "phuongnam.dv": {
+      "total_videos": 34,
+      "total_sequences": 1089,
+      "train_sequences": 771,
+      "val_sequences": 153,
+      "test_sequences": 165
+    },
+    "quankhonggo": {
+      "total_videos": 31,
+      "total_sequences": 1141,
+      "train_sequences": 781,
+      "val_sequences": 173,
+      "test_sequences": 187
+    },
+    "realpewpew": {
+      "total_videos": 30,
+      "total_sequences": 1038,
+      "train_sequences": 685,
+      "val_sequences": 156,
+      "test_sequences": 197
     },
     "ribisachi36": {
-      "total_videos": 33,
-      "total_sequences": 1311,
-      "train_sequences": 921,
-      "val_sequences": 175,
-      "test_sequences": 215
+      "total_videos": 32,
+      "total_sequences": 1268,
+      "train_sequences": 878,
+      "val_sequences": 215,
+      "test_sequences": 175
     },
     "yunbray": {
-      "total_videos": 36,
-      "total_sequences": 1372,
-      "train_sequences": 1017,
-      "val_sequences": 177,
-      "test_sequences": 178
+      "total_videos": 37,
+      "total_sequences": 1416,
+      "train_sequences": 978,
+      "val_sequences": 239,
+      "test_sequences": 199
     }
   },
   "augmentation_applied": true,
   "augmentation_stats": {
     "atusmain": {
       "original": 1,
-      "synthetic": 31,
-      "total": 32,
-      "target": 32
+      "synthetic": 30,
+      "total": 31,
+      "target": 31
     },
     "bac_hello2": {
       "original": 3,
-      "synthetic": 36,
-      "total": 39,
-      "target": 39
+      "synthetic": 34,
+      "total": 37,
+      "target": 37
     },
     "bnh.trng.lui": {
       "original": 1,
-      "synthetic": 32,
-      "total": 33,
-      "target": 33
+      "synthetic": 38,
+      "total": 39,
+      "target": 39
     },
     "congb_": {
       "original": 10,
-      "synthetic": 24,
-      "total": 34,
-      "target": 34
+      "synthetic": 30,
+      "total": 40,
+      "target": 40
     },
     "dieplamanh": {
       "original": 17,
-      "synthetic": 19,
-      "total": 36,
-      "target": 36
+      "synthetic": 13,
+      "total": 30,
+      "target": 30
     },
     "dieunhiofficial": {
       "original": 7,
-      "synthetic": 33,
-      "total": 40,
-      "target": 40
+      "synthetic": 28,
+      "total": 35,
+      "target": 35
     },
     "donhathoang13": {
       "original": 4,
@@ -280,27 +280,27 @@
     },
     "duyyy.real.channel": {
       "original": 10,
-      "synthetic": 24,
-      "total": 34,
-      "target": 34
+      "synthetic": 21,
+      "total": 31,
+      "target": 31
     },
     "fhn2812": {
       "original": 1,
-      "synthetic": 33,
-      "total": 34,
-      "target": 34
+      "synthetic": 30,
+      "total": 31,
+      "target": 31
     },
     "haidang_doo": {
       "original": 2,
-      "synthetic": 31,
-      "total": 33,
-      "target": 33
+      "synthetic": 36,
+      "total": 38,
+      "target": 38
     },
     "haiichieu": {
       "original": 4,
-      "synthetic": 30,
-      "total": 34,
-      "target": 34
+      "synthetic": 36,
+      "total": 40,
+      "target": 40
     },
     "hansara.official": {
       "original": 3,
@@ -310,21 +310,21 @@
     },
     "hieuthuhai2222": {
       "original": 2,
-      "synthetic": 37,
-      "total": 39,
-      "target": 39
+      "synthetic": 33,
+      "total": 35,
+      "target": 35
     },
     "huynguyen.3101": {
       "original": 1,
-      "synthetic": 32,
-      "total": 33,
-      "target": 33
+      "synthetic": 29,
+      "total": 30,
+      "target": 30
     },
     "ising52hz": {
       "original": 16,
-      "synthetic": 14,
-      "total": 30,
-      "target": 30
+      "synthetic": 21,
+      "total": 37,
+      "target": 37
     },
     "jenny.huynh._": {
       "original": 4,
@@ -334,88 +334,88 @@
     },
     "jukysan": {
       "original": 3,
-      "synthetic": 33,
-      "total": 36,
-      "target": 36
+      "synthetic": 30,
+      "total": 33,
+      "target": 33
     },
     "khanhvyccf": {
       "original": 1,
-      "synthetic": 38,
-      "total": 39,
-      "target": 39
+      "synthetic": 35,
+      "total": 36,
+      "target": 36
     },
     "khoailangthang": {
       "original": 2,
-      "synthetic": 34,
-      "total": 36,
-      "target": 36
+      "synthetic": 28,
+      "total": 30,
+      "target": 30
     },
     "lehoanglong4493": {
       "original": 8,
-      "synthetic": 24,
-      "total": 32,
-      "target": 32
-    },
-    "linhbarbie": {
-      "original": 3,
-      "synthetic": 34,
-      "total": 37,
-      "target": 37
-    },
-    "lyduc17": {
-      "original": 3,
-      "synthetic": 37,
-      "total": 40,
-      "target": 40
-    },
-    "ngthanhnhan2807": {
-      "original": 4,
-      "synthetic": 35,
+      "synthetic": 31,
       "total": 39,
       "target": 39
     },
-    "ocean.gill": {
-      "original": 5,
-      "synthetic": 27,
+    "linhbarbie": {
+      "original": 3,
+      "synthetic": 29,
       "total": 32,
       "target": 32
     },
-    "phuongmychiofficial": {
-      "original": 13,
-      "synthetic": 23,
-      "total": 36,
-      "target": 36
-    },
-    "phuongnam.dv": {
+    "lyduc17": {
       "original": 3,
-      "synthetic": 37,
-      "total": 40,
-      "target": 40
+      "synthetic": 30,
+      "total": 33,
+      "target": 33
     },
-    "quankhonggo": {
+    "ngthanhnhan2807": {
+      "original": 4,
+      "synthetic": 31,
+      "total": 35,
+      "target": 35
+    },
+    "ocean.gill": {
       "original": 5,
       "synthetic": 29,
       "total": 34,
       "target": 34
     },
+    "phuongmychiofficial": {
+      "original": 13,
+      "synthetic": 24,
+      "total": 37,
+      "target": 37
+    },
+    "phuongnam.dv": {
+      "original": 3,
+      "synthetic": 31,
+      "total": 34,
+      "target": 34
+    },
+    "quankhonggo": {
+      "original": 5,
+      "synthetic": 26,
+      "total": 31,
+      "target": 31
+    },
     "realpewpew": {
       "original": 23,
-      "synthetic": 17,
-      "total": 40,
-      "target": 40
+      "synthetic": 7,
+      "total": 30,
+      "target": 30
     },
     "ribisachi36": {
       "original": 5,
-      "synthetic": 28,
-      "total": 33,
-      "target": 33
+      "synthetic": 27,
+      "total": 32,
+      "target": 32
     },
     "yunbray": {
       "original": 6,
-      "synthetic": 30,
-      "total": 36,
-      "target": 36
+      "synthetic": 31,
+      "total": 37,
+      "target": 37
     }
   },
-  "created_at": "2025-12-27T22:42:18.327766"
+  "created_at": "2025-12-27T22:50:12.869474"
 }

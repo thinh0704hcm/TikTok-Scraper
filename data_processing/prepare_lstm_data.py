@@ -93,6 +93,12 @@ class LSTMDataPreparator:
             raise ValueError("No data loaded! Check your video_data_dir path.")
         
         df = pd.DataFrame(all_records)
+        
+        # Track accounts from the start
+        initial_accounts = df['author_username'].unique()
+        print(f"   Unique accounts in raw data: {len(initial_accounts)}")
+        print(f"   Accounts: {sorted(initial_accounts)}")
+        
         return df
     
     def _extract_video_record(self, video: Dict) -> Dict:
@@ -146,6 +152,9 @@ class LSTMDataPreparator:
         """
         print("\n🧹 Cleaning and preparing data (relaxed criteria)...")
         
+        initial_accounts = set(df['author_username'].unique())
+        initial_count = len(df)
+        
         # Remove rows with missing critical fields
         df = df.dropna(subset=['video_id', 'posted_at', 'scraped_at', 'views'])
         
@@ -168,9 +177,15 @@ class LSTMDataPreparator:
         # Remove duplicates (same video_id and scraped_at)
         df = df.drop_duplicates(subset=['video_id', 'scraped_at'], keep='first')
         
-        print(f"✅ Data cleaned: {len(df)} records remaining")
+        # Check which accounts were lost during cleaning
+        final_accounts = set(df['author_username'].unique())
+        lost_accounts = initial_accounts - final_accounts
+        
+        print(f"✅ Data cleaned: {len(df)} records remaining (removed {initial_count - len(df)})")
         print(f"   Unique videos: {df['video_id'].nunique()}")
-        print(f"   Unique accounts: {df['author_username'].nunique()}")
+        print(f"   Unique accounts: {len(final_accounts)}")
+        if lost_accounts:
+            print(f"   ⚠️  Lost {len(lost_accounts)} accounts during cleaning: {sorted(lost_accounts)}")
         
         return df
     
@@ -311,7 +326,9 @@ class LSTMDataPreparator:
         """
         print(f"\n⏱️  Filtering videos (relaxed: ≥{self.min_snapshots} snapshots, any within {self.max_days} days)...")
         
+        initial_accounts = set(df['author_username'].unique())
         filtered_groups = []
+        dropped_accounts = defaultdict(lambda: {'videos': 0, 'reason': 'insufficient_snapshots'})
         
         for video_id, group in df.groupby('video_id'):
             group = group.sort_values('scraped_at')
@@ -322,6 +339,7 @@ class LSTMDataPreparator:
             
             # Relaxed: just need minimum snapshots
             if len(group) < self.min_snapshots:
+                dropped_accounts[account]['videos'] += 1
                 continue
             
             filtered_groups.append(group)
@@ -331,8 +349,18 @@ class LSTMDataPreparator:
         
         df_filtered = pd.concat(filtered_groups, ignore_index=True)
         
+        # Check which accounts lost all their videos
+        final_accounts = set(df_filtered['author_username'].unique())
+        lost_accounts = initial_accounts - final_accounts
+        
         print(f"✅ Kept {len(filtered_groups)} videos with sufficient data")
         print(f"   Total records: {len(df_filtered)}")
+        print(f"   Unique accounts: {len(final_accounts)}")
+        
+        if lost_accounts:
+            print(f"   ⚠️  Lost {len(lost_accounts)} accounts (all videos had <{self.min_snapshots} snapshots):")
+            for acc in sorted(lost_accounts):
+                print(f"      • {acc}: {dropped_accounts[acc]['videos']} videos dropped")
         
         # Show time resolution stats
         time_diffs = []
