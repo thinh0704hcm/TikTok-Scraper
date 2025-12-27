@@ -1,0 +1,68 @@
+================================================================================
+LSTM DATA PROCESSING REPORT
+================================================================================
+Generated: 2025-12-27 22:13:00
+
+Configuration:
+  - Sequence length: 4
+  - Min snapshots per video: 6
+  - Max days coverage: 7
+
+Sequence counts per account:
+Account                        Videos     Train      Val        Test       Total     
+--------------------------------------------------------------------------------
+atusmain                       1          43         0          0          43        
+bac_hello2                     3          45         0          0          45        
+bnh.trng.lui                   1          19         0          0          19        
+congb_                         10         221        22         42         285       
+dieplamanh                     17         410        43         19         472       
+dieunhiofficial                7          123        43         43         209       
+donhathoang13                  4          103        0          43         146       
+duyyy.real.channel             10         233        43         17         293       
+fhn2812                        1          43         0          0          43        
+haidang_doo                    2          22         0          0          22        
+haiichieu                      4          80         0          42         122       
+hansara.official               3          40         0          0          40        
+hieuthuhai2222                 2          86         0          0          86        
+huynguyen.3101                 1          43         0          0          43        
+ising52hz                      6          156        0          0          156       
+jenny.huynh._                  4          61         0          43         104       
+jukysan                        3          86         0          0          86        
+khanhvyccf                     1          43         0          0          43        
+khoailangthang                 2          63         0          0          63        
+lehoanglong4493                8          179        24         43         246       
+linhbarbie                     3          66         0          42         108       
+lyduc17                        3          65         0          42         107       
+ngthanhnhan2807                4          109        0          23         132       
+ocean.gill                     5          81         43         23         147       
+phuongmychiofficial            13         302        38         38         378       
+phuongnam.dv                   3          55         0          11         66        
+quankhonggo                    5          96         43         15         154       
+realpewpew                     23         634        60         43         737       
+ribisachi36                    5          109        43         15         167       
+yunbray                        6          112        43         43         198       
+--------------------------------------------------------------------------------
+TOTAL                          160        3728       445        587        4760      
+
+Accounts with missing splits:
+  - atusmain: missing val, test (only 1 videos)
+  - bac_hello2: missing val, test (only 3 videos)
+  - bnh.trng.lui: missing val, test (only 1 videos)
+  - donhathoang13: missing val (only 4 videos)
+  - fhn2812: missing val, test (only 1 videos)
+  - haidang_doo: missing val, test (only 2 videos)
+  - haiichieu: missing val (only 4 videos)
+  - hansara.official: missing val, test (only 3 videos)
+  - hieuthuhai2222: missing val, test (only 2 videos)
+  - huynguyen.3101: missing val, test (only 1 videos)
+  - ising52hz: missing val, test (only 6 videos)
+  - jenny.huynh._: missing val (only 4 videos)
+  - jukysan: missing val, test (only 3 videos)
+  - khanhvyccf: missing val, test (only 1 videos)
+  - khoailangthang: missing val, test (only 2 videos)
+  - linhbarbie: missing val (only 3 videos)
+  - lyduc17: missing val (only 3 videos)
+  - ngthanhnhan2807: missing val (only 4 videos)
+  - phuongnam.dv: missing val (only 3 videos)
+
+================================================================================

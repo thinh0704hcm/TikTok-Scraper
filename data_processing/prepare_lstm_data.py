@@ -1,8 +1,8 @@
 """
-LSTM Data Preparation Pipeline for TikTok Video Analytics
+LSTM Data Preparation Pipeline for TikTok Video Analytics (RELAXED VERSION)
 
-This script processes raw TikTok video data into sequences suitable for LSTM training.
-It follows the data requirements specified in process_data_for_lstm.md
+This script processes raw TikTok video data with forgiving criteria to maximize usable data.
+Follows the relaxed requirements in process_data_for_lstm.md
 """
 
 import os
@@ -14,51 +14,53 @@ from datetime import datetime, timedelta
 from sklearn.preprocessing import StandardScaler
 import pickle
 from typing import List, Dict, Tuple
+from collections import defaultdict
 import warnings
 warnings.filterwarnings('ignore')
 
 
 class LSTMDataPreparator:
     """
-    Prepares TikTok video data for LSTM model training.
+    Prepares TikTok video data for LSTM model training with RELAXED criteria.
     
-    Handles:
-    - Data loading from multiple JSON files
-    - Time-based feature engineering
-    - Resampling to fixed intervals
-    - Sequence windowing
-    - Train/val/test splitting
-    - Feature scaling
+    Key relaxations:
+    - Accept any time resolution (15-90 min)
+    - Minimum 6 snapshots per video (down from 12)
+    - Use any data within first 7 days
+    - No strict alignment required
+    - Handle missing/irregular data gracefully
     """
     
     def __init__(self, 
                  video_data_dir: str,
                  output_dir: str = "data_processing/processed",
-                 resample_interval: str = "30min",
-                 sequence_length: int = 12,
-                 target_horizons: List[int] = [6, 12, 24, 168]):  # hours: 6h, 12h, 24h, 7d
+                 min_snapshots: int = 6,
+                 sequence_length: int = 4,
+                 max_days: int = 7):  # Use snapshots within first 7 days
         """
-        Initialize the data preparator.
+        Initialize the data preparator with relaxed criteria.
         
         Args:
             video_data_dir: Root directory containing video data
             output_dir: Directory to save processed data and artifacts
-            resample_interval: Resampling interval (e.g., '30min', '1H')
+            min_snapshots: Minimum snapshots per video (relaxed to 6)
             sequence_length: Length of input sequences for LSTM
-            target_horizons: List of time horizons (in hours) for prediction targets
+            max_days: Maximum days since posting to include (7 days = 168h)
         """
         self.video_data_dir = Path(video_data_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
-        self.resample_interval = resample_interval
+        self.min_snapshots = min_snapshots
         self.sequence_length = sequence_length
-        self.target_horizons = sorted(target_horizons)
+        self.max_days = max_days
+        self.max_hours = max_days * 24
         
         self.scaler = StandardScaler()
         self.feature_columns = None
         self.raw_data = None
         self.processed_data = None
+        self.account_stats = defaultdict(lambda: {'videos': 0, 'sequences': 0})
         
     def load_video_data(self) -> pd.DataFrame:
         """
@@ -134,7 +136,7 @@ class LSTMDataPreparator:
     
     def clean_and_prepare(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Clean data and compute derived features.
+        Clean data with relaxed criteria and compute derived features.
         
         Args:
             df: Raw DataFrame
@@ -142,16 +144,23 @@ class LSTMDataPreparator:
         Returns:
             Cleaned DataFrame with derived features
         """
-        print("\n🧹 Cleaning and preparing data...")
+        print("\n🧹 Cleaning and preparing data (relaxed criteria)...")
         
         # Remove rows with missing critical fields
-        df = df.dropna(subset=['video_id', 'posted_at', 'scraped_at'])
+        df = df.dropna(subset=['video_id', 'posted_at', 'scraped_at', 'views'])
+        
+        # Remove negative or clearly broken values
+        df = df[df['views'] >= 0]
+        df = df[df['likes'] >= 0]
+        df = df[df['shares'] >= 0]
+        df = df[df['comments'] >= 0]
         
         # Calculate time since post (in hours)
         df['t_since_post'] = (df['scraped_at'] - df['posted_at']).dt.total_seconds() / 3600
         
-        # Remove negative or zero time differences (data issues)
-        df = df[df['t_since_post'] > 0]
+        # Keep only snapshots within first 7 days (relaxed requirement)
+        df = df[df['t_since_post'] <= self.max_hours]
+        df = df[df['t_since_post'] >= 0]
         
         # Sort by video_id and scraped_at
         df = df.sort_values(['video_id', 'scraped_at'])
@@ -159,88 +168,60 @@ class LSTMDataPreparator:
         # Remove duplicates (same video_id and scraped_at)
         df = df.drop_duplicates(subset=['video_id', 'scraped_at'], keep='first')
         
-        # Ensure monotonic t_since_post per video
-        df = df.groupby('video_id').apply(self._ensure_monotonic).reset_index(drop=True)
-        
         print(f"✅ Data cleaned: {len(df)} records remaining")
         print(f"   Unique videos: {df['video_id'].nunique()}")
+        print(f"   Unique accounts: {df['author_username'].nunique()}")
         
         return df
     
-    def _ensure_monotonic(self, group: pd.DataFrame) -> pd.DataFrame:
-        """Ensure t_since_post is monotonically increasing within a video group."""
-        group = group.sort_values('t_since_post')
-        # Remove any rows where t_since_post decreases
-        group = group[group['t_since_post'] >= group['t_since_post'].cummax()]
-        return group
     
-    def resample_videos(self, df: pd.DataFrame) -> pd.DataFrame:
+    def filter_videos(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Filter videos to keep only those tracked from early stages (≤8h) with 24h+ tracking.
-        This enables predicting 24h performance from early signals.
+        Filter videos with relaxed criteria - keep videos with minimum snapshots.
+        Accept any time resolution (15-90 min is fine, no strict requirement).
         
         Args:
             df: Cleaned DataFrame
             
         Returns:
-            Filtered/Resampled DataFrame
+            Filtered DataFrame
         """
-        print(f"\n⏱️  Processing video timelines for early-stage prediction...")
+        print(f"\n⏱️  Filtering videos (relaxed: ≥{self.min_snapshots} snapshots, any within {self.max_days} days)...")
         
         filtered_groups = []
-        early_cutoff = 12  # Must have measurements within first 12h (relaxed from 8h)
-        target_horizon = 20  # Must be tracked to at least 20h
         
         for video_id, group in df.groupby('video_id'):
             group = group.sort_values('scraped_at')
             
-            # Check if tracked from early stage (≤8h after posting)
-            min_hours = group['t_since_post'].min()
-            max_hours = group['t_since_post'].max()
+            # Track account stats
+            account = group['author_username'].iloc[0]
+            self.account_stats[account]['videos'] += 1
             
-            if min_hours > early_cutoff:
-                continue  # Video too old when scraping started
-            
-            # Check if tracked long enough for 24h prediction
-            if max_hours < target_horizon:
-                continue  # Not tracked long enough
-            
-            # Check if video has minimum required snapshots
-            if len(group) < self.sequence_length:
+            # Relaxed: just need minimum snapshots
+            if len(group) < self.min_snapshots:
                 continue
-            
-            # Optional: resample to regular intervals if requested
-            if self.resample_interval and self.resample_interval != 'none':
-                group = group.set_index('scraped_at')
-                group = group.resample(self.resample_interval).last()
-                group = group.ffill()
-                group = group.reset_index()
-                group['video_id'] = video_id
-                
-                # Recalculate t_since_post after resampling
-                group['t_since_post'] = (group['scraped_at'] - group['posted_at']).dt.total_seconds() / 3600
-                
-                if len(group) < self.sequence_length:
-                    continue
             
             filtered_groups.append(group)
         
         if not filtered_groups:
-            raise ValueError(f"No videos meet criteria! Need: tracked from ≤{early_cutoff}h to ≥{target_horizon}h with ≥{self.sequence_length} measurements")
+            raise ValueError(f"No videos have ≥{self.min_snapshots} snapshots!")
         
-        df_processed = pd.concat(filtered_groups, ignore_index=True)
+        df_filtered = pd.concat(filtered_groups, ignore_index=True)
         
-        print(f"✅ Found {len(filtered_groups)} videos suitable for early-stage → 24h prediction")
-        print(f"   Total records: {len(df_processed)}")
+        print(f"✅ Kept {len(filtered_groups)} videos with sufficient data")
+        print(f"   Total records: {len(df_filtered)}")
         
-        # Show timeline statistics
-        timeline_stats = df_processed.groupby('video_id')['t_since_post'].agg(['min', 'max', 'count'])
-        timeline_stats['span_hours'] = timeline_stats['max'] - timeline_stats['min']
-        print(f"   Start of tracking: {timeline_stats['min'].min():.1f}h to {timeline_stats['min'].max():.1f}h after posting")
-        print(f"   End of tracking: {timeline_stats['max'].min():.1f}h to {timeline_stats['max'].max():.1f}h after posting")
-        print(f"   Snapshots per video: {timeline_stats['count'].min()}-{timeline_stats['count'].max()} (median: {timeline_stats['count'].median():.0f})")
+        # Show time resolution stats
+        time_diffs = []
+        for vid, grp in df_filtered.groupby('video_id'):
+            grp = grp.sort_values('scraped_at')
+            diffs = grp['scraped_at'].diff().dt.total_seconds() / 60  # minutes
+            time_diffs.extend(diffs.dropna().tolist())
         
-        return df_processed
+        if time_diffs:
+            print(f"   Time resolution: {np.median(time_diffs):.0f}min median (range: {min(time_diffs):.0f}-{max(time_diffs):.0f}min)")
+        
+        return df_filtered
     
     def create_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -275,21 +256,25 @@ class LSTMDataPreparator:
         """Compute growth velocity features."""
         group = group.sort_values('scraped_at')
         
-        # Views velocity (views gained per hour)
-        group['views_velocity'] = group['views'].diff() / group['t_since_post'].diff()
-        group['likes_velocity'] = group['likes'].diff() / group['t_since_post'].diff()
-        group['shares_velocity'] = group['shares'].diff() / group['t_since_post'].diff()
+        # Time diff in hours
+        time_diffs = group['scraped_at'].diff().dt.total_seconds() / 3600
         
-        # Fill first row with 0
+        # Views velocity (views gained per hour)
+        group['views_velocity'] = group['views'].diff() / time_diffs
+        group['likes_velocity'] = group['likes'].diff() / time_diffs
+        group['shares_velocity'] = group['shares'].diff() / time_diffs
+        
+        # Fill first row and infinities with 0
         group[['views_velocity', 'likes_velocity', 'shares_velocity']] = \
             group[['views_velocity', 'likes_velocity', 'shares_velocity']].fillna(0)
+        group[['views_velocity', 'likes_velocity', 'shares_velocity']] = \
+            group[['views_velocity', 'likes_velocity', 'shares_velocity']].replace([np.inf, -np.inf], 0)
         
         return group
     
     def create_targets(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Create target labels for different time horizons.
-        Automatically detects data span and creates appropriate targets.
+        Create next-step prediction targets (simple and always available).
         
         Args:
             df: DataFrame with features
@@ -297,72 +282,8 @@ class LSTMDataPreparator:
         Returns:
             DataFrame with target columns
         """
-        print(f"\n🎯 Creating targets...")
+        print(f"\n🎯 Creating prediction targets (next-step views)...")
         
-        # Check data span per video
-        time_spans = df.groupby('video_id')['t_since_post'].agg(['min', 'max'])
-        time_spans['span'] = time_spans['max'] - time_spans['min']
-        median_span = time_spans['span'].median()
-        max_span = time_spans['span'].max()
-        
-        print(f"   Time span per video: median={median_span:.1f}h, max={max_span:.1f}h")
-        
-        # Filter horizons that are achievable with current data
-        achievable_horizons = [h for h in self.target_horizons if h <= max_span]
-        
-        if not achievable_horizons:
-            print(f"   ⚠️  WARNING: Data span ({max_span:.1f}h) is too short for any target horizons!")
-            print(f"   Creating short-term prediction targets instead...")
-            # Create next-step prediction (views at next timestep)
-            df['target_views_next'] = np.nan
-            df['target_views_change'] = np.nan
-            
-            for video_id, group in df.groupby('video_id'):
-                group = group.sort_values('scraped_at')
-                indices = group.index.tolist()
-                
-                for i in range(len(indices) - 1):
-                    current_idx = indices[i]
-                    next_idx = indices[i + 1]
-                    
-                    df.at[current_idx, 'target_views_next'] = df.at[next_idx, 'views']
-                    df.at[current_idx, 'target_views_change'] = df.at[next_idx, 'views'] - df.at[current_idx, 'views']
-            
-            # Create viral label based on current views
-            df['viral_label'] = (df['views'] > 1_000_000).astype(int)
-            
-            # Count non-null targets
-            target_count = df['target_views_next'].notna().sum()
-            print(f"   ✅ Created next-step prediction targets: {target_count} samples")
-            
-            return df
-        
-        print(f"   Using horizons: {achievable_horizons} hours (others skipped due to data span)")
-        
-        # Create targets for achievable horizons
-        targets_created = {}
-        for horizon in achievable_horizons:
-            target_col = f'views_at_{horizon}h'
-            df[target_col] = np.nan
-            count = 0
-            
-            for video_id, group in df.groupby('video_id'):
-                group = group.sort_values('scraped_at')
-                
-                for idx, row in group.iterrows():
-                    target_time = row['t_since_post'] + horizon
-                    
-                    # Find the closest measurement at or after target_time
-                    future_rows = group[group['t_since_post'] >= target_time]
-                    
-                    if not future_rows.empty:
-                        target_views = future_rows.iloc[0]['views']
-                        df.at[idx, target_col] = target_views
-                        count += 1
-            
-            targets_created[horizon] = count
-        
-        # Also create next-step prediction for short-term forecasting
         df['target_views_next'] = np.nan
         df['target_views_change'] = np.nan
         
@@ -377,19 +298,11 @@ class LSTMDataPreparator:
                 df.at[current_idx, 'target_views_next'] = df.at[next_idx, 'views']
                 df.at[current_idx, 'target_views_change'] = df.at[next_idx, 'views'] - df.at[current_idx, 'views']
         
-        # Create viral label based on available data
-        if achievable_horizons and max(achievable_horizons) >= 168:
-            df['viral_label'] = (df['views_at_168h'] > 1_000_000).astype(int)
-        elif achievable_horizons and max(achievable_horizons) >= 24:
-            df['viral_label'] = (df['views_at_24h'] > 500_000).astype(int)
-        else:
-            df['viral_label'] = (df['views'] > 1_000_000).astype(int)
+        # Create viral label based on view thresholds
+        df['viral_label'] = (df['views'] > 500_000).astype(int)
         
-        print(f"   ✅ Targets created:")
-        for horizon, count in targets_created.items():
-            print(f"      views_at_{horizon}h: {count} samples")
-        next_count = df['target_views_next'].notna().sum()
-        print(f"      target_views_next: {next_count} samples")
+        target_count = df['target_views_next'].notna().sum()
+        print(f"✅ Created {target_count} target labels")
         
         return df
     
@@ -397,8 +310,8 @@ class LSTMDataPreparator:
                    train_ratio: float = 0.7,
                    val_ratio: float = 0.15) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
-        Split data by video_id to ensure each video's complete trajectory stays in one split.
-        This prevents data leakage and ensures targets can be calculated properly.
+        Split data by video_id WITHIN each KOL to ensure each account has train/val/test data.
+        This is critical for per-KOL model training.
         
         Args:
             df: Full DataFrame
@@ -408,30 +321,58 @@ class LSTMDataPreparator:
         Returns:
             Tuple of (train_df, val_df, test_df)
         """
-        print(f"\n✂️  Splitting data by videos (train: {train_ratio}, val: {val_ratio}, test: {1-train_ratio-val_ratio})...")
+        print(f"\n✂️  Splitting data by videos WITHIN each KOL (train: {train_ratio}, val: {val_ratio}, test: {1-train_ratio-val_ratio})...")
         
-        # Get unique video IDs and shuffle them for random split
-        video_ids = df['video_id'].unique()
+        train_dfs = []
+        val_dfs = []
+        test_dfs = []
+        
         np.random.seed(42)  # For reproducibility
-        np.random.shuffle(video_ids)
         
-        # Split video IDs
-        n_videos = len(video_ids)
-        train_end = int(n_videos * train_ratio)
-        val_end = int(n_videos * (train_ratio + val_ratio))
+        for account, account_group in df.groupby('author_username'):
+            # Get unique video IDs for this account
+            video_ids = account_group['video_id'].unique()
+            n_videos = len(video_ids)
+            
+            if n_videos < 3:
+                # If account has fewer than 3 videos, put all in train
+                train_dfs.append(account_group)
+                print(f"   {account}: {n_videos} videos (all → train, insufficient for split)")
+                continue
+            
+            # Shuffle videos for this account
+            shuffled_videos = video_ids.copy()
+            np.random.shuffle(shuffled_videos)
+            
+            # Split video IDs for this account
+            train_end = max(1, int(n_videos * train_ratio))
+            val_end = max(train_end + 1, int(n_videos * (train_ratio + val_ratio)))
+            
+            train_videos = shuffled_videos[:train_end]
+            val_videos = shuffled_videos[train_end:val_end]
+            test_videos = shuffled_videos[val_end:]
+            
+            # Split data based on video IDs
+            account_train = account_group[account_group['video_id'].isin(train_videos)]
+            account_val = account_group[account_group['video_id'].isin(val_videos)]
+            account_test = account_group[account_group['video_id'].isin(test_videos)]
+            
+            train_dfs.append(account_train)
+            if len(account_val) > 0:
+                val_dfs.append(account_val)
+            if len(account_test) > 0:
+                test_dfs.append(account_test)
+            
+            print(f"   {account}: {n_videos} videos → train:{len(train_videos)}, val:{len(val_videos)}, test:{len(test_videos)}")
         
-        train_videos = video_ids[:train_end]
-        val_videos = video_ids[train_end:val_end]
-        test_videos = video_ids[val_end:]
+        train_df = pd.concat(train_dfs, ignore_index=True)
+        val_df = pd.concat(val_dfs, ignore_index=True) if val_dfs else pd.DataFrame()
+        test_df = pd.concat(test_dfs, ignore_index=True) if test_dfs else pd.DataFrame()
         
-        # Split data based on video IDs
-        train_df = df[df['video_id'].isin(train_videos)].copy()
-        val_df = df[df['video_id'].isin(val_videos)].copy()
-        test_df = df[df['video_id'].isin(test_videos)].copy()
-        
-        print(f"✅ Train: {len(train_df)} records ({len(train_videos)} videos)")
-        print(f"   Val:   {len(val_df)} records ({len(val_videos)} videos)")
-        print(f"   Test:  {len(test_df)} records ({len(test_videos)} videos)")
+        print(f"\n✅ Split complete:")
+        print(f"   Train: {len(train_df)} records from {train_df['video_id'].nunique()} videos, {train_df['author_username'].nunique()} accounts")
+        print(f"   Val:   {len(val_df)} records from {val_df['video_id'].nunique() if len(val_df) > 0 else 0} videos, {val_df['author_username'].nunique() if len(val_df) > 0 else 0} accounts")
+        print(f"   Test:  {len(test_df)} records from {test_df['video_id'].nunique() if len(test_df) > 0 else 0} videos, {test_df['author_username'].nunique() if len(test_df) > 0 else 0} accounts")
         
         return train_df, val_df, test_df
     
@@ -440,7 +381,7 @@ class LSTMDataPreparator:
                        test_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
         Scale numeric features using StandardScaler (fit on train only).
-        Keep t_since_post, scraped_at, posted_at, video_id unscaled for filtering.
+        Keep t_since_post, scraped_at, posted_at, video_id, author_username unscaled.
         
         Args:
             train_df, val_df, test_df: Split DataFrames
@@ -453,13 +394,13 @@ class LSTMDataPreparator:
         # Define features to scale (exclude t_since_post from scaling - needed for time filtering)
         self.feature_columns = [
             'views', 'likes', 'shares', 'comments', 'collects',
-            't_since_post',  # Include in feature list for LSTM
+            't_since_post',  # Include in feature list for LSTM but don't scale
             'like_rate', 'share_rate', 'comment_rate', 'collect_rate',
             'views_velocity', 'likes_velocity', 'shares_velocity',
             'hour_of_day', 'day_of_week'
         ]
         
-        # Features to actually scale (all except those needed for filtering)
+        # Features to actually scale (all except those needed for filtering/tracking)
         scale_columns = [
             'views', 'likes', 'shares', 'comments', 'collects',
             'like_rate', 'share_rate', 'comment_rate', 'collect_rate',
@@ -467,101 +408,103 @@ class LSTMDataPreparator:
             'hour_of_day', 'day_of_week'
         ]
         
+        # Handle empty val/test sets
+        if len(train_df) == 0:
+            raise ValueError("Train set is empty!")
+        
         # Fit scaler on training data only
         self.scaler.fit(train_df[scale_columns])
         
         # Transform all splits (but preserve unscaled t_since_post for filtering)
         train_df_scaled = train_df.copy()
-        val_df_scaled = val_df.copy()
-        test_df_scaled = test_df.copy()
-        
         train_df_scaled[scale_columns] = self.scaler.transform(train_df[scale_columns])
-        val_df_scaled[scale_columns] = self.scaler.transform(val_df[scale_columns])
-        test_df_scaled[scale_columns] = self.scaler.transform(test_df[scale_columns])
         
-        # Note: t_since_post remains unscaled for time-based filtering in create_sequences
+        val_df_scaled = val_df.copy() if len(val_df) > 0 else pd.DataFrame()
+        if len(val_df) > 0:
+            val_df_scaled[scale_columns] = self.scaler.transform(val_df[scale_columns])
         
-        print(f"✅ Features scaled: {len(scale_columns)} features (t_since_post kept unscaled for filtering)")
+        test_df_scaled = test_df.copy() if len(test_df) > 0 else pd.DataFrame()
+        if len(test_df) > 0:
+            test_df_scaled[scale_columns] = self.scaler.transform(test_df[scale_columns])
+        
+        print(f"✅ Features scaled: {len(scale_columns)} features (t_since_post kept unscaled)")
         
         return train_df_scaled, val_df_scaled, test_df_scaled
     
     def create_sequences(self, df: pd.DataFrame, 
-                         target_col: str = 'views_at_24h',
-                         early_stage_cutoff: float = 12.0) -> Tuple[np.ndarray, np.ndarray, List[str]]:
+                         target_col: str = 'target_views_next') -> Tuple[np.ndarray, np.ndarray, List[str], List[str]]:
         """
-        Create sequences from EARLY measurements (≤12h) to predict 24h performance.
-        Uses only early-stage data as input for realistic prediction scenario.
+        Create sliding window sequences from available history (relaxed approach).
+        Build sequences from whatever history exists - even short ones.
         
         Args:
             df: Scaled DataFrame
             target_col: Target column name
-            early_stage_cutoff: Maximum hours since post for input sequences (default: 12h)
             
         Returns:
-            Tuple of (X, y, video_ids) where:
+            Tuple of (X, y, video_ids, account_names) where:
                 X: shape (N, sequence_length, num_features)
                 y: shape (N,)
                 video_ids: list of video_ids for each sequence
+                account_names: list of account names for each sequence
         """
-        print(f"\n🪟 Creating early-stage sequences (≤{early_stage_cutoff}h) → predicting 24h views...")
+        print(f"\n🪟 Creating sequences (length={self.sequence_length}, target={target_col})...")
         
         X_list = []
         y_list = []
         video_id_list = []
+        account_list = []
         
-        skipped_reasons = {'no_early': 0, 'no_future': 0, 'success': 0}
+        videos_with_sequences = set()
         
         for video_id, group in df.groupby('video_id'):
             group = group.sort_values('scraped_at')
+            account = group['author_username'].iloc[0]
             
-            # Split into early measurements (input) and target
-            # Use UNSCALED t_since_post for time filtering
-            early_group = group[group['t_since_post'] <= early_stage_cutoff].copy()
+            # Drop rows with missing target
+            group_valid = group.dropna(subset=[target_col])
             
-            # Need enough early measurements for a sequence
-            if len(early_group) < self.sequence_length:
-                skipped_reasons['no_early'] += 1
+            if len(group_valid) < self.sequence_length:
                 continue
             
-            # Get the target value (views at ~24h - find closest measurement)
-            future_rows = group[group['t_since_post'] >= 20].copy()  # Relaxed from 24h
-            if future_rows.empty:
-                skipped_reasons['no_future'] += 1
-                continue
+            # Extract feature matrix
+            features = group_valid[self.feature_columns].values
+            targets = group_valid[target_col].values
             
-            # Find measurement closest to 24h
-            future_rows['distance_to_24h'] = abs(future_rows['t_since_post'] - 24)
-            target_value = future_rows.loc[future_rows['distance_to_24h'].idxmin(), 'views']
-            
-            # Extract feature matrix from early measurements only
-            features = early_group[self.feature_columns].values
-            
-            # Create sliding windows from early stage
-            for i in range(len(early_group) - self.sequence_length + 1):
+            # Create sliding windows - as many as available
+            num_sequences = 0
+            for i in range(len(group_valid) - self.sequence_length + 1):
                 X_window = features[i:i + self.sequence_length]
+                y_target = targets[i + self.sequence_length - 1]
                 
                 X_list.append(X_window)
-                y_list.append(target_value)
+                y_list.append(y_target)
                 video_id_list.append(video_id)
-                skipped_reasons['success'] += 1
+                account_list.append(account)
+                num_sequences += 1
+            
+            if num_sequences > 0:
+                videos_with_sequences.add(video_id)
+                self.account_stats[account]['sequences'] += num_sequences
         
         X = np.array(X_list)
         y = np.array(y_list)
         
-        print(f"✅ Created {len(X)} sequences from {df['video_id'].nunique()} videos")
+        print(f"✅ Created {len(X)} sequences from {len(videos_with_sequences)} videos")
         if len(X) > 0:
             print(f"   X shape: {X.shape}")
             print(f"   y shape: {y.shape}")
-        print(f"   Debug: no_early={skipped_reasons['no_early']}, no_future={skipped_reasons['no_future']}, success={skipped_reasons['success']}")
         
-        return X, y, video_id_list
+        return X, y, video_id_list, account_list
     
-    def save_artifacts(self, train_df: pd.DataFrame, val_df: pd.DataFrame, test_df: pd.DataFrame):
+    def save_artifacts(self, train_df: pd.DataFrame, val_df: pd.DataFrame, test_df: pd.DataFrame,
+                       train_accounts: List[str], val_accounts: List[str], test_accounts: List[str]):
         """
-        Save all artifacts for later use.
+        Save all artifacts for later use, including account statistics.
         
         Args:
             train_df, val_df, test_df: Processed DataFrames
+            train_accounts, val_accounts, test_accounts: Account lists per split
         """
         print("\n💾 Saving artifacts...")
         
@@ -574,15 +517,35 @@ class LSTMDataPreparator:
         with open(self.output_dir / 'scaler.pkl', 'wb') as f:
             pickle.dump(self.scaler, f)
         
-        # Save metadata
+        # Count sequences per account per split
+        from collections import Counter
+        train_account_seqs = Counter(train_accounts)
+        val_account_seqs = Counter(val_accounts)
+        test_account_seqs = Counter(test_accounts)
+        
+        # Get all accounts (including those with 0 sequences)
+        all_accounts = set(self.account_stats.keys())
+        
+        account_summary = {}
+        for account in sorted(all_accounts):
+            account_summary[account] = {
+                'total_videos': self.account_stats[account]['videos'],
+                'total_sequences': self.account_stats[account]['sequences'],
+                'train_sequences': train_account_seqs.get(account, 0),
+                'val_sequences': val_account_seqs.get(account, 0),
+                'test_sequences': test_account_seqs.get(account, 0)
+            }
+        
+        # Save metadata with account stats
         metadata = {
             'feature_columns': self.feature_columns,
             'sequence_length': self.sequence_length,
-            'target_horizons': self.target_horizons,
-            'resample_interval': self.resample_interval,
+            'min_snapshots': self.min_snapshots,
+            'max_days': self.max_days,
             'train_samples': len(train_df),
             'val_samples': len(val_df),
             'test_samples': len(test_df),
+            'account_statistics': account_summary,
             'created_at': datetime.now().isoformat()
         }
         
@@ -590,10 +553,20 @@ class LSTMDataPreparator:
             json.dump(metadata, f, indent=2)
         
         print(f"✅ Artifacts saved to {self.output_dir}")
+        
+        # Print account summary
+        print(f"\n📊 Sequence counts per account:")
+        print(f"{'Account':<30} {'Videos':<10} {'Train':<10} {'Val':<10} {'Test':<10} {'Total':<10}")
+        print("-" * 80)
+        for account in sorted(all_accounts):
+            stats = account_summary[account]
+            print(f"{account:<30} {stats['total_videos']:<10} "
+                  f"{stats['train_sequences']:<10} {stats['val_sequences']:<10} "
+                  f"{stats['test_sequences']:<10} {stats['total_sequences']:<10}")
     
-    def run_pipeline(self, target_col: str = 'views_at_24h'):
+    def run_pipeline(self, target_col: str = 'target_views_next'):
         """
-        Run the complete data preparation pipeline.
+        Run the complete data preparation pipeline with relaxed criteria.
         
         Args:
             target_col: Target column for sequence creation
@@ -602,7 +575,7 @@ class LSTMDataPreparator:
             Dictionary with train/val/test sequences
         """
         print("=" * 60)
-        print("🚀 Starting LSTM Data Preparation Pipeline")
+        print("🚀 Starting LSTM Data Preparation Pipeline (RELAXED)")
         print("=" * 60)
         
         # 1. Load data
@@ -611,8 +584,8 @@ class LSTMDataPreparator:
         # 2. Clean and prepare
         df = self.clean_and_prepare(self.raw_data)
         
-        # 3. Resample
-        df = self.resample_videos(df)
+        # 3. Filter videos (relaxed criteria)
+        df = self.filter_videos(df)
         
         # 4. Create features
         df = self.create_features(df)
@@ -620,7 +593,7 @@ class LSTMDataPreparator:
         # 5. Create targets
         df = self.create_targets(df)
         
-        # 6. Split data
+        # 6. Split data by video
         train_df, val_df, test_df = self.split_data(df)
         
         # 7. Scale features
@@ -628,13 +601,14 @@ class LSTMDataPreparator:
             train_df, val_df, test_df
         )
         
-        # 8. Save artifacts
-        self.save_artifacts(train_df_scaled, val_df_scaled, test_df_scaled)
+        # 8. Create sequences
+        X_train, y_train, train_video_ids, train_accounts = self.create_sequences(train_df_scaled, target_col)
+        X_val, y_val, val_video_ids, val_accounts = self.create_sequences(val_df_scaled, target_col)
+        X_test, y_test, test_video_ids, test_accounts = self.create_sequences(test_df_scaled, target_col)
         
-        # 9. Create sequences
-        X_train, y_train, train_video_ids = self.create_sequences(train_df_scaled, target_col)
-        X_val, y_val, val_video_ids = self.create_sequences(val_df_scaled, target_col)
-        X_test, y_test, test_video_ids = self.create_sequences(test_df_scaled, target_col)
+        # 9. Save artifacts (including account stats)
+        self.save_artifacts(train_df_scaled, val_df_scaled, test_df_scaled,
+                           train_accounts, val_accounts, test_accounts)
         
         # Save sequences
         np.save(self.output_dir / 'X_train.npy', X_train)
@@ -644,12 +618,12 @@ class LSTMDataPreparator:
         np.save(self.output_dir / 'X_test.npy', X_test)
         np.save(self.output_dir / 'y_test.npy', y_test)
         
-        # Save video IDs
-        with open(self.output_dir / 'video_ids.json', 'w') as f:
+        # Save video/account IDs
+        with open(self.output_dir / 'sequence_info.json', 'w') as f:
             json.dump({
-                'train': train_video_ids,
-                'val': val_video_ids,
-                'test': test_video_ids
+                'train': {'video_ids': train_video_ids, 'accounts': train_accounts},
+                'val': {'video_ids': val_video_ids, 'accounts': val_accounts},
+                'test': {'video_ids': test_video_ids, 'accounts': test_accounts}
             }, f, indent=2)
         
         print("\n" + "=" * 60)
@@ -660,7 +634,8 @@ class LSTMDataPreparator:
         print(f"   Train sequences: {len(X_train)}")
         print(f"   Val sequences:   {len(X_val)}")
         print(f"   Test sequences:  {len(X_test)}")
-        print(f"   Sequence shape:  {X_train.shape[1:]} (timesteps, features)")
+        if len(X_train) > 0:
+            print(f"   Sequence shape:  {X_train.shape[1:]} (timesteps, features)")
         
         return {
             'train': (X_train, y_train),
@@ -672,21 +647,21 @@ class LSTMDataPreparator:
 def main():
     """Main entry point."""
     
-    # Configuration for Early-Stage → 24h Prediction
+    # Configuration for RELAXED data processing
     VIDEO_DATA_DIR = "video_data/list32/90"  # Videos from 32 KOLs, posted in last 90 days
     OUTPUT_DIR = "data_processing/processed"
-    RESAMPLE_INTERVAL = "none"  # Use raw measurements (every 30-45min) for maximum data
-    SEQUENCE_LENGTH = 4  # 4 time steps from early stage (~2-3h of data) - relaxed to get more sequences
-    TARGET_HORIZONS = [24]  # Predict views at 24 hours after posting
-    TARGET_COL = "views_at_24h"  # Main target: views at 24h based on early signals (0-12h)
+    MIN_SNAPSHOTS = 6  # Relaxed: minimum 6 snapshots per video (down from 12)
+    SEQUENCE_LENGTH = 4  # Flexible: 4 timesteps for sequence
+    MAX_DAYS = 7  # Use any snapshots within first 7 days
+    TARGET_COL = "target_views_next"  # Predict next-step views
     
     # Initialize preparator
     preparator = LSTMDataPreparator(
         video_data_dir=VIDEO_DATA_DIR,
         output_dir=OUTPUT_DIR,
-        resample_interval=RESAMPLE_INTERVAL,
+        min_snapshots=MIN_SNAPSHOTS,
         sequence_length=SEQUENCE_LENGTH,
-        target_horizons=TARGET_HORIZONS
+        max_days=MAX_DAYS
     )
     
     # Run pipeline

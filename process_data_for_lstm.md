@@ -1,83 +1,56 @@
-Got it — here’s a **concise, hand-off checklist** for preparing training data for the Keras LSTM.
+Here’s a **looser, more forgiving version** that still keeps the dataset usable.
 
 ---
 
-## 📌 Data Requirements — LSTM (View/Share Momentum)
+## Dataset requirements (relaxed)
 
-### 1️⃣ Base table
+**1️⃣ Time resolution**
 
-Each row = one crawl snapshot.
+* Try to keep **~30-minute steps**,
+  but **anywhere between 15–90 minutes is fine**.
 
-Required columns:
+**2️⃣ Time alignment**
 
-* `video_id`
-* `posted_at`
-* `scraped_at`
-* `views`
-* `likes`
-* `shares`
-* `comments`
+* Convert timestamps to **“hours since posted”**.
+* No need to perfectly align videos to each other.
 
-Derived:
+**3️⃣ Minimum data per video**
 
-* `t_since_post = scraped_at - posted_at` (in hours)
+* Keep videos that have **at least a few hours** of data (≥ 6 points).
+  Prefer more, but **don’t discard short ones**.
 
----
+**4️⃣ Missing / irregular data**
 
-### 2️⃣ Time ordering & integrity
+* Missing points are OK.
+* Interpolation is optional — only fill **big obvious gaps** if it helps.
+* Do **not drop** videos just because they’re messy.
 
-* Sort by `(video_id, scraped_at)`
-* Remove duplicates
-* Enforce monotonic `t_since_post`
+**5️⃣ Features per snapshot**
 
----
+* Must have: **views**.
+* Nice-to-have (if available): likes, comments, shares, follower count, posting time.
 
-### 3️⃣ Resampling
+**6️⃣ Coverage window**
 
-* Fixed interval (e.g., **30 minutes**)
-* Forward-fill metrics for gaps
-* Drop sequences shorter than the window length
+* Use any snapshots that occur **within the first 7 days**.
+* They **do NOT** need to start at posting time.
 
----
+**7️⃣ Sequence building**
 
-### 4️⃣ Scaling
+* Build sliding windows from whatever history exists.
+* Input length: **as much as is available** (even short sequences).
+* Predict the next few steps (configurable).
 
-* Standardize numeric features (fit on **train only**)
-* Persist scalers + column order
+**8️⃣ Targets**
 
----
+* Ensure labels use **future values only** (no leakage).
+* Cumulative or deltas — either is fine, just be consistent.
 
-### 5️⃣ Windowing (supervised sequences)
+**9️⃣ Data cleaning**
 
-* Sequence length: **L = 12** (example)
-* Build sliding windows:
+* Remove duplicate timestamps within a video.
+* Remove clearly broken values (e.g., negative views).
 
-Shape:
+**🔟 Splits**
 
-* **X:** `(N, L, F)`
-* **y:** aligned to target horizon (e.g., views at 24h / 7d)
-
----
-
-### 6️⃣ Targets
-
-Produce labels:
-
-* `views_at_6h / 12h / 24h / 7d`
-* optional: `viral_label` from Viral_Ratio rule
-
----
-
-### 7️⃣ Splits
-
-* Split **by time** (old → new)
-* No leakage across videos
-
----
-
-### 8️⃣ Save artifacts
-
-* scalers
-* feature list
-* mapping from `video_id` → sequences
-* train/val/test indices
+* Split **by video** (not timestamp).
