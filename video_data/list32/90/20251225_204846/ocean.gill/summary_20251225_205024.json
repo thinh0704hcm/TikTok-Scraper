@@ -1,0 +1,34 @@
+{
+  "username": "ocean.gill",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-26",
+    "end": "2025-12-25"
+  },
+  "scraped_at": "2025-12-25T20:50:24.531779",
+  "total_videos": 45,
+  "date_range_actual": {
+    "earliest": "2025-09-28T10:12:27",
+    "latest": "2025-12-25T19:10:46"
+  },
+  "total_stats": {
+    "total_views": 13739053,
+    "total_likes": 1541361,
+    "total_comments": 10228,
+    "total_shares": 41701
+  },
+  "average_stats": {
+    "avg_views": 305312.2888888889,
+    "avg_likes": 34252.46666666667,
+    "avg_comments": 227.2888888888889
+  },
+  "files": {
+    "videos": "videos_raw_20251225_205024.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 246,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

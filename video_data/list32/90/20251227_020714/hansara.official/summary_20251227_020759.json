@@ -1,0 +1,34 @@
+{
+  "username": "hansara.official",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T02:07:59.849099",
+  "total_videos": 19,
+  "date_range_actual": {
+    "earliest": "2025-10-06T23:37:02",
+    "latest": "2025-12-26T20:15:46"
+  },
+  "total_stats": {
+    "total_views": 9501000,
+    "total_likes": 1006541,
+    "total_comments": 10177,
+    "total_shares": 28468
+  },
+  "average_stats": {
+    "avg_views": 500052.63157894736,
+    "avg_likes": 52975.84210526316,
+    "avg_comments": 535.6315789473684
+  },
+  "files": {
+    "videos": "videos_raw_20251227_020759.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 90,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

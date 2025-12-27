@@ -1,0 +1,34 @@
+{
+  "username": "khanhvyccf",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T23:18:47.185414",
+  "total_videos": 37,
+  "date_range_actual": {
+    "earliest": "2025-09-30T12:12:03",
+    "latest": "2025-12-24T12:39:55"
+  },
+  "total_stats": {
+    "total_views": 20663600,
+    "total_likes": 1312073,
+    "total_comments": 6693,
+    "total_shares": 75411
+  },
+  "average_stats": {
+    "avg_views": 558475.6756756756,
+    "avg_likes": 35461.43243243243,
+    "avg_comments": 180.8918918918919
+  },
+  "files": {
+    "videos": "videos_raw_20251226_231847.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 764,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

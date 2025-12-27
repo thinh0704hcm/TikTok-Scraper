@@ -1,0 +1,34 @@
+{
+  "username": "ngthanhnhan2807",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T12:28:08.889540",
+  "total_videos": 10,
+  "date_range_actual": {
+    "earliest": "2025-10-04T20:23:38",
+    "latest": "2025-12-23T20:27:58"
+  },
+  "total_stats": {
+    "total_views": 1650700,
+    "total_likes": 61564,
+    "total_comments": 893,
+    "total_shares": 1513
+  },
+  "average_stats": {
+    "avg_views": 165070.0,
+    "avg_likes": 6156.4,
+    "avg_comments": 89.3
+  },
+  "files": {
+    "videos": "videos_raw_20251227_122808.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 577,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

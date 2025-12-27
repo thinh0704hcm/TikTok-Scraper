@@ -1,0 +1,34 @@
+{
+  "username": "linhbarbie",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T18:53:13.206442",
+  "total_videos": 19,
+  "date_range_actual": {
+    "earliest": "2025-10-05T18:24:33",
+    "latest": "2025-12-24T14:38:57"
+  },
+  "total_stats": {
+    "total_views": 21135200,
+    "total_likes": 757052,
+    "total_comments": 17248,
+    "total_shares": 18312
+  },
+  "average_stats": {
+    "avg_views": 1112378.9473684211,
+    "avg_likes": 39844.84210526316,
+    "avg_comments": 907.7894736842105
+  },
+  "files": {
+    "videos": "videos_raw_20251226_185313.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1394,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

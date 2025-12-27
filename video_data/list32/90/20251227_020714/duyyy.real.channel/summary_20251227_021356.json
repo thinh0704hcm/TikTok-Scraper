@@ -1,0 +1,34 @@
+{
+  "username": "duyyy.real.channel",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T02:13:56.496584",
+  "total_videos": 35,
+  "date_range_actual": {
+    "earliest": "2025-12-03T16:56:50",
+    "latest": "2025-12-22T14:52:06"
+  },
+  "total_stats": {
+    "total_views": 44613500,
+    "total_likes": 1897350,
+    "total_comments": 24225,
+    "total_shares": 219522
+  },
+  "average_stats": {
+    "avg_views": 1274671.4285714286,
+    "avg_likes": 54210.0,
+    "avg_comments": 692.1428571428571
+  },
+  "files": {
+    "videos": "videos_raw_20251227_021356.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 822,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

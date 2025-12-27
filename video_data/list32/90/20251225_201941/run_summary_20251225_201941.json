@@ -1,0 +1,392 @@
+{
+  "run_name": "timeseries_20251225",
+  "lookback_days": 90,
+  "output_dir": "video_data\\list32\\90\\20251225_201941",
+  "started_at": "2025-12-25T20:19:41.034796",
+  "profiles_processed": 32,
+  "profiles_success": 31,
+  "profiles_failed": 1,
+  "total_videos": 1240,
+  "total_time_points": 0,
+  "profile_summaries": {
+    "ising52hz": {
+      "username": "ising52hz",
+      "videos": 34,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202017.json"
+      }
+    },
+    "hansara.official": {
+      "username": "hansara.official",
+      "videos": 18,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202029.json"
+      }
+    },
+    "jukysan": {
+      "username": "jukysan",
+      "videos": 82,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202048.json"
+      }
+    },
+    "ocean.gill": {
+      "username": "ocean.gill",
+      "videos": 45,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202106.json"
+      }
+    },
+    "yunbray": {
+      "username": "yunbray",
+      "videos": 90,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202126.json"
+      }
+    },
+    "congb_": {
+      "username": "congb_",
+      "videos": 101,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202149.json"
+      }
+    },
+    "qh.masterd": {
+      "username": "qh.masterd",
+      "videos": 8,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202202.json"
+      }
+    },
+    "bnh.trng.lui": {
+      "username": "bnh.trng.lui",
+      "videos": 21,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202216.json"
+      }
+    },
+    "hieuthuhai2222": {
+      "username": "hieuthuhai2222",
+      "videos": 5,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202228.json"
+      }
+    },
+    "atusmain": {
+      "username": "atusmain",
+      "videos": 6,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202240.json"
+      }
+    },
+    "dieplamanh": {
+      "username": "dieplamanh",
+      "videos": 33,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202251.json"
+      }
+    },
+    "haidang_doo": {
+      "username": "haidang_doo",
+      "videos": 32,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202302.json"
+      }
+    },
+    "dieunhiofficial": {
+      "username": "dieunhiofficial",
+      "videos": 39,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202319.json"
+      }
+    },
+    "bac_hello2": {
+      "username": "bac_hello2",
+      "videos": 23,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202331.json"
+      }
+    },
+    "fhn2812": {
+      "username": "fhn2812",
+      "videos": 10,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202350.json"
+      }
+    },
+    "lyduc17": {
+      "username": "lyduc17",
+      "videos": 11,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202402.json"
+      }
+    },
+    "ngthanhnhan2807": {
+      "username": "ngthanhnhan2807",
+      "videos": 11,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202413.json"
+      }
+    },
+    "donhathoang13": {
+      "username": "donhathoang13",
+      "videos": 50,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202431.json"
+      }
+    },
+    "huynguyen.3101": {
+      "username": "huynguyen.3101",
+      "videos": 28,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202443.json"
+      }
+    },
+    "phuongnam.dv": {
+      "username": "phuongnam.dv",
+      "videos": 48,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202458.json"
+      }
+    },
+    "lehoanglong4493": {
+      "username": "lehoanglong4493",
+      "videos": 35,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202512.json"
+      }
+    },
+    "khanhvyccf": {
+      "username": "khanhvyccf",
+      "videos": 35,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202524.json"
+      }
+    },
+    "jenny.huynh._": {
+      "username": "jenny.huynh._",
+      "videos": 34,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202536.json"
+      }
+    },
+    "khoailangthang": {
+      "username": "khoailangthang",
+      "videos": 8,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202549.json"
+      }
+    },
+    "duyyy.real.channel": {
+      "username": "duyyy.real.channel",
+      "videos": 35,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202604.json"
+      }
+    },
+    "haiichieu": {
+      "username": "haiichieu",
+      "videos": 35,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202616.json"
+      }
+    },
+    "quankhonggo": {
+      "username": "quankhonggo",
+      "videos": 48,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202632.json"
+      }
+    },
+    "realpewpew": {
+      "username": "realpewpew",
+      "videos": 220,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202707.json"
+      }
+    },
+    "linhbarbie": {
+      "username": "linhbarbie",
+      "videos": 19,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202722.json"
+      }
+    },
+    "halinhofficial": {
+      "username": "halinhofficial",
+      "videos": 41,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202736.json"
+      }
+    },
+    "ribisachi36": {
+      "username": "ribisachi36",
+      "videos": 35,
+      "time_points": 0,
+      "date_range": {
+        "start": "2025-09-26",
+        "end": "2025-12-25"
+      },
+      "files": {
+        "videos": "videos_raw_20251225_202748.json"
+      }
+    }
+  },
+  "completed_at": "2025-12-25T20:27:48.883462",
+  "scraper_stats": {
+    "videos_scraped": 1240,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

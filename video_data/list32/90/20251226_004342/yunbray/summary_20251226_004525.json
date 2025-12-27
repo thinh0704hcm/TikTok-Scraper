@@ -1,0 +1,34 @@
+{
+  "username": "yunbray",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T00:45:25.330636",
+  "total_videos": 90,
+  "date_range_actual": {
+    "earliest": "2025-09-27T22:34:41",
+    "latest": "2025-12-25T19:06:46"
+  },
+  "total_stats": {
+    "total_views": 83639900,
+    "total_likes": 7622096,
+    "total_comments": 31735,
+    "total_shares": 412875
+  },
+  "average_stats": {
+    "avg_views": 929332.2222222222,
+    "avg_likes": 84689.95555555556,
+    "avg_comments": 352.6111111111111
+  },
+  "files": {
+    "videos": "videos_raw_20251226_004525.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 298,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

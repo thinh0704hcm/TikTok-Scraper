@@ -1,0 +1,34 @@
+{
+  "username": "haidang_doo",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T23:16:15.519043",
+  "total_videos": 31,
+  "date_range_actual": {
+    "earliest": "2025-09-28T15:47:02",
+    "latest": "2025-12-18T18:06:52"
+  },
+  "total_stats": {
+    "total_views": 28125800,
+    "total_likes": 2430364,
+    "total_comments": 18979,
+    "total_shares": 122688
+  },
+  "average_stats": {
+    "avg_views": 907283.8709677419,
+    "avg_likes": 78398.83870967742,
+    "avg_comments": 612.2258064516129
+  },
+  "files": {
+    "videos": "videos_raw_20251226_231615.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 432,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

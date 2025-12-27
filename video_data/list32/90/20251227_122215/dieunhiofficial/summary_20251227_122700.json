@@ -1,0 +1,34 @@
+{
+  "username": "dieunhiofficial",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T12:27:00.733690",
+  "total_videos": 40,
+  "date_range_actual": {
+    "earliest": "2025-09-28T18:42:35",
+    "latest": "2025-12-26T20:00:58"
+  },
+  "total_stats": {
+    "total_views": 51392900,
+    "total_likes": 2603199,
+    "total_comments": 15815,
+    "total_shares": 173540
+  },
+  "average_stats": {
+    "avg_views": 1284822.5,
+    "avg_likes": 65079.975,
+    "avg_comments": 395.375
+  },
+  "files": {
+    "videos": "videos_raw_20251227_122700.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 522,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

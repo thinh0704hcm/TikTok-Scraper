@@ -1,0 +1,34 @@
+{
+  "username": "khoailangthang",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T06:31:00.163733",
+  "total_videos": 9,
+  "date_range_actual": {
+    "earliest": "2025-11-18T18:40:40",
+    "latest": "2025-12-25T21:02:23"
+  },
+  "total_stats": {
+    "total_views": 16340000,
+    "total_likes": 1458600,
+    "total_comments": 15336,
+    "total_shares": 75328
+  },
+  "average_stats": {
+    "avg_views": 1815555.5555555555,
+    "avg_likes": 162066.66666666666,
+    "avg_comments": 1704.0
+  },
+  "files": {
+    "videos": "videos_raw_20251227_063100.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 968,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

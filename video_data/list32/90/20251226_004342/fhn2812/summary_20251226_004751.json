@@ -1,0 +1,34 @@
+{
+  "username": "fhn2812",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T00:47:51.528344",
+  "total_videos": 10,
+  "date_range_actual": {
+    "earliest": "2025-09-27T18:54:34",
+    "latest": "2025-12-21T18:44:01"
+  },
+  "total_stats": {
+    "total_views": 5869600,
+    "total_likes": 211365,
+    "total_comments": 3234,
+    "total_shares": 3215
+  },
+  "average_stats": {
+    "avg_views": 586960.0,
+    "avg_likes": 21136.5,
+    "avg_comments": 323.4
+  },
+  "files": {
+    "videos": "videos_raw_20251226_004751.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 594,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

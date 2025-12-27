@@ -1,0 +1,34 @@
+{
+  "username": "lyduc17",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T04:38:55.906292",
+  "total_videos": 11,
+  "date_range_actual": {
+    "earliest": "2025-09-30T12:45:15",
+    "latest": "2025-12-22T19:17:42"
+  },
+  "total_stats": {
+    "total_views": 14865200,
+    "total_likes": 814865,
+    "total_comments": 3859,
+    "total_shares": 56823
+  },
+  "average_stats": {
+    "avg_views": 1351381.8181818181,
+    "avg_likes": 74078.63636363637,
+    "avg_comments": 350.8181818181818
+  },
+  "files": {
+    "videos": "videos_raw_20251227_043855.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 644,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

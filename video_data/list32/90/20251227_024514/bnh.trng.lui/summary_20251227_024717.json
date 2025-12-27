@@ -1,0 +1,34 @@
+{
+  "username": "bnh.trng.lui",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T02:47:17.502282",
+  "total_videos": 22,
+  "date_range_actual": {
+    "earliest": "2025-10-09T13:48:50",
+    "latest": "2025-12-25T23:55:29"
+  },
+  "total_stats": {
+    "total_views": 5265100,
+    "total_likes": 655184,
+    "total_comments": 4049,
+    "total_shares": 33596
+  },
+  "average_stats": {
+    "avg_views": 239322.72727272726,
+    "avg_likes": 29781.090909090908,
+    "avg_comments": 184.04545454545453
+  },
+  "files": {
+    "videos": "videos_raw_20251227_024717.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 474,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

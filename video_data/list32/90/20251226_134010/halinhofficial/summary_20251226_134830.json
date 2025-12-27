@@ -1,0 +1,34 @@
+{
+  "username": "halinhofficial",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T13:48:30.161949",
+  "total_videos": 41,
+  "date_range_actual": {
+    "earliest": "2025-10-03T19:31:21",
+    "latest": "2025-12-12T19:24:18"
+  },
+  "total_stats": {
+    "total_views": 152563700,
+    "total_likes": 2984367,
+    "total_comments": 42468,
+    "total_shares": 521476
+  },
+  "average_stats": {
+    "avg_views": 3721065.8536585364,
+    "avg_likes": 72789.43902439025,
+    "avg_comments": 1035.8048780487804
+  },
+  "files": {
+    "videos": "videos_raw_20251226_134830.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1137,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

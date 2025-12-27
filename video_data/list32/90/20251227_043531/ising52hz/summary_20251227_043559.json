@@ -1,0 +1,34 @@
+{
+  "username": "ising52hz",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-12-27"
+  },
+  "scraped_at": "2025-12-27T04:35:59.357651",
+  "total_videos": 32,
+  "date_range_actual": {
+    "earliest": "2025-09-28T19:09:08",
+    "latest": "2025-12-26T18:47:08"
+  },
+  "total_stats": {
+    "total_views": 19636500,
+    "total_likes": 2005500,
+    "total_comments": 12819,
+    "total_shares": 73048
+  },
+  "average_stats": {
+    "avg_views": 613640.625,
+    "avg_likes": 62671.875,
+    "avg_comments": 400.59375
+  },
+  "files": {
+    "videos": "videos_raw_20251227_043559.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 106,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

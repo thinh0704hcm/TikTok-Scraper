@@ -1,0 +1,34 @@
+{
+  "username": "realpewpew",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-27",
+    "end": "2025-12-26"
+  },
+  "scraped_at": "2025-12-26T18:52:32.948672",
+  "total_videos": 219,
+  "date_range_actual": {
+    "earliest": "2025-09-27T20:00:00",
+    "latest": "2025-12-26T17:06:54"
+  },
+  "total_stats": {
+    "total_views": 64669654,
+    "total_likes": 423505,
+    "total_comments": 6368,
+    "total_shares": 15616
+  },
+  "average_stats": {
+    "avg_views": 295295.2237442922,
+    "avg_likes": 1933.8127853881278,
+    "avg_comments": 29.077625570776256
+  },
+  "files": {
+    "videos": "videos_raw_20251226_185232.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 1375,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}

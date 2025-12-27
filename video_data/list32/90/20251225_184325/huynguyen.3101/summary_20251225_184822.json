@@ -1,0 +1,34 @@
+{
+  "username": "huynguyen.3101",
+  "lookback_days": 90,
+  "date_range": {
+    "start": "2025-09-26",
+    "end": "2025-12-25"
+  },
+  "scraped_at": "2025-12-25T18:48:22.955321",
+  "total_videos": 28,
+  "date_range_actual": {
+    "earliest": "2025-10-01T22:51:39",
+    "latest": "2025-12-20T18:54:07"
+  },
+  "total_stats": {
+    "total_views": 17248900,
+    "total_likes": 1041148,
+    "total_comments": 16565,
+    "total_shares": 54807
+  },
+  "average_stats": {
+    "avg_views": 616032.1428571428,
+    "avg_likes": 37183.857142857145,
+    "avg_comments": 591.6071428571429
+  },
+  "files": {
+    "videos": "videos_raw_20251225_184822.json"
+  },
+  "scraper_stats": {
+    "videos_scraped": 675,
+    "profiles_scraped": 0,
+    "errors": 0,
+    "api_calls": 0
+  }
+}
