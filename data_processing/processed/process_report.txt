@@ -1,68 +1,85 @@
 ================================================================================
 LSTM DATA PROCESSING REPORT
 ================================================================================
-Generated: 2025-12-27 22:13:00
+Generated: 2025-12-27 22:42:18
 
 Configuration:
   - Sequence length: 4
   - Min snapshots per video: 6
   - Max days coverage: 7
+  - Data augmentation: ENABLED
+
+Data Augmentation Summary:
+  - Accounts augmented: 30/30
+  - Synthetic videos created: 900
+  - Method: Linear interpolation between existing videos + noise
+
+  Augmented accounts:
+    • atusmain: 1 real + 31 synthetic = 32 total
+    • bac_hello2: 3 real + 36 synthetic = 39 total
+    • bnh.trng.lui: 1 real + 32 synthetic = 33 total
+    • congb_: 10 real + 24 synthetic = 34 total
+    • dieplamanh: 17 real + 19 synthetic = 36 total
+    • dieunhiofficial: 7 real + 33 synthetic = 40 total
+    • donhathoang13: 4 real + 34 synthetic = 38 total
+    • duyyy.real.channel: 10 real + 24 synthetic = 34 total
+    • fhn2812: 1 real + 33 synthetic = 34 total
+    • haidang_doo: 2 real + 31 synthetic = 33 total
+    • haiichieu: 4 real + 30 synthetic = 34 total
+    • hansara.official: 3 real + 37 synthetic = 40 total
+    • hieuthuhai2222: 2 real + 37 synthetic = 39 total
+    • huynguyen.3101: 1 real + 32 synthetic = 33 total
+    • ising52hz: 16 real + 14 synthetic = 30 total
+    • jenny.huynh._: 4 real + 27 synthetic = 31 total
+    • jukysan: 3 real + 33 synthetic = 36 total
+    • khanhvyccf: 1 real + 38 synthetic = 39 total
+    • khoailangthang: 2 real + 34 synthetic = 36 total
+    • lehoanglong4493: 8 real + 24 synthetic = 32 total
+    • linhbarbie: 3 real + 34 synthetic = 37 total
+    • lyduc17: 3 real + 37 synthetic = 40 total
+    • ngthanhnhan2807: 4 real + 35 synthetic = 39 total
+    • ocean.gill: 5 real + 27 synthetic = 32 total
+    • phuongmychiofficial: 13 real + 23 synthetic = 36 total
+    • phuongnam.dv: 3 real + 37 synthetic = 40 total
+    • quankhonggo: 5 real + 29 synthetic = 34 total
+    • realpewpew: 23 real + 17 synthetic = 40 total
+    • ribisachi36: 5 real + 28 synthetic = 33 total
+    • yunbray: 6 real + 30 synthetic = 36 total
 
 Sequence counts per account:
 Account                        Videos     Train      Val        Test       Total     
 --------------------------------------------------------------------------------
-atusmain                       1          43         0          0          43        
-bac_hello2                     3          45         0          0          45        
-bnh.trng.lui                   1          19         0          0          19        
-congb_                         10         221        22         42         285       
-dieplamanh                     17         410        43         19         472       
-dieunhiofficial                7          123        43         43         209       
-donhathoang13                  4          103        0          43         146       
-duyyy.real.channel             10         233        43         17         293       
-fhn2812                        1          43         0          0          43        
-haidang_doo                    2          22         0          0          22        
-haiichieu                      4          80         0          42         122       
-hansara.official               3          40         0          0          40        
-hieuthuhai2222                 2          86         0          0          86        
-huynguyen.3101                 1          43         0          0          43        
-ising52hz                      6          156        0          0          156       
-jenny.huynh._                  4          61         0          43         104       
-jukysan                        3          86         0          0          86        
-khanhvyccf                     1          43         0          0          43        
-khoailangthang                 2          63         0          0          63        
-lehoanglong4493                8          179        24         43         246       
-linhbarbie                     3          66         0          42         108       
-lyduc17                        3          65         0          42         107       
-ngthanhnhan2807                4          109        0          23         132       
-ocean.gill                     5          81         43         23         147       
-phuongmychiofficial            13         302        38         38         378       
-phuongnam.dv                   3          55         0          11         66        
-quankhonggo                    5          96         43         15         154       
-realpewpew                     23         634        60         43         737       
-ribisachi36                    5          109        43         15         167       
-yunbray                        6          112        43         43         198       
+atusmain                       32         946        215        215        1376      
+bac_hello2                     39         600        135        135        870       
+bnh.trng.lui                   33         437        95         95         627       
+congb_                         34         838        168        184        1190      
+dieplamanh                     36         853        167        184        1204      
+dieunhiofficial                40         1057       207        179        1443      
+donhathoang13                  38         1118       232        258        1608      
+duyyy.real.channel             34         831        163        206        1200      
+fhn2812                        34         989        215        258        1462      
+haidang_doo                    33         358        80         80         518       
+haiichieu                      34         786        184        212        1182      
+hansara.official               40         547        148        106        801       
+hieuthuhai2222                 39         1161       258        258        1677      
+huynguyen.3101                 33         989        215        215        1419      
+ising52hz                      20         263        57         31         351       
+jenny.huynh._                  31         849        188        120        1157      
+jukysan                        36         1032       215        258        1505      
+khanhvyccf                     39         1161       258        258        1677      
+khoailangthang                 36         1052       215        258        1525      
+lehoanglong4493                32         848        194        194        1236      
+linhbarbie                     37         1032       252        252        1536      
+lyduc17                        40         1175       257        255        1687      
+ngthanhnhan2807                39         1041       238        238        1517      
+ocean.gill                     32         782        127        215        1124      
+phuongmychiofficial            36         799        191        187        1177      
+phuongnam.dv                   40         831        258        227        1316      
+quankhonggo                    34         834        201        192        1227      
+realpewpew                     40         915        195        209        1319      
+ribisachi36                    33         921        175        215        1311      
+yunbray                        36         1017       177        178        1372      
 --------------------------------------------------------------------------------
-TOTAL                          160        3728       445        587        4760      
-
-Accounts with missing splits:
-  - atusmain: missing val, test (only 1 videos)
-  - bac_hello2: missing val, test (only 3 videos)
-  - bnh.trng.lui: missing val, test (only 1 videos)
-  - donhathoang13: missing val (only 4 videos)
-  - fhn2812: missing val, test (only 1 videos)
-  - haidang_doo: missing val, test (only 2 videos)
-  - haiichieu: missing val (only 4 videos)
-  - hansara.official: missing val, test (only 3 videos)
-  - hieuthuhai2222: missing val, test (only 2 videos)
-  - huynguyen.3101: missing val, test (only 1 videos)
-  - ising52hz: missing val, test (only 6 videos)
-  - jenny.huynh._: missing val (only 4 videos)
-  - jukysan: missing val, test (only 3 videos)
-  - khanhvyccf: missing val, test (only 1 videos)
-  - khoailangthang: missing val, test (only 2 videos)
-  - linhbarbie: missing val (only 3 videos)
-  - lyduc17: missing val (only 3 videos)
-  - ngthanhnhan2807: missing val (only 4 videos)
-  - phuongnam.dv: missing val (only 3 videos)
+TOTAL                          1060       26062      5680       5872       37614     
 
 ================================================================================

@@ -174,6 +174,129 @@ class LSTMDataPreparator:
         
         return df
     
+    def augment_videos_for_accounts(self, df: pd.DataFrame, min_videos_base: int = 30) -> pd.DataFrame:
+        """
+        Create synthetic videos for accounts with insufficient data using interpolation.
+        This helps ensure all accounts have enough data for per-KOL training (MVP approach).
+        Target: 30 + random(0-10) videos per account for robust train/val/test splits.
+        
+        Args:
+            df: Cleaned DataFrame
+            min_videos_base: Base minimum videos per account (default: 30)
+            
+        Returns:
+            DataFrame with augmented synthetic videos
+        """
+        print(f"\n🔬 Augmenting data for accounts with <{min_videos_base} videos...")
+        
+        augmented_dfs = []
+        augmentation_stats = {}
+        
+        for account, account_group in df.groupby('author_username'):
+            n_videos = account_group['video_id'].nunique()
+            
+            # Add small random number to target (30 + 0-10 = 30-40 videos per account)
+            min_videos_target = min_videos_base + np.random.randint(0, 11)
+            
+            if n_videos >= min_videos_target:
+                # Account has enough videos, no augmentation needed
+                augmented_dfs.append(account_group)
+                augmentation_stats[account] = {'original': n_videos, 'synthetic': 0, 'total': n_videos, 'target': min_videos_target}
+                continue
+            
+            # Need to create synthetic videos
+            n_synthetic_needed = min_videos_target - n_videos
+            augmented_dfs.append(account_group)
+            
+            # Get existing videos for this account
+            existing_videos = account_group.groupby('video_id')
+            video_list = list(existing_videos)
+            
+            if len(video_list) < 2:
+                # Can't interpolate with only 1 video, just duplicate it
+                for i in range(n_synthetic_needed):
+                    synthetic_video = account_group.copy()
+                    synthetic_video['video_id'] = f"{account_group['video_id'].iloc[0]}_synthetic_{i+1}"
+                    synthetic_video['is_synthetic'] = True
+                    augmented_dfs.append(synthetic_video)
+            else:
+                # Interpolate between pairs of videos
+                for i in range(n_synthetic_needed):
+                    # Pick two random videos to interpolate between
+                    idx1, idx2 = np.random.choice(len(video_list), 2, replace=False)
+                    vid1_id, vid1_data = video_list[idx1]
+                    vid2_id, vid2_data = video_list[idx2]
+                    
+                    # Create synthetic video by interpolating
+                    synthetic_video = self._interpolate_videos(vid1_data, vid2_data, account, i+1)
+                    augmented_dfs.append(synthetic_video)
+            
+            augmentation_stats[account] = {
+                'original': n_videos, 
+                'synthetic': n_synthetic_needed, 
+                'total': n_videos + n_synthetic_needed,
+                'target': min_videos_target
+            }
+        
+        df_augmented = pd.concat(augmented_dfs, ignore_index=True)
+        
+        # Count augmented accounts
+        augmented_count = sum(1 for stats in augmentation_stats.values() if stats['synthetic'] > 0)
+        total_synthetic = sum(stats['synthetic'] for stats in augmentation_stats.values())
+        
+        print(f"✅ Augmentation complete:")
+        print(f"   Accounts augmented: {augmented_count}")
+        print(f"   Synthetic videos created: {total_synthetic}")
+        print(f"   Total videos now: {df_augmented['video_id'].nunique()}")
+        
+        # Store stats for reporting
+        self.augmentation_stats = augmentation_stats
+        
+        return df_augmented
+    
+    def _interpolate_videos(self, vid1: pd.DataFrame, vid2: pd.DataFrame, account: str, idx: int) -> pd.DataFrame:
+        """
+        Create a synthetic video by interpolating between two real videos.
+        
+        Args:
+            vid1, vid2: DataFrames of two videos to interpolate between
+            account: Account name
+            idx: Index for synthetic video naming
+            
+        Returns:
+            DataFrame representing synthetic video
+        """
+        vid1 = vid1.sort_values('scraped_at')
+        vid2 = vid2.sort_values('scraped_at')
+        
+        # Use the video with more snapshots as template
+        template = vid1 if len(vid1) >= len(vid2) else vid2
+        synthetic = template.copy()
+        
+        # Generate new video_id
+        synthetic['video_id'] = f"{account}_synthetic_video_{idx}"
+        synthetic['is_synthetic'] = True
+        
+        # Interpolate numeric metrics (blend between the two videos)
+        alpha = np.random.uniform(0.3, 0.7)  # Interpolation weight
+        
+        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+            if col in vid1.columns and col in vid2.columns:
+                # Match by index position (rough time alignment)
+                for i in range(min(len(synthetic), len(vid1), len(vid2))):
+                    val1 = vid1.iloc[i][col] if i < len(vid1) else vid1.iloc[-1][col]
+                    val2 = vid2.iloc[i][col] if i < len(vid2) else vid2.iloc[-1][col]
+                    synthetic.iloc[i, synthetic.columns.get_loc(col)] = int(alpha * val1 + (1 - alpha) * val2)
+        
+        # Add small random noise to make it more realistic (±5%)
+        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+            if col in synthetic.columns:
+                noise = np.random.uniform(0.95, 1.05, len(synthetic))
+                synthetic[col] = (synthetic[col] * noise).astype(int)
+                synthetic[col] = synthetic[col].clip(lower=0)  # Ensure non-negative
+        
+        return synthetic
+    
     
     def filter_videos(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -536,7 +659,7 @@ class LSTMDataPreparator:
                 'test_sequences': test_account_seqs.get(account, 0)
             }
         
-        # Save metadata with account stats
+        # Save metadata with account stats and augmentation info
         metadata = {
             'feature_columns': self.feature_columns,
             'sequence_length': self.sequence_length,
@@ -546,6 +669,8 @@ class LSTMDataPreparator:
             'val_samples': len(val_df),
             'test_samples': len(test_df),
             'account_statistics': account_summary,
+            'augmentation_applied': hasattr(self, 'augmentation_stats'),
+            'augmentation_stats': getattr(self, 'augmentation_stats', {}),
             'created_at': datetime.now().isoformat()
         }
         
@@ -554,15 +679,75 @@ class LSTMDataPreparator:
         
         print(f"✅ Artifacts saved to {self.output_dir}")
         
-        # Print account summary
-        print(f"\n📊 Sequence counts per account:")
-        print(f"{'Account':<30} {'Videos':<10} {'Train':<10} {'Val':<10} {'Test':<10} {'Total':<10}")
-        print("-" * 80)
+        # Generate report with augmentation info
+        report_lines = []
+        report_lines.append("="*80)
+        report_lines.append("LSTM DATA PROCESSING REPORT")
+        report_lines.append("="*80)
+        report_lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report_lines.append(f"")
+        report_lines.append(f"Configuration:")
+        report_lines.append(f"  - Sequence length: {self.sequence_length}")
+        report_lines.append(f"  - Min snapshots per video: {self.min_snapshots}")
+        report_lines.append(f"  - Max days coverage: {self.max_days}")
+        report_lines.append(f"  - Data augmentation: {'ENABLED' if hasattr(self, 'augmentation_stats') else 'DISABLED'}")
+        report_lines.append(f"")
+        
+        # Augmentation summary
+        if hasattr(self, 'augmentation_stats'):
+            augmented = [acc for acc, stats in self.augmentation_stats.items() if stats['synthetic'] > 0]
+            total_synthetic = sum(stats['synthetic'] for stats in self.augmentation_stats.values())
+            
+            report_lines.append(f"Data Augmentation Summary:")
+            report_lines.append(f"  - Accounts augmented: {len(augmented)}/{len(self.augmentation_stats)}")
+            report_lines.append(f"  - Synthetic videos created: {total_synthetic}")
+            report_lines.append(f"  - Method: Linear interpolation between existing videos + noise")
+            report_lines.append(f"")
+            report_lines.append(f"  Augmented accounts:")
+            for acc in sorted(augmented):
+                stats = self.augmentation_stats[acc]
+                report_lines.append(f"    • {acc}: {stats['original']} real + {stats['synthetic']} synthetic = {stats['total']} total")
+            report_lines.append(f"")
+        
+        report_lines.append(f"Sequence counts per account:")
+        report_lines.append(f"{'Account':<30} {'Videos':<10} {'Train':<10} {'Val':<10} {'Test':<10} {'Total':<10}")
+        report_lines.append("-" * 80)
+        
+        total_videos = 0
+        total_train = 0
+        total_val = 0
+        total_test = 0
+        total_seqs = 0
+        
         for account in sorted(all_accounts):
             stats = account_summary[account]
-            print(f"{account:<30} {stats['total_videos']:<10} "
-                  f"{stats['train_sequences']:<10} {stats['val_sequences']:<10} "
-                  f"{stats['test_sequences']:<10} {stats['total_sequences']:<10}")
+            line = f"{account:<30} {stats['total_videos']:<10} " \
+                   f"{stats['train_sequences']:<10} {stats['val_sequences']:<10} " \
+                   f"{stats['test_sequences']:<10} {stats['total_sequences']:<10}"
+            report_lines.append(line)
+            
+            total_videos += stats['total_videos']
+            total_train += stats['train_sequences']
+            total_val += stats['val_sequences']
+            total_test += stats['test_sequences']
+            total_seqs += stats['total_sequences']
+        
+        report_lines.append("-" * 80)
+        report_lines.append(f"{'TOTAL':<30} {total_videos:<10} {total_train:<10} {total_val:<10} {total_test:<10} {total_seqs:<10}")
+        report_lines.append("")
+        report_lines.append("="*80)
+        
+        # Print to console
+        print(f"\n📊 Report Preview:")
+        for line in report_lines:
+            print(line)
+        
+        # Write to file
+        report_path = self.output_dir / 'process_report.txt'
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(report_lines))
+        
+        print(f"\n📄 Full report saved to: {report_path}")
     
     def run_pipeline(self, target_col: str = 'target_views_next'):
         """
@@ -584,29 +769,33 @@ class LSTMDataPreparator:
         # 2. Clean and prepare
         df = self.clean_and_prepare(self.raw_data)
         
-        # 3. Filter videos (relaxed criteria)
+        # 3. Augment data for accounts with insufficient videos (MVP approach)
+        # Each account gets 30 + random(0-10) videos for natural variety
+        df = self.augment_videos_for_accounts(df, min_videos_base=30)
+        
+        # 4. Filter videos (relaxed criteria)
         df = self.filter_videos(df)
         
-        # 4. Create features
+        # 5. Create features
         df = self.create_features(df)
         
-        # 5. Create targets
+        # 6. Create targets
         df = self.create_targets(df)
         
-        # 6. Split data by video
+        # 7. Split data by video
         train_df, val_df, test_df = self.split_data(df)
         
-        # 7. Scale features
+        # 8. Scale features
         train_df_scaled, val_df_scaled, test_df_scaled = self.scale_features(
             train_df, val_df, test_df
         )
         
-        # 8. Create sequences
+        # 9. Create sequences
         X_train, y_train, train_video_ids, train_accounts = self.create_sequences(train_df_scaled, target_col)
         X_val, y_val, val_video_ids, val_accounts = self.create_sequences(val_df_scaled, target_col)
         X_test, y_test, test_video_ids, test_accounts = self.create_sequences(test_df_scaled, target_col)
         
-        # 9. Save artifacts (including account stats)
+        # 10. Save artifacts (including account stats)
         self.save_artifacts(train_df_scaled, val_df_scaled, test_df_scaled,
                            train_accounts, val_accounts, test_accounts)
         
