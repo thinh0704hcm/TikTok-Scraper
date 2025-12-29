@@ -246,6 +246,29 @@ def load_account_ids(file_path: str) -> List[str]:
     return account_ids
 
 
+def read_milestone_datetime(file_path: str = "milestone_datetime.txt") -> Optional[datetime]:
+    """Read milestone datetime from milestone_datetime.txt (first line)"""
+    file_path = Path(file_path)
+    
+    if not file_path.exists():
+        print(f"Warning: Milestone file not found: {file_path}")
+        return None
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            first_line = f.readline().strip()
+            if not first_line:
+                print(f"Warning: Milestone file is empty: {file_path}")
+                return None
+            
+            # Parse datetime - format: YYYY-MM-DD HH:MM:SS
+            milestone_dt = datetime.strptime(first_line, "%Y-%m-%d %H:%M:%S")
+            return milestone_dt
+    except Exception as e:
+        print(f"Error reading milestone datetime: {e}")
+        return None
+
+
 def setup_logging(run_name: str, log_dir: str = "logs/", verbose: bool = False) -> logging.Logger:
     """Set up logging for a run"""
     Path(log_dir).mkdir(parents=True, exist_ok=True)
@@ -284,22 +307,22 @@ def setup_logging(run_name: str, log_dir: str = "logs/", verbose: bool = False) 
 
 async def scrape_profile_time_series(
     account_ids: List[str],
-    lookback_days: int = 365,
     max_videos: int = 1000,
     resume: bool = True,
     verbose: bool = False,
     logger = None,
-    list_name: str = "default"
+    list_name: str = "default",
+    milestone_datetime: Optional[datetime] = None
 ) -> Dict[str, Any]:
     """
     Scrape time series data for multiple TikTok profiles.
     
     Args:
         account_ids: List of account IDs or usernames
-        lookback_days: How many days back to scrape
         max_videos: Max videos per profile
         resume: Skip already completed profiles
         logger: Logger instance
+        milestone_datetime: Milestone datetime to filter videos (only videos after this time)
     
     Returns:
         Summary of scraping results
@@ -309,9 +332,10 @@ async def scrape_profile_time_series(
     
     logger.info("=" * 70)
     logger.info("TIKTOK PROFILE TIME SERIES SCRAPING")
-    logger.info(f"Lookback: {lookback_days} days")
     logger.info(f"Max videos per profile: {max_videos}")
     logger.info(f"Total profiles: {len(account_ids)}")
+    if milestone_datetime:
+        logger.info(f"Milestone: {milestone_datetime.strftime('%Y-%m-%d %H:%M:%S')}")
     logger.info("=" * 70)
     
     # Initialize progress tracker
@@ -333,15 +357,15 @@ async def scrape_profile_time_series(
         tracker.close()
         return {"message": "All profiles already completed"}
     
-    # Create output directory
+    # Create output directory with timestamp
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_dir = Path(OUTPUT_BASE_DIR) / list_name / f"{lookback_days}" / f"{timestamp}"
+    output_dir = Path(OUTPUT_BASE_DIR) / timestamp
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Results tracking
     results = {
         "run_name": run_name,
-        "lookback_days": lookback_days,
+        "milestone_datetime": milestone_datetime.strftime('%Y-%m-%d %H:%M:%S') if milestone_datetime else None,
         "output_dir": str(output_dir),
         "started_at": datetime.now().isoformat(),
         "profiles_processed": 0,
@@ -377,7 +401,7 @@ async def scrape_profile_time_series(
                     username=account_id if is_username else None,
                     output_dir=output_dir,
                     max_videos=max_videos,
-                    lookback_days=lookback_days
+                    milestone_datetime=milestone_datetime
                 )
                 
                 if "error" in summary:
@@ -526,7 +550,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
             Examples:
-            python run_crawler.py --lookback 180     # Last 6 months
+            python run_crawler.py                    # Scrape using milestone
             python run_crawler.py --test             # Test mode (2 profiles)
             python run_crawler.py --status           # Show progress
             python run_crawler.py --reset            # Reset all progress
@@ -534,8 +558,6 @@ def main():
         """
     )
     
-    parser.add_argument("--lookback", type=int, default=DEFAULT_LOOKBACK_DAYS,
-                        help="Days to look back (default: 90 days)")
     parser.add_argument("--max-videos", type=int, default=DEFAULT_MAX_VIDEOS,
                         help="Max videos per profile")
     parser.add_argument("--max-profiles", type=int, default=None,
@@ -637,7 +659,6 @@ def main():
     print(f"List: {list_name}")
     print(f"Account file: {account_file}")
     print(f"Profiles: {len(account_ids)}")
-    print(f"Lookback: {args.lookback} days")
     print(f"Max videos: {args.max_videos}")
     print(f"Resume: {not args.no_resume}")
     print(f"Headless: {headless_mode}")
@@ -649,14 +670,21 @@ def main():
     print(f"{'='*60}\n")
     
     try:
+        # Read milestone datetime from milestone_datetime.txt
+        milestone_dt = read_milestone_datetime()
+        if milestone_dt:
+            print(f"Milestone datetime: {milestone_dt.strftime('%Y-%m-%d %H:%M:%S')}")
+        else:
+            print("No milestone datetime found, scraping all videos")
+        
         # Run scraping
         asyncio.run(scrape_profile_time_series(
             account_ids=account_ids,
-            lookback_days=args.lookback,
             max_videos=args.max_videos,
             resume=not args.no_resume,
             verbose=args.verbose,
-            list_name=list_name
+            list_name=list_name,
+            milestone_datetime=milestone_dt
         ))
     finally:
         # Cleanup

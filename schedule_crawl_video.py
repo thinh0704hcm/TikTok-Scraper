@@ -3,12 +3,13 @@ import time
 from datetime import datetime
 import sys
 
-INTERVAL_SECONDS = 1800
+# Run every 1 hour (3600 seconds)
+INTERVAL_SECONDS = 3600
 
 while True:
-    print(f"\n{'='*23}")
+    print(f"\n{'='*20}")
     print(f"Starting video crawler at {datetime.now()}")
-    print(f"{'='*23}\n")
+    print(f"{'='*20}\n")
 
     subprocess.run([
         sys.executable,

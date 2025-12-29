@@ -346,17 +346,24 @@ class PlaywrightProfileScraper:
         self,
         username: str,
         max_videos: int = 1000,
-        lookback_days: int = 365
+        milestone_datetime: Optional[datetime] = None
     ) -> List[VideoData]:
         """
-        Get all videos from a user within the lookback period using Playwright scrolling.
+        Get all videos from a user after the milestone datetime using Playwright scrolling.
         
         Args:
             username: TikTok username (without @)
             max_videos: Maximum number of videos to fetch
-            lookback_days: How many days back to look
+            milestone_datetime: Only fetch videos posted after this datetime (stops when first older video found)
         """
-        cutoff_timestamp = int((datetime.now() - timedelta(days=lookback_days)).timestamp())
+        # Use milestone_datetime if provided, otherwise get all videos
+        if milestone_datetime:
+            cutoff_timestamp = int(milestone_datetime.timestamp())
+            logger.info(f"Using milestone datetime: {milestone_datetime.strftime('%Y-%m-%d %H:%M:%S')}")
+        else:
+            # No cutoff - get all videos
+            cutoff_timestamp = 0
+            logger.info("No milestone set - fetching all videos")
         url = f"https://www.tiktok.com/@{username}"
         
         videos = []
@@ -430,6 +437,7 @@ class PlaywrightProfileScraper:
                 videos_before = len(videos)
                 old_videos_count = 0
                 new_videos_this_scroll = 0
+                found_video_before_milestone = False
                 
                 for resp, json_data in responses:
                     # Skip already processed responses
@@ -457,11 +465,23 @@ class PlaywrightProfileScraper:
                                     new_videos_this_scroll += 1
                                     logger.debug(f"Added video {video.video_id} from {video.create_time}")
                                 else:
+                                    # Found a video before milestone - stop scrolling
                                     old_videos_count += 1
-                                    logger.debug(f"Skipped old video {video.video_id} from {video.create_time}")
+                                    found_video_before_milestone = True
+                                    logger.info(f"Found video before milestone: {video.video_id} from {video.create_time}. Stopping scroll.")
+                                    break
+                        
+                        # Break out of response loop if we found old video
+                        if found_video_before_milestone:
+                            break
                     else:
                         if json_data:
                             logger.debug(f"Response has no itemList. Keys: {list(json_data.keys()) if isinstance(json_data, dict) else 'not a dict'}")
+                
+                # Stop scrolling if we found a video before milestone
+                if found_video_before_milestone:
+                    logger.info(f"Stopped at milestone. Total videos collected: {len(videos)}")
+                    break
                 
                 # Check if we got new videos
                 new_videos = len(videos) - videos_before
@@ -478,9 +498,9 @@ class PlaywrightProfileScraper:
                 scroll_count += 1
                 
                 if (scroll_count % 10 == 0):
-                    logger.info(f"Scrolled {scroll_count} times, found {len(videos)} videos in date range")
+                    logger.info(f"Scrolled {scroll_count} times, found {len(videos)} videos")
             
-            logger.info(f"Total videos fetched: {len(videos)} (within {lookback_days} days)")
+            logger.info(f"Total videos fetched: {len(videos)}")
             return videos
             
         except Exception as e:
@@ -520,9 +540,14 @@ class PlaywrightProfileScraper:
                     continue
                     
                 video = self._parse_video_data(item, username)
-                if video and video.create_timestamp >= cutoff_timestamp:
-                    videos.append(video)
-                    logger.debug(f"Extracted video {video.video_id} from page data")
+                if video:
+                    if video.create_timestamp >= cutoff_timestamp:
+                        videos.append(video)
+                        logger.debug(f"Extracted video {video.video_id} from page data")
+                    else:
+                        # Found a video before milestone - stop extracting
+                        logger.info(f"Found video before milestone in initial page data: {video.video_id} from {video.create_time}. Stopping extraction.")
+                        break
         
         except Exception as e:
             logger.debug(f"Error extracting videos from page data: {e}")
@@ -679,7 +704,7 @@ class PlaywrightProfileScraper:
         username: str,
         output_dir: Path,
         max_videos: int = 1000,
-        lookback_days: int = 365
+        milestone_datetime: Optional[datetime] = None
     ) -> Dict[str, Any]:
         """
         Scrape user profile and create time series dataset (daily aggregation).
@@ -688,25 +713,31 @@ class PlaywrightProfileScraper:
             username: TikTok username (without @)
             output_dir: Directory to save output files
             max_videos: Maximum videos to fetch
-            lookback_days: Days to look back (default 365 = 1 year)
+            milestone_datetime: Only fetch videos posted after this datetime
         
         Returns:
             Dictionary with videos, time series, and metadata
         """
         logger.info(f"Starting time series scrape for @{username}")
-        logger.info(f"Lookback: {lookback_days} days")
         
         # Calculate date range
         now = datetime.now()
-        cutoff_date = now - timedelta(days=lookback_days)
-        logger.info(f"Date range: {cutoff_date.strftime('%Y-%m-%d')} to {now.strftime('%Y-%m-%d')}")
+        if milestone_datetime:
+            cutoff_date = milestone_datetime
+            logger.info(f"Using milestone: {milestone_datetime.strftime('%Y-%m-%d %H:%M:%S')}")
+        else:
+            cutoff_date = None
+            logger.info("No milestone set - fetching all videos")
+        
+        if cutoff_date:
+            logger.info(f"Date range: {cutoff_date.strftime('%Y-%m-%d')} to {now.strftime('%Y-%m-%d')}")
         
         # Create output directory
         username_dir = output_dir / username
         username_dir.mkdir(parents=True, exist_ok=True)
         
         # Fetch all videos
-        videos = await self.get_user_videos(username, max_videos, lookback_days)
+        videos = await self.get_user_videos(username, max_videos, milestone_datetime)
         
         if not videos:
             logger.error("No videos fetched")
@@ -724,9 +755,9 @@ class PlaywrightProfileScraper:
         # Generate summary
         summary = {
             "username": username,
-            "lookback_days": lookback_days,
+            "milestone_datetime": milestone_datetime.strftime('%Y-%m-%d %H:%M:%S') if milestone_datetime else None,
             "date_range": {
-                "start": cutoff_date.strftime('%Y-%m-%d'),
+                "start": cutoff_date.strftime('%Y-%m-%d') if cutoff_date else None,
                 "end": now.strftime('%Y-%m-%d')
             },
             "scraped_at": datetime.now().isoformat(),
