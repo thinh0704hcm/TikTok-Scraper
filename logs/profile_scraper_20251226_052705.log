@@ -1,0 +1,53 @@
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - TIKTOK PROFILE & VIDEO SCRAPER
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - Lookback: 365 days
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - Max videos per profile: 1000
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - Include profile data: True
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - Total profiles: 2
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - Headless mode: False
+2025-12-26 05:27:05,411 - ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:05,412 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/profiles_20251226_progress.db
+2025-12-26 05:27:05,412 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-26 05:27:05,412 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-26 05:27:05,412 - ProfileTracker - INFO - Added 2 profiles to tracker
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - ✓ Loaded fingerprint from browser_fingerprint.json
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO -   Device: Win32
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO -   GPU: ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001681) Direct3D11 ...
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - Proxy: http://14.224.198.119:44182
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - STARTING PRODUCTION-READY STEALTH BROWSER
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - Mode: VISIBLE
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - Platform: linux
+2025-12-26 05:27:05,413 - TikTok.ProfileScraper - INFO - Display: :1
+2025-12-26 05:27:05,745 - TikTok.ProfileScraper - INFO - Found Chrome: /usr/bin/google-chrome-stable
+2025-12-26 05:27:05,745 - TikTok.ProfileScraper - INFO - ✓ Using stable Chrome: /usr/bin/google-chrome-stable
+2025-12-26 05:27:05,745 - TikTok.ProfileScraper - INFO - Proxy: http://14.224.198.119:44182
+2025-12-26 05:27:06,078 - TikTok.ProfileScraper - INFO - ✓ CDP session established
+2025-12-26 05:27:06,083 - TikTok.ProfileScraper - INFO - Navigating to TikTok...
+2025-12-26 05:27:12,981 - TikTok.ProfileScraper - INFO - ✓ Browser ready!
+2025-12-26 05:27:12,982 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:12,982 - ProfileScraper - INFO - 
+[1/2] Processing: phuongmychiofficial
+2025-12-26 05:27:12,982 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:12,982 - TikTok.ProfileScraper - INFO - Starting scrape for @phuongmychiofficial
+2025-12-26 05:27:12,983 - TikTok.ProfileScraper - INFO - Max videos: 1000, Lookback: 365 days
+2025-12-26 05:27:12,983 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:27:13,918 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726827&aid=1988&app_language=en&app_nam
+2025-12-26 05:27:14,469 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726827&aid=1988&app_language=en&app_nam
+2025-12-26 05:27:15,581 - TikTok.ProfileScraper - WARNING - Error page detected: something went wrong
+2025-12-26 05:27:15,581 - TikTok.ProfileScraper - WARNING - ⚠️  Error page detected (not a captcha)
+2025-12-26 05:27:15,581 - TikTok.ProfileScraper - INFO - Attempting to refresh...
+2025-12-26 05:27:15,888 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726827&aid=1988&app_language=en&app_nam
+2025-12-26 05:27:18,799 - TikTok.ProfileScraper - INFO - Clicked refresh button
+2025-12-26 05:27:18,799 - TikTok.ProfileScraper - INFO - Extracting profile data for @phuongmychiofficial...
+2025-12-26 05:27:18,808 - TikTok.ProfileScraper - WARNING - Page data is string but not valid JSON
+2025-12-26 05:27:18,808 - TikTok.ProfileScraper - WARNING - No page data found
+2025-12-26 05:27:18,808 - TikTok.ProfileScraper - INFO - Navigating to @phuongmychiofficial...
+2025-12-26 05:27:19,392 - TikTok.ProfileScraper - DEBUG - Error closing browser (expected if connection lost): Browser.close: Connection closed while reading from the driver
+2025-12-26 05:27:19,422 - asyncio - ERROR - Future exception was never retrieved
+future: <Future finished exception=TargetClosedError('Target page, context or browser has been closed\nCall log:\n  - navigating to "https://www.tiktok.com/@phuongmychiofficial", waiting until "domcontentloaded"\n')>
+rebrowser_playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.tiktok.com/@phuongmychiofficial", waiting until "domcontentloaded"
+

@@ -1,30 +1,102 @@
 """
-TikTok Profile Time Series Scraper using Playwright
+TikTok Profile Scraper with Network Interception (Brave Edition)
 
-Scrapes a user's video history and creates time series datasets
-showing engagement metrics over time (daily/weekly/monthly).
-
-Uses Playwright scrolling + network interception (not API).
-
-Requirements:
-    pip install playwright pandas
-    playwright install chromium
+Features:
+- Network interception for api/post/item_list to capture scrolled videos
+- Milestone-based scraping (fetch videos after a specific datetime)
+- Brave browser with fingerprint spoofing
+- Pinned video filtering
+- Console logging for debugging
+- Cookie persistence
+- Proxy support with authentication
 """
 
 import asyncio
 import json
 import logging
-import re
+import os
+import random
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
-from collections import defaultdict
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlparse
 
-from playwright.async_api import async_playwright, Page, BrowserContext, Browser, Request, Response
+from playwright.async_api import async_playwright, Page, BrowserContext, Browser, Response
 
-logger = logging.getLogger('TikTok.ProfileScraper')
+logger = logging.getLogger('TikTok.Scraper')
+
+
+# ============================================================================
+# BRAVE FINDER
+# ============================================================================
+
+def find_brave():
+    """Find Brave Browser on the system."""
+    paths = [
+        '/usr/bin/brave-browser',           # Linux standard
+        '/usr/bin/brave',                   # Linux alternative
+        '/opt/brave.com/brave/brave',       # Linux manual install
+        'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe', # Windows
+        '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser' # MacOS
+    ]
+    for path in paths:
+        if os.path.exists(path):
+            logger.info(f"Found Brave: {path}")
+            return path
+    logger.warning("Brave not found, will use default Chromium")
+    return None
+
+
+# ============================================================================
+# FINGERPRINT LOADER
+# ============================================================================
+
+class BrowserFingerprint:
+    """Load and manage browser fingerprints"""
+    
+    @staticmethod
+    def load_from_file(filepath: str) -> Optional[Dict]:
+        """Load fingerprint from JSON file"""
+        try:
+            with open(filepath, 'r') as f:
+                fp = json.load(f)
+                logger.info(f"✓ Loaded fingerprint from {filepath}")
+                logger.info(f"  Device: {fp.get('platform', 'Unknown')}")
+                logger.info(f"  GPU: {fp.get('webgl', {}).get('renderer', 'Unknown')[:60]}...")
+                return fp
+        except FileNotFoundError:
+            logger.warning(f"Fingerprint file not found: {filepath}")
+            return None
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid fingerprint JSON: {e}")
+            return None
+    
+    @staticmethod
+    def get_default_fingerprint() -> Dict:
+        """Get default Windows fingerprint (fallback)"""
+        return {
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "platform": "Win32",
+            "hardwareConcurrency": 8,
+            "deviceMemory": 8,
+            "maxTouchPoints": 0,
+            "languages": ["en-US", "en"],
+            "webgl": {
+                "vendor": "Google Inc. (Intel)",
+                "renderer": "ANGLE (Intel, Intel(R) UHD Graphics 630 Direct3D11 vs_5_0 ps_5_0, D3D11)"
+            },
+            "screen": {
+                "width": 1920,
+                "height": 1080,
+                "availWidth": 1920,
+                "availHeight": 1040,
+                "colorDepth": 24,
+                "pixelDepth": 24
+            },
+            "timezone": "America/New_York",
+            "timezoneOffset": 300
+        }
 
 
 # ============================================================================
@@ -46,51 +118,14 @@ class VideoData:
     scraped_at: Optional[str] = None
 
 
-@dataclass
-class TimeSeriesPoint:
-    """Single point in time series"""
-    period_start: str
-    period_end: str
-    timestamp: int
-    video_count: int
-    total_views: int
-    total_likes: int
-    total_comments: int
-    total_shares: int
-    total_collects: int
-    avg_views_per_video: float
-    avg_likes_per_video: float
-    avg_comments_per_video: float
-    avg_shares_per_video: float
-    engagement_rate: float  # (likes + comments + shares) / views
-
-
-@dataclass
-class InterceptedRequest:
-    """Stored intercepted request"""
-    url: str
-    method: str
-    headers: Dict[str, str]
-    post_data: Optional[str] = None
-
-
-@dataclass
-class InterceptedResponse:
-    """Stored intercepted response"""
-    url: str
-    status: int
-    headers: Dict[str, str]
-    body: Optional[bytes] = None
-
-
 # ============================================================================
-# PLAYWRIGHT PROFILE SCRAPER
+# PLAYWRIGHT PROFILE SCRAPER WITH NETWORK INTERCEPTION
 # ============================================================================
 
-class PlaywrightProfileScraper:
+class PlaywrightScraper:
     """
-    TikTok profile scraper for time series analysis.
-    Scrapes all videos from a user and aggregates stats by time period.
+    TikTok profile scraper with network interception.
+    Captures both initial hydration data and scrolled API responses.
     """
     
     CAPTCHA_LOCATORS = [
@@ -105,9 +140,10 @@ class PlaywrightProfileScraper:
         self,
         headless: bool = False,
         slow_mo: int = 50,
-        wait_time: float = 1.0,
+        wait_time: float = 10.0,
         max_captcha_wait: int = 120,
-        proxy: Optional[str] = None
+        proxy: Optional[str] = None,
+        fingerprint_file: Optional[str] = None
     ):
         self.headless = headless
         self.slow_mo = slow_mo
@@ -115,7 +151,15 @@ class PlaywrightProfileScraper:
         self.max_captcha_wait = max_captcha_wait
         self.proxy = proxy
         
-        # Parse proxy credentials if present
+        # Load fingerprint
+        if fingerprint_file and Path(fingerprint_file).exists():
+            self.fingerprint = BrowserFingerprint.load_from_file(fingerprint_file)
+        else:
+            if fingerprint_file:
+                logger.warning(f"Fingerprint file not found: {fingerprint_file}, using default")
+            self.fingerprint = BrowserFingerprint.get_default_fingerprint()
+        
+        # Parse proxy credentials
         self.proxy_server = None
         self.proxy_username = None
         self.proxy_password = None
@@ -127,117 +171,145 @@ class PlaywrightProfileScraper:
         self.context: BrowserContext = None
         self.page: Page = None
         
-        # Request/Response interception storage
-        self._requests: List[InterceptedRequest] = []
-        self._responses: List[InterceptedResponse] = []
-        
         self.ms_token: str = None
         self.cookies: Dict[str, str] = {}
+        
+        # Console log storage
+        self.console_logs = []
+        self.console_log_file = None
+        
+        # Network interception buffer
+        self.intercepted_videos = []
         
         self.stats = {
             "videos_scraped": 0,
             "profiles_scraped": 0,
             "errors": 0,
             "api_calls": 0,
+            "videos_from_hydration": 0,
+            "videos_from_network": 0,
         }
     
     def _parse_proxy_url(self, proxy_url: str):
-        """
-        Parse proxy URL and extract credentials.
-        
-        Format: [protocol://][username:password@]host:port
-        Or: ip:port:username:password
-        """
+        """Parse proxy URL and extract credentials"""
         try:
             if proxy_url.count(":") == 3 and '@' not in proxy_url:
-                # Format: ip:port:username:password
                 ip, port, username, password = proxy_url.strip().split(":")
                 self.proxy_username = username
                 self.proxy_password = password
                 self.proxy_server = f"http://{ip}:{port}"
-                logger.info(f"Proxy credentials found: {self.proxy_username}:***")
                 logger.info(f"Proxy server: {self.proxy_server}")
             else:
-                from urllib.parse import urlparse
                 parsed = urlparse(proxy_url if '://' in proxy_url else f'http://{proxy_url}')
                 if parsed.username and parsed.password:
                     self.proxy_username = parsed.username
                     self.proxy_password = parsed.password
-                    logger.info(f"Proxy credentials found: {self.proxy_username}:***")
                 if parsed.port:
                     self.proxy_server = f"{parsed.scheme or 'http'}://{parsed.hostname}:{parsed.port}"
                 else:
-                    default_port = 1080 if parsed.scheme == 'socks5' else 8080
-                    self.proxy_server = f"{parsed.scheme or 'http'}://{parsed.hostname}:{default_port}"
+                    self.proxy_server = f"{parsed.scheme or 'http'}://{parsed.hostname}:8080"
                 logger.info(f"Proxy server: {self.proxy_server}")
         except Exception as e:
             logger.warning(f"Failed to parse proxy URL: {e}")
             self.proxy_server = proxy_url
     
     # ========================================================================
-    # BROWSER LIFECYCLE
+    # CONSOLE LOG CAPTURE
     # ========================================================================
     
-    async def _on_request(self, request: Request):
-        """Handle intercepted request"""
+    def _on_console(self, msg):
+        """Capture browser console messages"""
         try:
-            self._requests.append(InterceptedRequest(
-                url=request.url,
-                method=request.method,
-                headers=dict(request.headers),
-                post_data=request.post_data
-            ))
-        except Exception as e:
-            logger.debug(f"Error storing request: {e}")
-    
-    async def _on_response(self, response: Response):
-        """Handle intercepted response"""
-        try:
-            # Only store API responses
-            if 'api/post/item_list' in response.url or 'api/user/detail' in response.url:
-                body = None
-                try:
-                    body = await response.body()
-                except:
-                    pass
+            timestamp = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+            log_type = msg.type
+            text = msg.text
+            
+            log_entry = {
+                'timestamp': timestamp,
+                'type': log_type,
+                'text': text,
+                'location': msg.location if hasattr(msg, 'location') else None
+            }
+            
+            self.console_logs.append(log_entry)
+            
+            if log_type in ['error', 'warning']:
+                logger.debug(f"[Browser {log_type.upper()}] {text}")
+            elif 'stealth' in text.lower() or 'fingerprint' in text.lower():
+                logger.info(f"[Browser Console] {text}")
+            
+            if self.console_log_file:
+                self.console_log_file.write(f"[{timestamp}] [{log_type.upper()}] {text}\n")
+                self.console_log_file.flush()
                 
-                self._responses.append(InterceptedResponse(
-                    url=response.url,
-                    status=response.status,
-                    headers=dict(response.headers),
-                    body=body
-                ))
-                logger.debug(f"Intercepted API response: {response.url[:100]}")
         except Exception as e:
-            logger.debug(f"Error storing response: {e}")
+            logger.debug(f"Error capturing console log: {e}")
     
-    def get_responses(self, pattern: str) -> List[Tuple[InterceptedResponse, Optional[Dict]]]:
-        """Get responses matching pattern with parsed JSON"""
-        results = []
-        for r in self._responses:
-            if pattern in r.url:
-                json_data = None
-                if r.body:
-                    try:
-                        json_data = json.loads(r.body.decode('utf-8'))
-                    except:
-                        pass
-                results.append((r, json_data))
-        return results
+    def start_console_logging(self, log_file: str = None):
+        """Start capturing console logs to a file"""
+        if not log_file:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            log_dir = Path('logs/console')
+            log_dir.mkdir(parents=True, exist_ok=True)
+            log_file = log_dir / f"console_{timestamp}.log"
+        
+        try:
+            self.console_log_file = open(log_file, 'w', encoding='utf-8')
+            logger.info(f"Console logging started: {log_file}")
+            
+            self.console_log_file.write("=" * 80 + "\n")
+            self.console_log_file.write(f"Browser Console Log - {datetime.now().isoformat()}\n")
+            self.console_log_file.write("=" * 80 + "\n\n")
+            self.console_log_file.flush()
+            
+        except Exception as e:
+            logger.error(f"Failed to open console log file: {e}")
+            self.console_log_file = None
     
-    def clear_responses(self):
-        """Clear stored responses"""
-        self._responses = []
+    def stop_console_logging(self):
+        """Stop console logging and close file"""
+        if self.console_log_file:
+            try:
+                self.console_log_file.write("\n" + "=" * 80 + "\n")
+                self.console_log_file.write(f"Console logging ended - {datetime.now().isoformat()}\n")
+                self.console_log_file.write("=" * 80 + "\n")
+                self.console_log_file.close()
+                logger.info("Console logging stopped")
+            except Exception as e:
+                logger.error(f"Error closing console log file: {e}")
+            finally:
+                self.console_log_file = None
     
-    def clear_requests(self):
-        """Clear stored requests"""
-        self._requests = []
+    def save_console_logs_json(self, filename: str = None):
+        """Save console logs as JSON for analysis"""
+        if not filename:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            log_dir = Path('logs/console')
+            log_dir.mkdir(parents=True, exist_ok=True)
+            filename = log_dir / f"console_{timestamp}.json"
+        
+        try:
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(self.console_logs, f, indent=2, ensure_ascii=False)
+            logger.info(f"Console logs saved to JSON: {filename}")
+        except Exception as e:
+            logger.error(f"Failed to save console logs to JSON: {e}")
+    
+    # ========================================================================
+    # BROWSER LIFECYCLE WITH BRAVE & STEALTH
+    # ========================================================================
     
     async def start(self):
-        """Start the browser"""
-        logger.info("Starting Playwright browser...")
+        """Start Brave browser with production-ready stealth configuration"""
+        logger.info("=" * 70)
+        logger.info("STARTING PRODUCTION-READY STEALTH BROWSER (BRAVE)")
+        logger.info("=" * 70)
         
         self.playwright = await async_playwright().start()
+        
+        brave_path = find_brave()
+        user_agent = self.fingerprint.get('userAgent', 
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36')
         
         launch_args = {
             'headless': self.headless,
@@ -245,66 +317,271 @@ class PlaywrightProfileScraper:
             'args': [
                 '--disable-blink-features=AutomationControlled',
                 '--no-sandbox',
-                '--disable-web-resources',
-            ]
+                '--disable-dev-shm-usage',
+                '--disable-infobars',
+                '--window-size=1920,1080',
+                '--disable-extensions',
+                '--disable-software-rasterizer',
+                '--disable-gpu-sandbox',
+                '--no-first-run',
+                '--no-default-browser-check',
+                '--disable-background-networking',
+            ],
+            'ignore_default_args': ['--enable-automation'],
+            'timeout': 60000
         }
         
-        # Add proxy if provided (use parsed proxy_server to avoid credentials in launch args)
+        if brave_path:
+            launch_args['executable_path'] = brave_path
+            logger.info(f"✓ Using Brave: {brave_path}")
+        else:
+            logger.warning("⚠️ Brave not found, using Playwright's Chromium")
+        
         if self.proxy_server:
-            logger.info(f"Using proxy: {self.proxy_server}")
+            logger.info(f"Proxy: {self.proxy_server}")
             launch_args['proxy'] = {'server': self.proxy_server}
         elif self.proxy:
-            logger.info(f"Using proxy: {self.proxy}")
             launch_args['proxy'] = {'server': self.proxy}
         
-        self.browser = await self.playwright.chromium.launch(**launch_args)
+        try:
+            logger.info("Launching browser...")
+            self.browser = await self.playwright.chromium.launch(**launch_args)
+            logger.info("✓ Browser launched successfully")
+        except Exception as e:
+            logger.error(f"❌ Browser launch failed: {e}")
+            logger.info("Trying fallback: Chromium without Brave...")
+            
+            if 'executable_path' in launch_args:
+                del launch_args['executable_path']
+            
+            try:
+                self.browser = await self.playwright.chromium.launch(**launch_args)
+                logger.info("✓ Fallback successful: Using Chromium")
+            except Exception as e2:
+                logger.error(f"❌ Chromium also failed: {e2}")
+                raise
+        
+        screen = self.fingerprint.get('screen', {'width': 1920, 'height': 1080})
         
         context_args = {
-            'viewport': {'width': 1920, 'height': 1080},
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'viewport': {'width': screen['width'], 'height': screen['height']},
+            'user_agent': user_agent,
             'locale': 'en-US',
+            'timezone_id': self.fingerprint.get('timezone', 'America/New_York'),
+            'color_scheme': 'dark',
+            'device_scale_factor': 1,
+            'ignore_https_errors': True,
         }
         
-        # Add proxy with credentials to context if parsed
-        if self.proxy_server:
-            context_args['proxy'] = {'server': self.proxy_server}
-            if self.proxy_username and self.proxy_password:
-                context_args['http_credentials'] = {
-                    'username': self.proxy_username,
-                    'password': self.proxy_password,
-                }
-                logger.info("Proxy credentials added to context")
-        
-        self.context = await self.browser.new_context(**context_args)
-        
-        # Anti-detection
-        await self.context.add_init_script("""
-            () => {
-                Object.defineProperty(navigator, 'webdriver', {
-                    get: () => undefined,
-                });
+        if self.proxy_server and self.proxy_username and self.proxy_password:
+            context_args['http_credentials'] = {
+                'username': self.proxy_username,
+                'password': self.proxy_password,
             }
+        
+        try:
+            logger.info("Creating browser context...")
+            self.context = await self.browser.new_context(**context_args)
+            logger.info("✓ Context created")
+        except Exception as e:
+            logger.error(f"❌ Context creation failed: {e}")
+            raise
+        
+        await self.context.set_extra_http_headers({
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        })
+        
+        try:
+            if os.path.exists('tiktok_cookies.json'):
+                with open('tiktok_cookies.json', 'r') as f:
+                    cookies = json.load(f)
+                    sanitized_cookies = []
+                    for cookie in cookies:
+                        if 'sameSite' in cookie and cookie['sameSite'] not in ['Strict', 'Lax', 'None']:
+                            del cookie['sameSite']
+                        sanitized_cookies.append(cookie)
+                    
+                    await self.context.add_cookies(sanitized_cookies)
+                    logger.info(f"✓ Loaded {len(sanitized_cookies)} cookies from tiktok_cookies.json")
+            else:
+                logger.warning("tiktok_cookies.json not found. You may need to log in.")
+        except Exception as e:
+            logger.error(f"Failed to load cookies: {e}")
+        
+        fingerprint_json = json.dumps(self.fingerprint)
+        await self.context.add_init_script(f"""
+            (() => {{
+                'use strict';
+                const FINGERPRINT = {fingerprint_json};
+                
+                if (FINGERPRINT.platform) {{
+                    Object.defineProperty(Navigator.prototype, 'platform', {{
+                        get: function() {{ return FINGERPRINT.platform; }},
+                        configurable: true,
+                        enumerable: true
+                    }});
+                }}
+                
+                if (FINGERPRINT.hardwareConcurrency) {{
+                    Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', {{
+                        get: function() {{ return FINGERPRINT.hardwareConcurrency; }},
+                        configurable: true,
+                        enumerable: true
+                    }});
+                }}
+                
+                if (FINGERPRINT.deviceMemory) {{
+                    Object.defineProperty(Navigator.prototype, 'deviceMemory', {{
+                        get: function() {{ return FINGERPRINT.deviceMemory; }},
+                        configurable: true,
+                        enumerable: true
+                    }});
+                }}
+                
+                if (FINGERPRINT.languages) {{
+                    Object.defineProperty(Navigator.prototype, 'languages', {{
+                        get: function() {{ return FINGERPRINT.languages; }},
+                        configurable: true,
+                        enumerable: true
+                    }});
+                }}
+                
+                if (FINGERPRINT.maxTouchPoints !== undefined) {{
+                    Object.defineProperty(Navigator.prototype, 'maxTouchPoints', {{
+                        get: function() {{ return FINGERPRINT.maxTouchPoints; }},
+                        configurable: true,
+                        enumerable: true
+                    }});
+                }}
+                
+                const originalGetOwnPropertyNames = Object.getOwnPropertyNames;
+                Object.getOwnPropertyNames = function(obj) {{
+                    const props = originalGetOwnPropertyNames(obj);
+                    if (obj === navigator) {{
+                        return [];
+                    }}
+                    return props;
+                }};
+                
+                const originalKeys = Object.keys;
+                Object.keys = function(obj) {{
+                    const keys = originalKeys(obj);
+                    if (obj === navigator) {{
+                        return [];
+                    }}
+                    return keys;
+                }};
+                
+                const originalGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+                Object.getOwnPropertyDescriptor = function(obj, prop) {{
+                    if (obj === navigator && prop === 'webdriver') {{
+                        return undefined;
+                    }}
+                    return originalGetOwnPropertyDescriptor(obj, prop);
+                }};
+                
+                const webgl = FINGERPRINT.webgl || {{}};
+                const VENDOR = webgl.vendor || 'Google Inc. (Intel)';
+                const RENDERER = webgl.renderer || 'ANGLE (Intel, Intel(R) UHD Graphics 630)';
+                
+                const origGetParam = WebGLRenderingContext.prototype.getParameter;
+                WebGLRenderingContext.prototype.getParameter = function(p) {{
+                    if (p === 37445 || p === 7936) return VENDOR;
+                    if (p === 37446 || p === 7937) return RENDERER;
+                    return origGetParam.call(this, p);
+                }};
+                
+                if (typeof WebGL2RenderingContext !== 'undefined') {{
+                    const origGetParam2 = WebGL2RenderingContext.prototype.getParameter;
+                    WebGL2RenderingContext.prototype.getParameter = function(p) {{
+                        if (p === 37445 || p === 7936) return VENDOR;
+                        if (p === 37446 || p === 7937) return RENDERER;
+                        return origGetParam2.call(this, p);
+                    }};
+                }}
+                
+                if (typeof window.chrome === 'undefined') {{
+                    window.chrome = {{
+                        runtime: {{}},
+                        app: {{}},
+                        loadTimes: () => {{}},
+                        csi: () => {{}}
+                    }};
+                }} else if (!window.chrome.runtime) {{
+                    try {{
+                        window.chrome.runtime = {{}};
+                        window.chrome.app = window.chrome.app || {{}};
+                        window.chrome.loadTimes = window.chrome.loadTimes || (() => {{}});
+                        window.chrome.csi = window.chrome.csi || (() => {{}});
+                    }} catch(e) {{}}
+                }}
+            }})();
         """)
         
-        self.page = await self.context.new_page()
+        try:
+            logger.info("Creating new page...")
+            self.page = await self.context.new_page()
+            logger.info("✓ Page created")
+        except Exception as e:
+            logger.error(f"❌ Page creation failed: {e}")
+            raise
         
-        # Set up request/response interception
-        self.page.on("request", self._on_request)
-        self.page.on("response", self._on_response)
+        self.page.on("console", self._on_console)
+        self.start_console_logging()
+        
+        try:
+            cdp = await self.context.new_cdp_session(self.page)
+            await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+                'source': """
+                    delete Navigator.prototype.webdriver;
+                """
+            })
+            logger.info("✓ CDP session established")
+        except Exception as e:
+            logger.warning(f"CDP session failed (not critical): {e}")
         
         logger.info("Navigating to TikTok...")
-        await self.page.goto('https://www.tiktok.com/', wait_until='domcontentloaded', timeout=45000)
-        await asyncio.sleep(3)
+        await asyncio.sleep(random.uniform(1.0, 2.5))
         
+        try:
+            await self.page.goto('https://www.tiktok.com/', 
+                                wait_until='domcontentloaded', 
+                                timeout=45000)
+            logger.info("✓ Successfully loaded TikTok")
+        except Exception as e:
+            logger.error(f"❌ Failed to load TikTok: {e}")
+            try:
+                screenshot_path = Path('logs') / f'error_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'
+                screenshot_path.parent.mkdir(exist_ok=True)
+                await self.page.screenshot(path=str(screenshot_path))
+                logger.info(f"Screenshot saved: {screenshot_path}")
+            except:
+                pass
+            raise
+        
+        await asyncio.sleep(random.uniform(2.5, 4.0))
         await self._update_cookies()
-        logger.info("Browser ready!")
+        logger.info("✓ Browser ready!")
+        logger.info("=" * 70)
     
     async def stop(self):
         """Stop the browser"""
-        if self.browser:
-            await self.browser.close()
-        if self.playwright:
-            await self.playwright.stop()
+        try:
+            self.stop_console_logging()
+            self.save_console_logs_json()
+            
+            if self.browser:
+                await self.browser.close()
+        except Exception as e:
+            logger.debug(f"Error closing browser: {e}")
+        
+        try:
+            if self.playwright:
+                await self.playwright.stop()
+        except Exception as e:
+            logger.debug(f"Error stopping playwright: {e}")
     
     async def __aenter__(self):
         await self.start()
@@ -322,24 +599,51 @@ class PlaywrightProfileScraper:
                 self.ms_token = cookie['value']
     
     async def _extract_page_data(self) -> Optional[Dict]:
-        """Extract data from page scripts"""
+        """Extract data from page scripts with proper serialization"""
         try:
             data = await self.page.evaluate('''
                 () => {
-                    if (window.__UNIVERSAL_DATA_FOR_REHYDRATION__) 
-                        return window.__UNIVERSAL_DATA_FOR_REHYDRATION__;
-                    if (window.SIGI_STATE) 
-                        return window.SIGI_STATE;
+                    function deepClone(obj) {
+                        try {
+                            return JSON.parse(JSON.stringify(obj));
+                        } catch(e) {
+                            return null;
+                        }
+                    }
+                    
+                    if (typeof window.__UNIVERSAL_DATA_FOR_REHYDRATION__ !== 'undefined') {
+                        const data = window.__UNIVERSAL_DATA_FOR_REHYDRATION__;
+                        const cloned = deepClone(data);
+                        if (cloned) {
+                            return cloned;
+                        }
+                    }
+                    
+                    if (typeof window.SIGI_STATE !== 'undefined') {
+                        const data = window.SIGI_STATE;
+                        const cloned = deepClone(data);
+                        if (cloned) {
+                            return cloned;
+                        }
+                    }
+                    
                     return null;
                 }
             ''')
-            return data
+            
+            if data and isinstance(data, dict):
+                logger.debug("✓ Page data extracted successfully")
+                return data
+            else:
+                logger.debug("✗ No valid page data found")
+                return None
+            
         except Exception as e:
             logger.debug(f"Error extracting page data: {e}")
             return None
     
     # ========================================================================
-    # VIDEO SCRAPING (Playwright scrolling method)
+    # VIDEO SCRAPING WITH NETWORK INTERCEPTION
     # ========================================================================
     
     async def get_user_videos(
@@ -349,56 +653,66 @@ class PlaywrightProfileScraper:
         milestone_datetime: Optional[datetime] = None
     ) -> List[VideoData]:
         """
-        Get all videos from a user after the milestone datetime using Playwright scrolling.
-        
-        Args:
-            username: TikTok username (without @)
-            max_videos: Maximum number of videos to fetch
-            milestone_datetime: Only fetch videos posted after this datetime (stops when first older video found)
+        Get videos using BOTH initial hydration data AND network interception.
+        This captures the first batch from page state and subsequent batches from API calls.
         """
-        # Use milestone_datetime if provided, otherwise get all videos
+        
         if milestone_datetime:
             cutoff_timestamp = int(milestone_datetime.timestamp())
             logger.info(f"Using milestone datetime: {milestone_datetime.strftime('%Y-%m-%d %H:%M:%S')}")
         else:
-            # No cutoff - get all videos
             cutoff_timestamp = 0
             logger.info("No milestone set - fetching all videos")
-        url = f"https://www.tiktok.com/@{username}"
         
+        url = f"https://www.tiktok.com/@{username}"
         videos = []
         seen_ids = set()
         
-        try:
-            # Clear previous responses
-            self.clear_responses()
-            
-            logger.info(f"Navigating to @{username}...")
-            
-            # Try navigation with retry
-            max_retries = 3
-            for attempt in range(max_retries):
-                try:
-                    await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
-                    break
-                except Exception as nav_err:
-                    if attempt < max_retries - 1:
-                        wait_time = 3 * (attempt + 1)
-                        logger.warning(f"Navigation attempt {attempt+1} failed, waiting {wait_time}s...")
-                        await asyncio.sleep(wait_time)
-                    else:
-                        raise
-            
-            await asyncio.sleep(self.wait_time + 1)
-            
-            # Wait for video grid
+        self.intercepted_videos = []
+        
+        async def handle_api_response(response: Response):
+            """Intercept and parse api/post/item_list responses"""
             try:
-                await self.page.wait_for_selector('[data-e2e="user-post-item"]', timeout=10000)
-            except:
-                logger.warning("Video grid not found, continuing anyway...")
+                if "api/post/item_list" in response.url and response.status == 200:
+                    self.stats["api_calls"] += 1
+                    logger.info(f"🌐 Intercepted API call: {response.url[:100]}...")
+                    
+                    try:
+                        json_data = await response.json()
+                        item_list = json_data.get("itemList", [])
+                        
+                        if item_list:
+                            logger.info(f"✓ Found {len(item_list)} videos in API response")
+                            self.intercepted_videos.extend(item_list)
+                            self.stats["videos_from_network"] += len(item_list)
+                        else:
+                            logger.debug("API response had no itemList")
+                            
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Failed to decode JSON from API response: {e}")
+                    except Exception as e:
+                        logger.error(f"Error parsing API response: {e}")
+                        
+            except Exception as e:
+                logger.debug(f"Error in response handler: {e}")
+        
+        self.page.on("response", handle_api_response)
+        
+        try:
+            logger.info(f"Navigating to @{username}...")
+            await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
+            await asyncio.sleep(self.wait_time + 2)
             
-            # Extract initial videos from page data
+            try:
+                await self.page.wait_for_selector('[data-e2e="user-post-item"]', timeout=15000)
+                logger.info("✓ Video grid loaded")
+            except:
+                logger.warning("Video grid not found - account might be private or empty")
+                return []
+            
+            logger.info("📦 Extracting initial videos from page hydration data...")
             data = await self._extract_page_data()
+            
             if data:
                 initial_videos = self._extract_videos_from_page_data(data, username, cutoff_timestamp)
                 for video in initial_videos:
@@ -406,107 +720,75 @@ class PlaywrightProfileScraper:
                         seen_ids.add(video.video_id)
                         videos.append(video)
                         self.stats["videos_scraped"] += 1
+                        self.stats["videos_from_hydration"] += 1
                 
-                logger.info(f"Extracted {len(initial_videos)} videos from page data")
+                logger.info(f"✓ Extracted {len(initial_videos)} videos from hydration data")
+            else:
+                logger.warning("⚠️ Could not extract hydration data - will rely on network interception")
             
-            # Scroll to trigger API calls and load more videos
             scroll_count = 0
-            max_scrolls = 100
+            max_scrolls = 50
             no_new_videos_count = 0
-            processed_urls = set()  # Track which responses we've processed
-            scrolls_without_response = 0  # Track if we're getting any API responses
+            reached_milestone = False
             
-            while len(videos) < max_videos and scroll_count < max_scrolls:
-                # Scroll down
-                await self.page.evaluate('window.scrollBy(0, window.innerHeight)')
+            logger.info("🔄 Starting scroll loop to trigger API calls...")
+            
+            while len(videos) < max_videos and scroll_count < max_scrolls and not reached_milestone:
+                await self.page.evaluate('window.scrollBy(0, window.innerHeight * 2)')
+                scroll_count += 1
                 await asyncio.sleep(self.wait_time)
                 
-                # Check intercepted responses
-                responses = self.get_responses('api/post/item_list')
-                
-                # Check if we got any new responses
-                new_responses = [r for r, _ in responses if r.url not in processed_urls]
-                if not new_responses:
-                    scrolls_without_response += 1
-                    if scrolls_without_response >= 10:
-                        logger.warning(f"No API responses intercepted after 10 scrolls - may need to scroll manually or check network")
-                        scrolls_without_response = 0  # Reset to avoid spam
-                else:
-                    scrolls_without_response = 0
-                
-                videos_before = len(videos)
-                old_videos_count = 0
-                new_videos_this_scroll = 0
-                found_video_before_milestone = False
-                
-                for resp, json_data in responses:
-                    # Skip already processed responses
-                    if resp.url in processed_urls:
-                        continue
-                    processed_urls.add(resp.url)
+                if self.intercepted_videos:
+                    videos_before = len(videos)
                     
-                    if json_data and 'itemList' in json_data:
-                        items = json_data['itemList']
-                        logger.debug(f"Processing response with {len(items)} items")
+                    for item in self.intercepted_videos:
+                        video = self._parse_video_data(item, username)
                         
-                        for item in items:
-                            if not isinstance(item, dict):
-                                logger.debug(f"Skipping non-dict item type: {type(item)}")
-                                continue
-                                
-                            video = self._parse_video_data(item, username)
-                            if video and video.video_id not in seen_ids:
+                        if video and video.video_id not in seen_ids:
+                            if video.create_timestamp >= cutoff_timestamp:
                                 seen_ids.add(video.video_id)
-                                
-                                # Check if within lookback period
-                                if video.create_timestamp >= cutoff_timestamp:
-                                    videos.append(video)
-                                    self.stats["videos_scraped"] += 1
-                                    new_videos_this_scroll += 1
-                                    logger.debug(f"Added video {video.video_id} from {video.create_time}")
-                                else:
-                                    # Found a video before milestone - stop scrolling
-                                    old_videos_count += 1
-                                    found_video_before_milestone = True
-                                    logger.info(f"Found video before milestone: {video.video_id} from {video.create_time}. Stopping scroll.")
-                                    break
-                        
-                        # Break out of response loop if we found old video
-                        if found_video_before_milestone:
-                            break
+                                videos.append(video)
+                                self.stats["videos_scraped"] += 1
+                            else:
+                                logger.info(f"⏹️ Reached milestone - video {video.video_id} is before cutoff")
+                                reached_milestone = True
+                                break
+                    
+                    new_count = len(videos) - videos_before
+                    
+                    if new_count > 0:
+                        logger.info(f"Scroll {scroll_count}: +{new_count} videos (total: {len(videos)})")
+                        no_new_videos_count = 0
                     else:
-                        if json_data:
-                            logger.debug(f"Response has no itemList. Keys: {list(json_data.keys()) if isinstance(json_data, dict) else 'not a dict'}")
-                
-                # Stop scrolling if we found a video before milestone
-                if found_video_before_milestone:
-                    logger.info(f"Stopped at milestone. Total videos collected: {len(videos)}")
-                    break
-                
-                # Check if we got new videos
-                new_videos = len(videos) - videos_before
-                if new_videos == 0:
-                    no_new_videos_count += 1
-                    if no_new_videos_count >= 5:
-                        logger.info(f"No new videos in date range after 5 scrolls, stopping")
-                        logger.info(f"Total skipped (too old): {old_videos_count} videos")
-                        break
+                        no_new_videos_count += 1
+                    
+                    self.intercepted_videos = []
                 else:
-                    no_new_videos_count = 0
-                    logger.debug(f"Scroll {scroll_count}: +{new_videos} videos (total: {len(videos)})")
+                    no_new_videos_count += 1
+                    logger.debug(f"Scroll {scroll_count}: No new videos intercepted")
                 
-                scroll_count += 1
-                
-                if (scroll_count % 10 == 0):
-                    logger.info(f"Scrolled {scroll_count} times, found {len(videos)} videos")
+                if no_new_videos_count >= 5:
+                    logger.info("No new videos after 5 scrolls - stopping")
+                    break
             
-            logger.info(f"Total videos fetched: {len(videos)}")
+            logger.info(f"✅ Total videos fetched: {len(videos)}")
+            logger.info(f"   - From hydration data: {self.stats['videos_from_hydration']}")
+            logger.info(f"   - From network API: {self.stats['videos_from_network']}")
+            logger.info(f"   - Total API calls: {self.stats['api_calls']}")
+            
             return videos
             
         except Exception as e:
             logger.error(f"Error getting user videos: {e}")
-            self.stats["errors"] += 1
-            return videos  # Return what we have so far
+            import traceback
+            traceback.print_exc()
+            return videos
+            
+        finally:
+            try:
+                self.page.remove_listener("response", handle_api_response)
+            except:
+                pass
     
     def _extract_videos_from_page_data(
         self, 
@@ -514,7 +796,7 @@ class PlaywrightProfileScraper:
         username: str, 
         cutoff_timestamp: int
     ) -> List[VideoData]:
-        """Extract videos from page data"""
+        """Extract videos from initial page hydration data"""
         videos = []
         
         try:
@@ -522,13 +804,10 @@ class PlaywrightProfileScraper:
             user_post = default_scope.get('webapp.user-post', {})
             item_list = user_post.get('itemList', [])
             
-            # itemList sometimes contains just video IDs (strings), not full objects
-            # Filter to only process dictionaries
             if item_list and isinstance(item_list, list):
                 item_list = [item for item in item_list if isinstance(item, dict)]
             
             if not item_list:
-                # Try ItemModule (older format)
                 item_module = data.get('ItemModule', {})
                 if item_module and isinstance(item_module, dict):
                     item_list = [v for v in item_module.values() if isinstance(v, dict)]
@@ -545,23 +824,22 @@ class PlaywrightProfileScraper:
                         videos.append(video)
                         logger.debug(f"Extracted video {video.video_id} from page data")
                     else:
-                        # Found a video before milestone - stop extracting
-                        logger.info(f"Found video before milestone in initial page data: {video.video_id} from {video.create_time}. Stopping extraction.")
+                        logger.info(f"Found video before milestone in initial page data: {video.video_id}")
                         break
         
         except Exception as e:
             logger.debug(f"Error extracting videos from page data: {e}")
-            import traceback
-            logger.debug(traceback.format_exc())
         
         return videos
     
     def _parse_video_data(self, item: Dict, username: str) -> Optional[VideoData]:
-        """Parse video data from API response"""
+        """Parse video data from API response or hydration data"""
         try:
-            # Ensure item is a dictionary
             if not isinstance(item, dict):
-                logger.debug(f"Skipping non-dict item: {type(item)}")
+                return None
+            
+            if self._is_pinned_video(item):
+                logger.debug(f"Skipping pinned video: {item.get('id')}")
                 return None
             
             author = item.get('author', {})
@@ -598,7 +876,6 @@ class PlaywrightProfileScraper:
             
             video_id = str(item.get('id', ''))
             if not video_id:
-                logger.debug("Skipping video with no ID")
                 return None
             
             return VideoData(
@@ -617,110 +894,42 @@ class PlaywrightProfileScraper:
             logger.debug(f"Error parsing video: {e}")
             return None
     
-    # ========================================================================
-    # TIME SERIES GENERATION
-    # ========================================================================
-    
-    def create_time_series(
-        self,
-        videos: List[VideoData]
-    ) -> List[TimeSeriesPoint]:
-        """
-        Aggregate video stats into time series (daily aggregation).
-        
-        Args:
-            videos: List of video data
-        
-        Returns:
-            List of time series points
-        """
-        if not videos:
-            return []
-        
-        # Sort videos by timestamp
-        videos_sorted = sorted(videos, key=lambda v: v.create_timestamp)
-        
-        # Group videos by day
-        period_groups = defaultdict(list)
-        
-        for video in videos_sorted:
-            dt = datetime.fromtimestamp(video.create_timestamp)
-            period_key = dt.strftime('%Y-%m-%d')
-            period_groups[period_key].append(video)
-        
-        # Create time series points
-        time_series = []
-        
-        for period_key in sorted(period_groups.keys()):
-            videos_in_period = period_groups[period_key]
+    def _is_pinned_video(self, item: Dict) -> bool:
+        """Check if a video is pinned to the profile"""
+        try:
+            if item.get('isPinnedItem') or item.get('pinned'):
+                return True
             
-            total_views = sum(v.stats['playCount'] for v in videos_in_period)
-            total_likes = sum(v.stats['diggCount'] for v in videos_in_period)
-            total_comments = sum(v.stats['commentCount'] for v in videos_in_period)
-            total_shares = sum(v.stats['shareCount'] for v in videos_in_period)
-            total_collects = sum(v.stats['collectCount'] for v in videos_in_period)
+            author = item.get('author', {})
+            if isinstance(author, dict):
+                pinned_item_ids = author.get('pinnedItemIds', [])
+                video_id = str(item.get('id', ''))
+                if video_id and video_id in pinned_item_ids:
+                    return True
             
-            video_count = len(videos_in_period)
+            if item.get('indexEnabled') is False:
+                return True
             
-            # Calculate averages
-            avg_views = total_views / video_count if video_count > 0 else 0
-            avg_likes = total_likes / video_count if video_count > 0 else 0
-            avg_comments = total_comments / video_count if video_count > 0 else 0
-            avg_shares = total_shares / video_count if video_count > 0 else 0
+            return False
             
-            # Engagement rate: (likes + comments + shares) / views
-            total_engagement = total_likes + total_comments + total_shares
-            engagement_rate = (total_engagement / total_views * 100) if total_views > 0 else 0
-            
-            # Get period boundaries
-            first_video = videos_in_period[0]
-            last_video = videos_in_period[-1]
-            
-            time_series.append(TimeSeriesPoint(
-                period_start=first_video.create_time,
-                period_end=last_video.create_time,
-                timestamp=first_video.create_timestamp,
-                video_count=video_count,
-                total_views=total_views,
-                total_likes=total_likes,
-                total_comments=total_comments,
-                total_shares=total_shares,
-                total_collects=total_collects,
-                avg_views_per_video=round(avg_views, 2),
-                avg_likes_per_video=round(avg_likes, 2),
-                avg_comments_per_video=round(avg_comments, 2),
-                avg_shares_per_video=round(avg_shares, 2),
-                engagement_rate=round(engagement_rate, 2)
-            ))
-        
-        return time_series
+        except Exception as e:
+            logger.debug(f"Error checking pinned status: {e}")
+            return False
     
     # ========================================================================
     # HIGH-LEVEL SCRAPING
     # ========================================================================
     
-    async def scrape_user_time_series(
+    async def scrape_user_profile(
         self,
         username: str,
-        output_dir: Path,
+        profile_dir: Path,
         max_videos: int = 1000,
         milestone_datetime: Optional[datetime] = None
     ) -> Dict[str, Any]:
-        """
-        Scrape user profile and create time series dataset (daily aggregation).
+        """Scrape user profile and save to profile directory"""
+        logger.info(f"Starting scrape for @{username}")
         
-        Args:
-            username: TikTok username (without @)
-            output_dir: Directory to save output files
-            max_videos: Maximum videos to fetch
-            milestone_datetime: Only fetch videos posted after this datetime
-        
-        Returns:
-            Dictionary with videos, time series, and metadata
-        """
-        logger.info(f"Starting time series scrape for @{username}")
-        
-        # Calculate date range
         now = datetime.now()
         if milestone_datetime:
             cutoff_date = milestone_datetime
@@ -732,11 +941,8 @@ class PlaywrightProfileScraper:
         if cutoff_date:
             logger.info(f"Date range: {cutoff_date.strftime('%Y-%m-%d')} to {now.strftime('%Y-%m-%d')}")
         
-        # Create output directory
-        username_dir = output_dir / username
-        username_dir.mkdir(parents=True, exist_ok=True)
+        profile_dir.mkdir(parents=True, exist_ok=True)
         
-        # Fetch all videos
         videos = await self.get_user_videos(username, max_videos, milestone_datetime)
         
         if not videos:
@@ -746,7 +952,8 @@ class PlaywrightProfileScraper:
         logger.info(f"Fetched {len(videos)} videos")
         
         # Save raw videos
-        videos_file = username_dir / f"videos_raw_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        videos_file = profile_dir / f"videos_raw_{timestamp}.json"
         with open(videos_file, 'w', encoding='utf-8') as f:
             json.dump([asdict(v) for v in videos], f, ensure_ascii=False, indent=2)
         
@@ -778,68 +985,129 @@ class PlaywrightProfileScraper:
                 "avg_comments": sum(v.stats['commentCount'] for v in videos) / len(videos),
             },
             "files": {
-                "videos": str(videos_file.name),
-            },
-            "scraper_stats": self.stats
+                "videos": str(videos_file.name)
+            }
         }
         
         # Save summary
-        summary_file = username_dir / f"summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        summary_file = profile_dir / f"summary_{timestamp}.json"
         with open(summary_file, 'w', encoding='utf-8') as f:
             json.dump(summary, f, ensure_ascii=False, indent=2)
         
         logger.info(f"Saved summary to {summary_file}")
         
         return summary
-    
-    def _save_time_series_csv(self, time_series: List[TimeSeriesPoint], filepath: Path):
-        """Save time series as CSV"""
-        import csv
-        
-        with open(filepath, 'w', newline='', encoding='utf-8') as f:
-            if not time_series:
-                return
-            
-            fieldnames = list(asdict(time_series[0]).keys())
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            
-            writer.writeheader()
-            for ts in time_series:
-                writer.writerow(asdict(ts))
-        
-        logger.info(f"Saved CSV to {filepath}")
 
 
 # ============================================================================
-# MAIN
+# MAIN EXECUTION (RUNNER)
 # ============================================================================
 
 async def main():
-    """Example usage"""
+    # Configure Logging
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler("scraper.log", encoding='utf-8'),
+            logging.StreamHandler()
+        ]
     )
-    
-    username = "example_user"  # Replace with actual username
-    
-    async with PlaywrightProfileScraper(
-        headless=False,
-    ) as scraper:
-        
-        # Scrape user's 1-year history with daily aggregation
-        summary = await scraper.scrape_user_time_series(
-            username=username,
-            period='daily',  # or 'weekly', 'monthly'
-            max_videos=1000,
-            lookback_days=365
-        )
-        
-        print("\n" + "="*70)
-        print("TIME SERIES SUMMARY")
-        print("="*70)
-        print(json.dumps(summary, indent=2))
 
+    # Configuration
+    TARGET_USERNAMES = [
+        "tiktok", 
+        "khabylame",
+    ]
+    
+    LOOKBACK_DAYS = 30 
+    milestone = datetime.now() - timedelta(days=LOOKBACK_DAYS)
+    
+    # Create run directory with timestamp
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    run_dir = Path("video_data") / run_timestamp
+    run_dir.mkdir(parents=True, exist_ok=True)
+    
+    logger.info(f"--- STARTING SCRAPE ---")
+    logger.info(f"Milestone Date: {milestone.strftime('%Y-%m-%d %H:%M:%S')} ({LOOKBACK_DAYS} days ago)")
+    logger.info(f"Output directory: {run_dir}")
+    
+    # Track run statistics
+    run_stats = {
+        "run_name": f"scrape_{run_timestamp}",
+        "milestone_datetime": milestone.strftime('%Y-%m-%d %H:%M:%S'),
+        "output_dir": str(run_dir),
+        "started_at": datetime.now().isoformat(),
+        "profiles_processed": 0,
+        "profiles_success": 0,
+        "profiles_failed": 0,
+        "total_videos": 0,
+        "profile_summaries": {}
+    }
+
+    async with PlaywrightScraper(headless=False) as scraper:
+        
+        for username in TARGET_USERNAMES:
+            try:
+                logger.info(f"Processing user: @{username}")
+                run_stats["profiles_processed"] += 1
+                
+                # Create profile directory
+                profile_dir = run_dir / username
+                
+                result = await scraper.scrape_user_profile(
+                    username=username,
+                    profile_dir=profile_dir,
+                    max_videos=1000,
+                    milestone_datetime=milestone
+                )
+                
+                if "error" in result:
+                    logger.error(f"Failed to scrape @{username}: {result['error']}")
+                    run_stats["profiles_failed"] += 1
+                else:
+                    logger.info(f"✓ Successfully scraped @{username}")
+                    logger.info(f"  - Videos captured: {result.get('total_videos')}")
+                    logger.info(f"  - Output saved to: {profile_dir}/")
+                    
+                    run_stats["profiles_success"] += 1
+                    run_stats["total_videos"] += result.get('total_videos', 0)
+                    
+                    # Add to profile summaries
+                    run_stats["profile_summaries"][username] = {
+                        "username": username,
+                        "videos": result.get('total_videos', 0),
+                        "date_range": result.get('date_range'),
+                        "files": result.get('files')
+                    }
+                
+                if username != TARGET_USERNAMES[-1]:
+                    sleep_time = random.uniform(5, 10)
+                    logger.info(f"Sleeping {sleep_time:.2f}s before next user...")
+                    await asyncio.sleep(sleep_time)
+                    
+            except Exception as e:
+                logger.error(f"Critical error processing {username}: {e}")
+                run_stats["profiles_failed"] += 1
+                import traceback
+                traceback.print_exc()
+    
+    # Save run summary
+    run_stats["completed_at"] = datetime.now().isoformat()
+    run_stats["scraper_stats"] = scraper.stats
+    
+    run_summary_file = run_dir / f"run_summary_{run_timestamp}.json"
+    with open(run_summary_file, 'w', encoding='utf-8') as f:
+        json.dump(run_stats, f, ensure_ascii=False, indent=2)
+    
+    logger.info(f"✅ Run complete! Summary saved to {run_summary_file}")
+    logger.info(f"   - Profiles processed: {run_stats['profiles_processed']}")
+    logger.info(f"   - Success: {run_stats['profiles_success']}")
+    logger.info(f"   - Failed: {run_stats['profiles_failed']}")
+    logger.info(f"   - Total videos: {run_stats['total_videos']}")
 
 if __name__ == "__main__":
+    if os.name == 'nt':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        
     asyncio.run(main())

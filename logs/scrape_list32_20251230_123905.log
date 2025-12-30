@@ -1,0 +1,128 @@
+2025-12-30 12:39:05,564 - Crawler - INFO - ======================================================================
+2025-12-30 12:39:05,564 - Crawler - INFO - TIKTOK PROFILE TIME SERIES SCRAPER
+2025-12-30 12:39:05,564 - Crawler - INFO - Target Profiles: 32
+2025-12-30 12:39:05,564 - Crawler - INFO - Milestone Date: 2025-12-28 14:00:00
+2025-12-30 12:39:05,564 - Crawler - INFO - ======================================================================
+2025-12-30 12:39:05,565 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/run_list32_20251230_progress.db
+2025-12-30 12:39:05,565 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-30 12:39:05,566 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-30 12:39:05,567 - TikTok.TimeSeriesScraper - INFO - ✓ Loaded fingerprint from browser_fingerprint.json
+2025-12-30 12:39:05,567 - TikTok.TimeSeriesScraper - INFO -   Device: Win32
+2025-12-30 12:39:05,567 - TikTok.TimeSeriesScraper - INFO -   GPU: ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001681) Direct3D11 ...
+2025-12-30 12:39:05,567 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 12:39:05,567 - TikTok.TimeSeriesScraper - INFO - STARTING PRODUCTION-READY STEALTH BROWSER (BRAVE)
+2025-12-30 12:39:05,568 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 12:39:06,112 - TikTok.TimeSeriesScraper - INFO - Found Brave: /usr/bin/brave-browser
+2025-12-30 12:39:06,112 - TikTok.TimeSeriesScraper - INFO - ✓ Using Brave: /usr/bin/brave-browser
+2025-12-30 12:39:06,112 - TikTok.TimeSeriesScraper - INFO - Launching browser...
+2025-12-30 12:39:06,577 - TikTok.TimeSeriesScraper - INFO - ✓ Browser launched successfully
+2025-12-30 12:39:06,581 - TikTok.TimeSeriesScraper - INFO - Creating browser context...
+2025-12-30 12:39:06,608 - TikTok.TimeSeriesScraper - INFO - ✓ Context created
+2025-12-30 12:39:06,618 - TikTok.TimeSeriesScraper - INFO - ✓ Loaded 0 cookies from tiktok_cookies.json
+2025-12-30 12:39:06,623 - TikTok.TimeSeriesScraper - INFO - Creating new page...
+2025-12-30 12:39:07,081 - TikTok.TimeSeriesScraper - INFO - ✓ Page created
+2025-12-30 12:39:07,090 - TikTok.TimeSeriesScraper - INFO - Console logging started: logs/console/console_20251230_123907.log
+2025-12-30 12:39:07,134 - TikTok.TimeSeriesScraper - INFO - ✓ CDP session established
+2025-12-30 12:39:07,143 - TikTok.TimeSeriesScraper - INFO - Navigating to TikTok...
+2025-12-30 12:39:09,440 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] Reflect is already polyfilled.
+2025-12-30 12:39:09,466 - TikTok.TimeSeriesScraper - INFO - ✓ Successfully loaded TikTok
+2025-12-30 12:39:09,591 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,594 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,595 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,596 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,606 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,611 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,611 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,615 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,708 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,722 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:09,724 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+2025-12-30 12:39:10,001 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 12:39:10,380 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 12:39:11,288 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 12:39:12,049 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 12:39:12,050 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 12:39:13,453 - TikTok.TimeSeriesScraper - INFO - ✓ Browser ready!
+2025-12-30 12:39:13,454 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 12:39:13,455 - Crawler - INFO - 
+[1/32] Processing: phuongmychiofficial
+2025-12-30 12:39:13,455 - TikTok.TimeSeriesScraper - INFO - Starting time series scrape for @phuongmychiofficial
+2025-12-30 12:39:13,455 - TikTok.TimeSeriesScraper - INFO - Using milestone: 2025-12-28 14:00:00
+2025-12-30 12:39:13,455 - TikTok.TimeSeriesScraper - INFO - Date range: 2025-12-28 to 2025-12-30
+2025-12-30 12:39:13,456 - TikTok.TimeSeriesScraper - INFO - Using milestone datetime: 2025-12-28 14:00:00
+2025-12-30 12:39:13,456 - TikTok.TimeSeriesScraper - INFO - Navigating to @phuongmychiofficial...
+2025-12-30 12:39:14,164 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Check show get coins entrance failed [object Response]
+2025-12-30 12:39:14,852 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] Reflect is already polyfilled.
+2025-12-30 12:39:14,890 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,891 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,891 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,891 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,892 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,893 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,895 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,896 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,930 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,938 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:39:14,939 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+2025-12-30 12:39:15,070 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 12:39:16,444 - TikTok.TimeSeriesScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767073148&aid=1988&app_language=en&app_nam
+2025-12-30 12:39:18,146 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+2025-12-30 12:39:19,184 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [00:05.676][warn][multiplex](1) demux waterlevel change to full, abort request
+2025-12-30 12:39:19,301 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 12:39:20,845 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 12:39:20,848 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+2025-12-30 12:39:20,852 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 12:39:22,116 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+2025-12-30 12:39:26,825 - TikTok.TimeSeriesScraper - INFO - ✓ Video grid loaded
+2025-12-30 12:39:26,825 - TikTok.TimeSeriesScraper - INFO - Extracting data from page state...
+2025-12-30 12:39:26,826 - TikTok.TimeSeriesScraper - INFO - Attempting to extract page data...
+2025-12-30 12:39:26,850 - TikTok.TimeSeriesScraper - INFO - Data is string, attempting to parse JSON...
+2025-12-30 12:39:26,850 - TikTok.TimeSeriesScraper - ERROR - Failed to parse data as JSON: Expecting value: line 1 column 1 (char 0)
+2025-12-30 12:39:26,850 - TikTok.TimeSeriesScraper - ERROR - Failed to extract page data - page state is empty
+2025-12-30 12:39:26,850 - TikTok.TimeSeriesScraper - INFO - Trying alternative extraction methods...
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - INFO - ✓ Alternative extraction succeeded
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - DEBUG - Data keys: not a dict
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - INFO - === DEBUGGING DATA STRUCTURE ===
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - INFO - Data type: <class 'str'>
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - INFO - Data is dict: False
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - INFO - === END DEBUG ===
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-30 12:39:26,855 - TikTok.TimeSeriesScraper - INFO - ✓ Extracted 0 videos from page state
+2025-12-30 12:39:27,867 - TikTok.TimeSeriesScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767073148&aid=1988&app_language=en&app_nam
+2025-12-30 12:39:36,866 - TikTok.TimeSeriesScraper - INFO - Attempting to extract page data...
+2025-12-30 12:39:36,874 - TikTok.TimeSeriesScraper - INFO - Data is string, attempting to parse JSON...
+2025-12-30 12:39:36,875 - TikTok.TimeSeriesScraper - ERROR - Failed to parse data as JSON: Expecting value: line 1 column 1 (char 0)
+2025-12-30 12:39:37,882 - TikTok.TimeSeriesScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767073148&aid=1988&app_language=en&app_nam
+2025-12-30 12:39:45,254 - TikTok.TimeSeriesScraper - INFO - Console logging stopped
+2025-12-30 12:39:45,260 - TikTok.TimeSeriesScraper - INFO - Console logs saved to JSON: logs/console/console_20251230_123945.json
+2025-12-30 12:39:45,422 - TikTok.TimeSeriesScraper - DEBUG - Error closing browser: Browser.close: Connection closed while reading from the driver

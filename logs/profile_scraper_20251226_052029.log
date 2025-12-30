@@ -1,0 +1,230 @@
+2025-12-26 05:20:29,912 - ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:29,912 - ProfileScraper - INFO - TIKTOK PROFILE & VIDEO SCRAPER
+2025-12-26 05:20:29,912 - ProfileScraper - INFO - Lookback: 365 days
+2025-12-26 05:20:29,912 - ProfileScraper - INFO - Max videos per profile: 1000
+2025-12-26 05:20:29,913 - ProfileScraper - INFO - Include profile data: True
+2025-12-26 05:20:29,913 - ProfileScraper - INFO - Total profiles: 2
+2025-12-26 05:20:29,913 - ProfileScraper - INFO - Headless mode: False
+2025-12-26 05:20:29,913 - ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:29,914 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/profiles_20251226_progress.db
+2025-12-26 05:20:29,914 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-26 05:20:29,914 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-26 05:20:29,914 - ProfileTracker - INFO - Added 2 profiles to tracker
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - ✓ Loaded fingerprint from browser_fingerprint.json
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO -   Device: Win32
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO -   GPU: ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001681) Direct3D11 ...
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - Proxy: http://14.224.198.119:44182
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - STARTING PRODUCTION-READY STEALTH BROWSER
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - Mode: VISIBLE
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - Platform: linux
+2025-12-26 05:20:29,915 - TikTok.ProfileScraper - INFO - Display: :1
+2025-12-26 05:20:30,244 - TikTok.ProfileScraper - INFO - Found Chrome: /usr/bin/google-chrome-stable
+2025-12-26 05:20:30,244 - TikTok.ProfileScraper - INFO - ✓ Using stable Chrome: /usr/bin/google-chrome-stable
+2025-12-26 05:20:30,244 - TikTok.ProfileScraper - INFO - Proxy: http://14.224.198.119:44182
+2025-12-26 05:20:30,600 - TikTok.ProfileScraper - INFO - ✓ CDP session established
+2025-12-26 05:20:30,603 - TikTok.ProfileScraper - INFO - Navigating to TikTok...
+2025-12-26 05:20:36,103 - TikTok.ProfileScraper - INFO - ✓ Browser ready!
+2025-12-26 05:20:36,103 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:36,103 - ProfileScraper - INFO - 
+[1/2] Processing: phuongmychiofficial
+2025-12-26 05:20:36,103 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:36,103 - TikTok.ProfileScraper - INFO - Starting scrape for @phuongmychiofficial
+2025-12-26 05:20:36,103 - TikTok.ProfileScraper - INFO - Max videos: 1000, Lookback: 365 days
+2025-12-26 05:20:36,103 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:20:37,802 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:38,797 - TikTok.ProfileScraper - DEBUG - Error detecting captcha: Page.query_selector: Execution context was destroyed, most likely because of a navigation
+2025-12-26 05:20:38,797 - TikTok.ProfileScraper - INFO - Extracting profile data for @phuongmychiofficial...
+2025-12-26 05:20:38,856 - TikTok.ProfileScraper - ERROR - Error extracting profile data: 'str' object has no attribute 'get'
+2025-12-26 05:20:38,857 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 690, in get_profile_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-26 05:20:38,857 - TikTok.ProfileScraper - INFO - Navigating to @phuongmychiofficial...
+2025-12-26 05:20:40,598 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:41,711 - TikTok.ProfileScraper - DEBUG - Error detecting captcha: Page.query_selector: Execution context was destroyed, most likely because of a navigation
+2025-12-26 05:20:41,771 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-26 05:20:41,771 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-26 05:20:42,496 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:44,762 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:45,918 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:47,033 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:48,261 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:49,386 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:50,553 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:51,770 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:52,851 - TikTok.ProfileScraper - INFO - Scrolled 10 times, found 164 videos
+2025-12-26 05:20:52,953 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:54,162 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:55,461 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:56,774 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:58,001 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:20:59,247 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:00,649 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:01,809 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:03,100 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:04,664 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:05,724 - TikTok.ProfileScraper - INFO - Scrolled 20 times, found 322 videos
+2025-12-26 05:21:06,085 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:08,134 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:09,638 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:11,465 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:12,218 - TikTok.ProfileScraper - DEBUG - Error storing request: 'utf-8' codec can't decode byte 0x94 in position 29: invalid start byte
+2025-12-26 05:21:13,959 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:15,646 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:17,138 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:17,797 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:19,352 - TikTok.ProfileScraper - INFO - Scrolled 30 times, found 433 videos
+2025-12-26 05:21:23,815 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-26 05:21:23,815 - TikTok.ProfileScraper - INFO - Total videos fetched: 433 (within 365 days)
+2025-12-26 05:21:23,840 - TikTok.ProfileScraper - INFO - Saved 433 videos to data/profiles/run_20251226_052029/phuongmychiofficial/videos_20251226_052123.json
+2025-12-26 05:21:23,841 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:23,841 - TikTok.ProfileScraper - INFO - SCRAPE COMPLETE
+2025-12-26 05:21:23,841 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:23,841 - TikTok.ProfileScraper - INFO - Summary saved to data/profiles/run_20251226_052029/phuongmychiofficial/summary_20251226_052123.json
+2025-12-26 05:21:23,841 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:23,842 - ProfileScraper - INFO -   ✓ Success: 433 videos scraped
+2025-12-26 05:21:23,845 - ProfileTracker - DEBUG - Marked account phuongmychiofficial as completed
+2025-12-26 05:21:23,845 - ProfileScraper - INFO - 
+[2/2] Processing: ising52hz
+2025-12-26 05:21:25,846 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:25,846 - TikTok.ProfileScraper - INFO - Starting scrape for @ising52hz
+2025-12-26 05:21:25,846 - TikTok.ProfileScraper - INFO - Max videos: 1000, Lookback: 365 days
+2025-12-26 05:21:25,846 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:27,851 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:28,503 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - WARNING - Captcha detected: tiktok_custom
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - INFO - ⚠️  CAPTCHA DETECTED - MANUAL SOLVING REQUIRED
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - INFO - Please solve the captcha in the browser window
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - INFO - Waiting for up to 120 seconds...
+2025-12-26 05:21:29,004 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:30,587 - TikTok.ProfileScraper - DEBUG - Error detecting captcha: Page.query_selector: Execution context was destroyed, most likely because of a navigation
+2025-12-26 05:21:30,588 - TikTok.ProfileScraper - INFO - ✓ Captcha solved!
+2025-12-26 05:21:30,588 - TikTok.ProfileScraper - INFO - Extracting profile data for @ising52hz...
+2025-12-26 05:21:30,758 - TikTok.ProfileScraper - ERROR - Error extracting profile data: 'str' object has no attribute 'get'
+2025-12-26 05:21:30,759 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 690, in get_profile_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-26 05:21:30,759 - TikTok.ProfileScraper - INFO - Navigating to @ising52hz...
+2025-12-26 05:21:32,201 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:32,614 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:21:33,442 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - WARNING - Captcha detected: tiktok_custom
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - INFO - ⚠️  CAPTCHA DETECTED - MANUAL SOLVING REQUIRED
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - INFO - Please solve the captcha in the browser window
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - INFO - Waiting for up to 120 seconds...
+2025-12-26 05:21:33,443 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:21:34,507 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:35,553 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:36,600 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:37,649 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:38,696 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:39,740 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:40,788 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:41,834 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:42,896 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:43,944 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:44,989 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:46,043 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:47,086 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:48,137 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:49,183 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:49,184 - TikTok.ProfileScraper - INFO - Still waiting... (15s elapsed)
+2025-12-26 05:21:50,231 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:51,278 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:52,337 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:53,386 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:54,436 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:55,483 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:56,529 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:57,575 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:58,625 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:21:59,672 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:00,718 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:01,768 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:02,813 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:02,879 - TikTok.ProfileScraper - DEBUG - Error storing request: 'utf-8' codec can't decode byte 0xf8 in position 29: invalid start byte
+2025-12-26 05:22:03,861 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:04,909 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:04,909 - TikTok.ProfileScraper - INFO - Still waiting... (30s elapsed)
+2025-12-26 05:22:05,958 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:07,011 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:08,062 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:09,115 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:10,161 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:11,207 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:12,252 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:13,302 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:14,349 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:15,397 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:16,444 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:17,491 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:18,536 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:19,586 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:20,632 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:20,632 - TikTok.ProfileScraper - INFO - Still waiting... (45s elapsed)
+2025-12-26 05:22:21,680 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:22,727 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:23,776 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:24,823 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:25,876 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:26,922 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:27,969 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:28,561 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:22:29,017 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:30,066 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:30,113 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:22:31,112 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:32,158 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:32,874 - TikTok.ProfileScraper - DEBUG - Error storing request: 'utf-8' codec can't decode byte 0xa5 in position 29: invalid start byte
+2025-12-26 05:22:33,203 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:34,251 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:34,976 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:22:35,303 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:36,350 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:36,351 - TikTok.ProfileScraper - INFO - Still waiting... (60s elapsed)
+2025-12-26 05:22:37,400 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:38,446 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:39,493 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:40,550 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:41,599 - TikTok.ProfileScraper - WARNING - Captcha keyword detected: captcha
+2025-12-26 05:22:42,802 - TikTok.ProfileScraper - DEBUG - Error detecting captcha: Page.query_selector: Execution context was destroyed, most likely because of a navigation
+2025-12-26 05:22:42,802 - TikTok.ProfileScraper - INFO - ✓ Captcha solved!
+2025-12-26 05:22:43,834 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:22:44,930 - TikTok.ProfileScraper - DEBUG - Intercepted API: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766726433&aid=1988&app_language=en&app_nam
+2025-12-26 05:22:52,805 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-26 05:22:52,814 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-26 05:22:52,815 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - WARNING - No videos fetched
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - SCRAPE COMPLETE
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - Summary saved to data/profiles/run_20251226_052029/ising52hz/summary_20251226_052257.json
+2025-12-26 05:22:57,839 - TikTok.ProfileScraper - INFO - ======================================================================
+2025-12-26 05:22:57,840 - ProfileScraper - INFO -   ✓ Success: 0 videos scraped
+2025-12-26 05:22:57,840 - ProfileTracker - DEBUG - Marked account ising52hz as completed
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - 
+======================================================================
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - SCRAPING COMPLETED!
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - ======================================================================
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - Processed: 2
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - Success: 2
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - Failed: 0
+2025-12-26 05:22:57,983 - ProfileScraper - INFO - Total videos: 433
+2025-12-26 05:22:57,984 - ProfileScraper - INFO - Profiles with data: 0
+2025-12-26 05:22:57,984 - ProfileScraper - INFO - Output: data/profiles/run_20251226_052029
+2025-12-26 05:22:57,984 - ProfileScraper - INFO - Summary: data/profiles/run_20251226_052029/run_summary_20251226_052029.json
+2025-12-26 05:22:57,984 - ProfileScraper - INFO - ======================================================================
