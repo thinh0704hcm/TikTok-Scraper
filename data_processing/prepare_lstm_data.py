@@ -20,44 +20,40 @@ warnings.filterwarnings('ignore')
 
 class LSTMDataPreparator:
     """
-    Prepares TikTok video data for time-series prediction with hourly resampling.
+    Prepares TikTok video data for LSTM prediction model.
     
-    Flexible design supports:
-    - SINGLE snapshot (sequence_length=1): Current approach for simple prediction
-    - MULTIPLE snapshots (sequence_length>1): Future approach for early signal detection
-    - VARIABLE prediction horizon: Includes target_horizon as feature for arbitrary T
+    Model Requirements (from instructor):
+    - Input: Sequence of 3 snapshots (hour 1, 2, 3 after posting) + time_horizon
+    - Each snapshot has 4 metrics: views, likes, shares, comments
+    - time_horizon: days ahead to predict (1-7 days = 24-168 hours)
+    - Output: 4 metrics at specified time_horizon
     
-    Key features:
-    - Hourly time-series (0-168 hours = 7 days)
+    Data Processing:
+    - Hourly resampling (0-168 hours = 7 days)
     - Linear interpolation for missing hours
-    - Time-aware prediction (includes hours_since_post AND target_horizon)
-    - Multi-output targets (views, likes, shares, comments)
-    - Arbitrary T: Single model predicts any T=1,2,3,6,12,24 hours ahead
+    - Data augmentation (synthetic videos) due to limited real data
+    - Supervised learning format
     """
     
     def __init__(self, 
                  video_data_dir: str,
-                 output_dir: str = "data_processing/processed_simple",
-                 sequence_length: int = 1,
-                 prediction_horizons: List[int] = None,
+                 output_dir: str = "data_processing/processed",
                  max_days: int = 7):
         """
-        Initialize the data preparator for hourly time-series prediction.
+        Initialize the data preparator.
         
         Args:
             video_data_dir: Root directory containing video data
             output_dir: Directory to save processed data and artifacts
-            sequence_length: Number of hourly snapshots in input (1=single, >1=sequence)
-            prediction_horizons: List of T values to sample (e.g., [1,2,3,6,12,24])
-                               Default: [1,2,3,6,12,24] for variable-T training
             max_days: Maximum days since posting to include (7 days = 168h)
         """
         self.video_data_dir = Path(video_data_dir)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
-        self.sequence_length = sequence_length
-        self.prediction_horizons = prediction_horizons if prediction_horizons else [1, 3, 6, 12, 24]
+        # FIXED CONFIGURATION (theo yêu cầu thầy)
+        self.sequence_length = 3  # 3 snapshots: hour 1, 2, 3
+        self.prediction_horizons = [24, 48, 72, 96, 120, 144, 168]  # 1-7 days
         self.max_days = max_days
         self.max_hours = max_days * 24  # 168 hours for 7 days
         
@@ -193,6 +189,273 @@ class LSTMDataPreparator:
             print(f"   ⚠️  Lost {len(lost_accounts)} accounts during cleaning: {sorted(lost_accounts)}")
         
         return df
+    
+    def prepare_snapshots(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Tạo chính xác 3 snapshots tại giờ 1, 2, 3 sau khi đăng.
+        Dùng interpolation/extrapolation nếu không có snapshots đúng thời điểm.
+        
+        Args:
+            df: Cleaned DataFrame
+            
+        Returns:
+            DataFrame với 3 snapshots tại t=1h, 2h, 3h + temporal features
+        """
+        print(f"\n📸 Creating snapshots at t=1h, 2h, 3h for each video...")
+        
+        target_hours = [1, 2, 3]
+        interpolated_dfs = []
+        videos_kept = 0
+        videos_skipped = 0
+        stats = {'exact_match': 0, 'interpolated': 0, 'extrapolated': 0}
+        
+        for video_id, group in df.groupby('video_id'):
+            group = group.sort_values('t_since_post')
+            
+            # Cần ít nhất 1 snapshot để có thể augment
+            if len(group) < 1:
+                videos_skipped += 1
+                continue
+            
+            account = group['author_username'].iloc[0]
+            posted_at = group['posted_at'].iloc[0]
+            
+            # Tạo 3 snapshots tại t=1, 2, 3
+            snapshots_for_video = []
+            
+            for target_t in target_hours:
+                snapshot = self._get_or_create_snapshot(group, target_t, posted_at, stats)
+                if snapshot is not None:
+                    snapshots_for_video.append(snapshot)
+            
+            # Chỉ giữ video nếu có đủ 3 snapshots
+            if len(snapshots_for_video) == 3:
+                video_df = pd.DataFrame(snapshots_for_video)
+                interpolated_dfs.append(video_df)
+                videos_kept += 1
+                self.account_stats[account]['videos'] += 1
+            else:
+                videos_skipped += 1
+        
+        if not interpolated_dfs:
+            raise ValueError("No videos could be prepared with 3 snapshots!")
+        
+        df_prepared = pd.concat(interpolated_dfs, ignore_index=True)
+        
+        print(f"✅ Snapshots prepared at t=1h, 2h, 3h:")
+        print(f"   Videos kept: {videos_kept}")
+        print(f"   Videos skipped: {videos_skipped}")
+        print(f"   Exact matches: {stats['exact_match']}")
+        print(f"   Interpolated: {stats['interpolated']}")
+        print(f"   Extrapolated: {stats['extrapolated']}")
+        print(f"   Total snapshots: {len(df_prepared)}")
+        
+        return df_prepared
+    
+    def _get_or_create_snapshot(self, group: pd.DataFrame, target_t: float, 
+                                posted_at: pd.Timestamp, stats: dict) -> dict:
+        """
+        Lấy hoặc tạo snapshot tại thời điểm target_t (hours).
+        Dùng interpolation/extrapolation với early growth consideration.
+        
+        Args:
+            group: DataFrame of all snapshots for one video
+            target_t: Target time in hours (1, 2, or 3)
+            posted_at: Video posting timestamp
+            stats: Dictionary to track statistics
+            
+        Returns:
+            Dictionary representing the snapshot at target_t
+        """
+        # Tìm snapshot gần nhất
+        time_diffs = np.abs(group['t_since_post'] - target_t)
+        closest_idx = time_diffs.idxmin()
+        closest_snapshot = group.loc[closest_idx]
+        
+        # Nếu có snapshot đủ gần (±30 phút), dùng trực tiếp
+        if time_diffs[closest_idx] <= 0.5:
+            stats['exact_match'] += 1
+            snapshot = closest_snapshot.to_dict()
+            snapshot['t_since_post'] = target_t
+            snapshot['scraped_at'] = posted_at + timedelta(hours=float(target_t))
+            snapshot['hour_of_day'] = snapshot['scraped_at'].hour
+            snapshot['day_of_week'] = snapshot['scraped_at'].dayofweek
+            return snapshot
+        
+        # Cần interpolate hoặc extrapolate
+        before = group[group['t_since_post'] < target_t]
+        after = group[group['t_since_post'] > target_t]
+        
+        if len(before) > 0 and len(after) > 0:
+            # Interpolation: có snapshots trước và sau
+            stats['interpolated'] += 1
+            return self._interpolate_snapshot(before.iloc[-1], after.iloc[0], 
+                                             target_t, posted_at)
+        
+        elif len(after) > 0:
+            # Backward extrapolation: chỉ có snapshots sau
+            # Dùng 2 snapshots đầu tiên để estimate growth rate
+            stats['extrapolated'] += 1
+            if len(after) >= 2:
+                return self._extrapolate_backward(after.iloc[0], after.iloc[1], 
+                                                  target_t, posted_at)
+            else:
+                # Chỉ có 1 snapshot sau, dùng flat extrapolation
+                return self._flat_extrapolate(after.iloc[0], target_t, posted_at, direction='backward')
+        
+        elif len(before) > 0:
+            # Forward extrapolation: chỉ có snapshots trước
+            stats['extrapolated'] += 1
+            if len(before) >= 2:
+                return self._extrapolate_forward(before.iloc[-2], before.iloc[-1], 
+                                                 target_t, posted_at)
+            else:
+                # Chỉ có 1 snapshot trước, dùng flat extrapolation
+                return self._flat_extrapolate(before.iloc[0], target_t, posted_at, direction='forward')
+        
+        else:
+            # Không thể tạo snapshot
+            return None
+    
+    def _interpolate_snapshot(self, snap_before: pd.Series, snap_after: pd.Series, 
+                              target_t: float, posted_at: pd.Timestamp) -> dict:
+        """
+        Interpolate metrics giữa 2 snapshots, với early growth boost.
+        """
+        t1 = snap_before['t_since_post']
+        t2 = snap_after['t_since_post']
+        
+        # Linear interpolation weight
+        alpha = (target_t - t1) / (t2 - t1) if t2 > t1 else 0.5
+        
+        # Early growth factor: trong 3h đầu, growth thường nhanh hơn
+        # Nếu đang interpolate trong early hours, boost growth slightly
+        early_factor = 1.0
+        if target_t <= 3 and t1 <= 3:
+            # Early hours có growth rate cao hơn 10-20%
+            early_factor = 1.1 if target_t <= 2 else 1.05
+        
+        snapshot = snap_before.to_dict()
+        
+        # Interpolate metrics với early growth consideration
+        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+            val1 = snap_before[col]
+            val2 = snap_after[col]
+            
+            # Linear interpolation với early boost
+            interpolated = val1 + alpha * (val2 - val1) * early_factor
+            snapshot[col] = max(0, int(interpolated))
+        
+        # Update time fields
+        snapshot['t_since_post'] = target_t
+        snapshot['scraped_at'] = posted_at + timedelta(hours=float(target_t))
+        snapshot['hour_of_day'] = snapshot['scraped_at'].hour
+        snapshot['day_of_week'] = snapshot['scraped_at'].dayofweek
+        
+        return snapshot
+    
+    def _extrapolate_backward(self, snap1: pd.Series, snap2: pd.Series, 
+                              target_t: float, posted_at: pd.Timestamp) -> dict:
+        """
+        Extrapolate backward từ 2 snapshots sau đó về target_t.
+        Giả sử growth rate ở đầu nhanh hơn.
+        """
+        t1 = snap1['t_since_post']
+        t2 = snap2['t_since_post']
+        
+        # Tính average growth rate giữa snap1 và snap2
+        time_diff = t2 - t1
+        
+        snapshot = snap1.to_dict()
+        
+        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+            val1 = snap1[col]
+            val2 = snap2[col]
+            
+            if time_diff > 0 and val1 > 0:
+                # Growth rate per hour
+                growth_rate = (val2 - val1) / time_diff
+                
+                # Early boost: ở giờ đầu, growth thường nhanh hơn 20-30%
+                early_boost = 1.25 if target_t <= 2 else 1.15
+                adjusted_growth = growth_rate * early_boost
+                
+                # Extrapolate backward
+                time_back = snap1['t_since_post'] - target_t
+                estimated_val = val1 - adjusted_growth * time_back
+                
+                # Ensure non-negative và reasonable
+                snapshot[col] = max(0, int(estimated_val))
+            else:
+                # Không thể estimate, dùng flat
+                snapshot[col] = val1
+        
+        snapshot['t_since_post'] = target_t
+        snapshot['scraped_at'] = posted_at + timedelta(hours=float(target_t))
+        snapshot['hour_of_day'] = snapshot['scraped_at'].hour
+        snapshot['day_of_week'] = snapshot['scraped_at'].dayofweek
+        
+        return snapshot
+    
+    def _extrapolate_forward(self, snap1: pd.Series, snap2: pd.Series, 
+                             target_t: float, posted_at: pd.Timestamp) -> dict:
+        """
+        Extrapolate forward từ 2 snapshots trước đó ra target_t.
+        Giả sử growth rate giảm dần theo thời gian.
+        """
+        t1 = snap1['t_since_post']
+        t2 = snap2['t_since_post']
+        
+        time_diff = t2 - t1
+        
+        snapshot = snap2.to_dict()
+        
+        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+            val1 = snap1[col]
+            val2 = snap2[col]
+            
+            if time_diff > 0:
+                # Growth rate per hour
+                growth_rate = (val2 - val1) / time_diff
+                
+                # Decay factor: growth rate giảm dần
+                time_forward = target_t - snap2['t_since_post']
+                decay_factor = 0.9  # Growth chậm hơn 10% khi extrapolate
+                adjusted_growth = growth_rate * decay_factor
+                
+                estimated_val = val2 + adjusted_growth * time_forward
+                snapshot[col] = max(val2, int(estimated_val))  # Ensure monotonic
+            else:
+                snapshot[col] = val2
+        
+        snapshot['t_since_post'] = target_t
+        snapshot['scraped_at'] = posted_at + timedelta(hours=float(target_t))
+        snapshot['hour_of_day'] = snapshot['scraped_at'].hour
+        snapshot['day_of_week'] = snapshot['scraped_at'].dayofweek
+        
+        return snapshot
+    
+    def _flat_extrapolate(self, snap: pd.Series, target_t: float, 
+                          posted_at: pd.Timestamp, direction: str) -> dict:
+        """
+        Flat extrapolation khi chỉ có 1 snapshot.
+        """
+        snapshot = snap.to_dict()
+        
+        # Giữ nguyên các metrics (conservative approach)
+        # Có thể adjust nhẹ dựa trên direction
+        if direction == 'backward':
+            # Backward: giảm nhẹ metrics (80-90%)
+            for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+                snapshot[col] = int(snap[col] * 0.85)
+        # Forward: giữ nguyên (conservative)
+        
+        snapshot['t_since_post'] = target_t
+        snapshot['scraped_at'] = posted_at + timedelta(hours=float(target_t))
+        snapshot['hour_of_day'] = snapshot['scraped_at'].hour
+        snapshot['day_of_week'] = snapshot['scraped_at'].dayofweek
+        
+        return snapshot
     
     def resample_to_hourly(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -514,47 +777,29 @@ class LSTMDataPreparator:
     
     def create_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Create additional features for LSTM input.
+        Định nghĩa feature columns bao gồm cả target_horizon.
+        Temporal features (hour_of_day, day_of_week) đã được thêm trong prepare_snapshots.
         
         Args:
-            df: Resampled DataFrame with hourly intervals
+            df: DataFrame with 3 snapshots per video per horizon
             
         Returns:
-            DataFrame with additional features
+            DataFrame with feature columns defined
         """
-        print("\n🔧 Creating features...")
+        print("\n🔧 Setting feature columns...")
         
-        # Engagement rate features
-        df['like_rate'] = df['likes'] / (df['views'] + 1)
-        df['share_rate'] = df['shares'] / (df['views'] + 1)
-        df['comment_rate'] = df['comments'] / (df['views'] + 1)
-        df['collect_rate'] = df['collects'] / (df['views'] + 1)
-        
-        # Velocity features (per video) - now consistent with 1-hour intervals
-        df = df.groupby('video_id').apply(self._compute_velocity).reset_index(drop=True)
-        
-        # Time-based features
-        df['hour_of_day'] = df['scraped_at'].dt.hour
-        df['day_of_week'] = df['scraped_at'].dt.dayofweek
-        
-        # IMPORTANT: hours_since_post as a feature (this is the X in "predict X+T")
-        # Already exists as t_since_post, just rename for clarity
-        df['hours_since_post'] = df['t_since_post']
-        
-        # Add placeholder for target_horizon (will be set during sequence creation)
-        df['target_horizon'] = 0  # Placeholder, actual values set in create_sequences
-        
-        # Define feature columns for model (17 features including hours_since_post and target_horizon)
+        # 4 metrics + temporal features + target_horizon
         self.feature_columns = [
-            'views', 'likes', 'shares', 'comments', 'collects',
-            'hours_since_post',  # Critical feature: when snapshot was taken (X in X+T)
-            'target_horizon',    # Critical feature: how many hours ahead to predict (T in X+T)
-            'like_rate', 'share_rate', 'comment_rate', 'collect_rate',
-            'views_velocity', 'likes_velocity', 'shares_velocity',
-            'hour_of_day', 'day_of_week'
+            'views', 
+            'likes', 
+            'shares', 
+            'comments',
+            'hour_of_day',
+            'day_of_week',
+            'target_horizon'
         ]
         
-        print(f"✅ Features created ({len(self.feature_columns)} total)")
+        print(f"✅ Features: {', '.join(self.feature_columns)}")
         
         return df
     
@@ -573,6 +818,102 @@ class LSTMDataPreparator:
         group['shares_velocity'] = group['shares_velocity'].clip(lower=0)
         
         return group
+    
+    def expand_with_horizons(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Expand dataframe: mỗi video (3 snapshots) → 7 nhóm (mỗi horizon 1 nhóm).
+        Mỗi nhóm có: 3 snapshots + target_horizon + target metrics cho horizon đó.
+        IMPORTANT: Ensures monotonic increase - bigger horizons must have bigger metrics.
+        
+        Args:
+            df: DataFrame with 3 snapshots per video
+            
+        Returns:
+            Expanded DataFrame with target_horizon and target metrics columns
+        """
+        print(f"\n🔄 Expanding data with time horizons...")
+        
+        # Prepare raw data for target lookup
+        raw_df = self.raw_data.copy()
+        raw_df['t_since_post'] = (raw_df['scraped_at'] - raw_df['posted_at']).dt.total_seconds() / 3600
+        
+        expanded_dfs = []
+        horizon_stats = {T: 0 for T in self.prediction_horizons}
+        skipped_monotonic = 0
+        
+        for video_id, group in df.groupby('video_id'):
+            if len(group) != 3:
+                continue
+            
+            video_raw = raw_df[raw_df['video_id'] == video_id]
+            
+            # First, collect all targets for this video
+            video_targets = {}
+            for T in self.prediction_horizons:
+                target_snapshots = video_raw[
+                    (video_raw['t_since_post'] >= T - 2) &
+                    (video_raw['t_since_post'] <= T + 2)
+                ]
+                
+                if len(target_snapshots) == 0:
+                    continue
+                
+                closest_idx = (target_snapshots['t_since_post'] - T).abs().idxmin()
+                target_snap = target_snapshots.loc[closest_idx]
+                
+                video_targets[T] = {
+                    'views': target_snap['views'],
+                    'likes': target_snap['likes'],
+                    'shares': target_snap['shares'],
+                    'comments': target_snap['comments']
+                }
+            
+            # Check monotonic constraint
+            sorted_horizons = sorted(video_targets.keys())
+            is_monotonic = True
+            
+            for i in range(1, len(sorted_horizons)):
+                prev_T = sorted_horizons[i-1]
+                curr_T = sorted_horizons[i]
+                
+                # All metrics must be non-decreasing
+                for metric in ['views', 'likes', 'shares', 'comments']:
+                    if video_targets[curr_T][metric] < video_targets[prev_T][metric]:
+                        is_monotonic = False
+                        break
+                
+                if not is_monotonic:
+                    break
+            
+            if not is_monotonic:
+                skipped_monotonic += 1
+                continue
+            
+            # Now create expanded records for each horizon
+            for T in sorted_horizons:
+                group_copy = group.copy()
+                group_copy['target_horizon'] = T
+                group_copy['target_views'] = video_targets[T]['views']
+                group_copy['target_likes'] = video_targets[T]['likes']
+                group_copy['target_shares'] = video_targets[T]['shares']
+                group_copy['target_comments'] = video_targets[T]['comments']
+                
+                expanded_dfs.append(group_copy)
+                horizon_stats[T] += 1
+        
+        if not expanded_dfs:
+            raise ValueError("No videos have targets for any horizon!")
+        
+        df_expanded = pd.concat(expanded_dfs, ignore_index=True)
+        
+        print(f"✅ Expansion complete:")
+        print(f"   Total records: {len(df_expanded)} (3 snapshots × videos × horizons)")
+        print(f"   Videos skipped (monotonic violation): {skipped_monotonic}")
+        print(f"   Videos with targets per horizon:")
+        for T in self.prediction_horizons:
+            print(f"      T={T}h ({T//24}d): {horizon_stats[T]} videos")
+        
+        return df_expanded
     
     def create_targets(self, df: pd.DataFrame, prediction_horizon: int) -> pd.DataFrame:
         """
@@ -685,8 +1026,7 @@ class LSTMDataPreparator:
                        val_df: pd.DataFrame, 
                        test_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
-        Scale numeric features using StandardScaler (fit on train only).
-        All 15 features are scaled for consistent neural network training.
+        Scale all features including target_horizon.
         
         Args:
             train_df, val_df, test_df: Split DataFrames
@@ -696,20 +1036,16 @@ class LSTMDataPreparator:
         """
         print("\n📊 Scaling features...")
         
-        # Use feature columns defined in create_features (includes hours_since_post)
-        if self.feature_columns is None:
-            raise ValueError("feature_columns not set! Run create_features() first.")
-        
+        # Scale all features from feature_columns
         scale_columns = self.feature_columns
         
-        # Handle empty val/test sets
         if len(train_df) == 0:
             raise ValueError("Train set is empty!")
         
         # Fit scaler on training data only
         self.scaler.fit(train_df[scale_columns])
         
-        # Transform all splits (but preserve unscaled t_since_post for filtering)
+        # Transform all splits
         train_df_scaled = train_df.copy()
         train_df_scaled[scale_columns] = self.scaler.transform(train_df[scale_columns])
         
@@ -721,27 +1057,22 @@ class LSTMDataPreparator:
         if len(test_df) > 0:
             test_df_scaled[scale_columns] = self.scaler.transform(test_df[scale_columns])
         
-        print(f"✅ All {len(scale_columns)} features scaled (including t_since_post)")
+        print(f"✅ Scaled {len(scale_columns)} features: {', '.join(scale_columns)}")
         
         return train_df_scaled, val_df_scaled, test_df_scaled
     
     def create_sequences(self, df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray, List[str], List[str], List[int]]:
         """
-        Create sliding window sequences for time-series prediction with variable horizons.
-        Samples multiple T values (1,2,3,6,12,24h) from each snapshot.
+        Tạo sequences từ expanded dataframe:
+        - Group by (video_id, target_horizon) → lấy 3 snapshots
+        - Input X: 3 snapshots × 7 features (4 metrics + hour_of_day + day_of_week + target_horizon)
+        - Output y: 4 target metrics (target_views, target_likes, target_shares, target_comments)
         
-        Args:
-            df: Scaled DataFrame with targets for all horizons
-            
         Returns:
-            Tuple of (X, y, video_ids, account_names, horizons) where:
-                X: shape (N, sequence_length, num_features) - includes target_horizon feature
-                y: shape (N, 4) - combined targets [views, likes, shares, comments]
-                video_ids: list of video_ids for each sequence
-                account_names: list of account names for each sequence
-                horizons: list of T values for each sequence
+            X: shape (N, 3, 7)
+            y: shape (N, 4)
         """
-        print(f"\n🪟 Creating sequences with variable horizons {self.prediction_horizons}...")
+        print(f"\n🪟 Creating sequences from expanded data...")
         
         X_list = []
         y_list = []
@@ -750,69 +1081,78 @@ class LSTMDataPreparator:
         horizon_list = []
         
         videos_with_sequences = set()
+        horizon_stats = {T: 0 for T in self.prediction_horizons}
         
-        for video_id, group in df.groupby('video_id'):
+        # Group by (video_id, target_horizon)
+        for (video_id, target_horizon), group in df.groupby(['video_id', 'target_horizon']):
             group = group.sort_values('scraped_at')
-            account = group['author_username'].iloc[0]
             
-            if len(group) < self.sequence_length:
+            # Phải có đúng 3 snapshots
+            if len(group) != 3:
                 continue
             
-            num_sequences = 0
+            account = group['author_username'].iloc[0]
             
-            # For each possible starting position
-            for i in range(len(group) - self.sequence_length + 1):
-                # For each prediction horizon T
-                for T in self.prediction_horizons:
-                    target_cols = [f'target_views_{T}h', f'target_likes_{T}h', 
-                                 f'target_shares_{T}h', f'target_comments_{T}h']
-                    
-                    # Check if targets exist for this T
-                    window_data = group.iloc[i:i + self.sequence_length]
-                    if window_data[target_cols].isna().any().any():
-                        continue  # Skip if any target is missing
-                    
-                    # Create feature window and set target_horizon
-                    X_window = window_data[self.feature_columns].values.copy()
-                    # Set target_horizon in the feature matrix
-                    horizon_idx = self.feature_columns.index('target_horizon')
-                    X_window[:, horizon_idx] = T
-                    
-                    # Get targets for this horizon
-                    y_values = window_data[target_cols].iloc[-1].values
-                    
-                    X_list.append(X_window)
-                    y_list.append(y_values)
-                    video_id_list.append(video_id)
-                    account_list.append(account)
-                    horizon_list.append(T)
-                    num_sequences += 1
+            # X: 3 snapshots × 7 features
+            X_sequence = []
+            for idx in range(3):
+                snap = group.iloc[idx]
+                features = [
+                    snap['views'],
+                    snap['likes'],
+                    snap['shares'],
+                    snap['comments'],
+                    snap['hour_of_day'],
+                    snap['day_of_week'],
+                    snap['target_horizon']
+                ]
+                X_sequence.append(features)
             
-            if num_sequences > 0:
-                videos_with_sequences.add(video_id)
-                self.account_stats[account]['sequences'] += num_sequences
+            # y: target metrics (same for all 3 snapshots in this group)
+            snap = group.iloc[0]
+            y_values = [
+                snap['target_views'],
+                snap['target_likes'],
+                snap['target_shares'],
+                snap['target_comments']
+            ]
+            
+            X_list.append(X_sequence)
+            y_list.append(y_values)
+            video_id_list.append(video_id)
+            account_list.append(account)
+            horizon_list.append(target_horizon)  # Keep as-is (may be scaled)
+            
+            videos_with_sequences.add(video_id)
+            # For stats, need original horizon value - get from unscaled df
+            # Just count all for now
+            if target_horizon not in horizon_stats:
+                horizon_stats[target_horizon] = 0
+            horizon_stats[target_horizon] += 1
+        
+        # Count sequences per account properly
+        for account in df['author_username'].unique():
+            account_seqs = sum(1 for a in account_list if a == account)
+            self.account_stats[account]['sequences'] = account_seqs
         
         X = np.array(X_list)
         y = np.array(y_list)
         
-        print(f"✅ Created {len(X)} sequences from {len(videos_with_sequences)} videos")
+        print(f"✅ Created {len(X)} sequences")
         if len(X) > 0:
-            print(f"   X shape: {X.shape} - includes target_horizon feature")
-            print(f"   y shape: {y.shape} - [views, likes, shares, comments]")
-            print(f"   Horizons sampled: {self.prediction_horizons}")
-            print(f"   Sequences per horizon: ~{len(X) / len(self.prediction_horizons):.0f}")
+            print(f"   X shape: {X.shape} - (samples, 3 snapshots, 7 features)")
+            print(f"   y shape: {y.shape} - (samples, 4 metrics)")
+            print(f"   Features: [views, likes, shares, comments, hour_of_day, day_of_week, target_horizon]")
+            print(f"\n   Sequences per horizon:")
+            for T in self.prediction_horizons:
+                if T in horizon_stats:
+                    print(f"      T={T}h ({T//24}d): {horizon_stats[T]} sequences")
         
         return X, y, video_id_list, account_list, horizon_list
     
     def save_artifacts(self, train_df: pd.DataFrame, val_df: pd.DataFrame, test_df: pd.DataFrame,
                        train_accounts: List[str], val_accounts: List[str], test_accounts: List[str]):
-        """
-        Save all artifacts for later use, including account statistics.
-        
-        Args:
-            train_df, val_df, test_df: Processed DataFrames
-            train_accounts, val_accounts, test_accounts: Account lists per split
-        """
+        """Save all artifacts for later use, including account statistics."""
         print("\n💾 Saving artifacts...")
         
         # Save DataFrames
@@ -853,12 +1193,15 @@ class LSTMDataPreparator:
             'train_samples': len(train_df),
             'val_samples': len(val_df),
             'test_samples': len(test_df),
+            'input_description': '3 snapshots (hour 1,2,3) with 4 metrics + temporal features + time_horizon',
+            'input_shape': '(n_samples, 3, 7) - 3 snapshots x 7 features',
+            'input_features': 'views, likes, shares, comments, hour_of_day, day_of_week, time_horizon',
             'target_columns': ['views', 'likes', 'shares', 'comments'],
-            'target_description': f'Multi-output model: predicts metrics at variable horizons (views, likes, shares, comments)',
-            'target_shape': '(n_samples, 4) - combined array for multi-output training',
-            'target_order': ['views', 'likes', 'shares', 'comments'],
-            'data_format': 'Hourly time-series (0-168h) with interpolation + target_horizon feature',
-            'model_type': 'Variable horizon prediction - single model predicts T=1,2,3,6,12,24 hours',
+            'target_description': 'Metrics at specified time_horizon (1-7 days)',
+            'target_shape': '(n_samples, 4)',
+            'time_horizons': self.prediction_horizons,
+            'time_horizons_days': [h//24 for h in self.prediction_horizons],
+            'model_type': 'LSTM supervised learning - predict metrics at 1-7 days',
             'account_statistics': account_summary,
             'augmentation_applied': hasattr(self, 'augmentation_stats'),
             'augmentation_stats': getattr(self, 'augmentation_stats', {}),
@@ -942,18 +1285,16 @@ class LSTMDataPreparator:
         print(f"\n📄 Full report saved to: {report_path}")
     
     def run_pipeline(self):
-        """
-        Run the complete hourly time-series data preparation pipeline with variable horizons.
-        Creates targets for multiple prediction horizons (T=1,2,3,6,12,24h).
-        
-        Returns:
-            Dictionary with train/val/test sequences and targets
-        """
+        """Run the complete data preparation pipeline."""
         print("=" * 60)
-        print("🚀 Starting LSTM Data Preparation Pipeline (VARIABLE HORIZONS)")
-        print(f"📊 Sequence length: {self.sequence_length} snapshot(s) - {'SINGLE' if self.sequence_length == 1 else 'MULTIPLE'}")
-        print(f"⏰ Prediction horizons: {self.prediction_horizons}")
-        print(f"🎯 Single model learns all horizons!")
+        print("🚀 LSTM Data Preparation - Theo yêu cầu thầy")
+        print("=" * 60)
+        print(f"📊 Model Input: 3 snapshots (giờ 1, 2, 3)")
+        print(f"   - Mỗi snapshot: views, likes, shares, comments, hour_of_day, day_of_week")
+        print(f"   - Thêm: time_horizon (1-7 days)")
+        print(f"📊 Model Output: views, likes, shares, comments tại time_horizon")
+        horizons_str = ', '.join([f"{h}h ({h//24}d)" for h in self.prediction_horizons])
+        print(f"⏰ Time horizons: {horizons_str}")
         print("=" * 60)
         
         # 1. Load data
@@ -962,35 +1303,27 @@ class LSTMDataPreparator:
         # 2. Clean and prepare
         df = self.clean_and_prepare(self.raw_data)
         
-        # 3. Resample to hourly intervals with interpolation
-        df = self.resample_to_hourly(df)
+        # 3. Keep only first 3 snapshots per video + add temporal features
+        df = self.prepare_snapshots(df)
         
-        # 4. Filter videos (remove accounts without recent videos)
-        df = self.filter_videos(df)
-        
-        # 5. Augment data for accounts with insufficient videos (MVP approach)
-        # Each account gets 30 + random(0-10) videos for natural variety
+        # 4. Augment data (synthetic videos)
         df = self.augment_videos_for_accounts(df, min_videos_base=30)
         
-        # 6. Create features
+        # 5. Expand with time horizons and find targets
+        df = self.expand_with_horizons(df)
+        
+        # 6. Define feature columns (including target_horizon)
         df = self.create_features(df)
         
-        # 7. Create targets for all prediction horizons
-        print(f"\n🎯 Creating prediction targets for horizons: {self.prediction_horizons}...")
-        for T in self.prediction_horizons:
-            df = self.create_targets(df, prediction_horizon=T)
-            target_count = df[f'target_views_{T}h'].notna().sum()
-            print(f"   T={T}h: {target_count} valid targets")
-        
-        # 8. Split data by video
+        # 7. Split data by video
         train_df, val_df, test_df = self.split_data(df)
         
-        # 9. Scale features
+        # 8. Scale features (including target_horizon)
         train_df_scaled, val_df_scaled, test_df_scaled = self.scale_features(
             train_df, val_df, test_df
         )
         
-        # 9. Create sequences with variable horizons
+        # 9. Create sequences from expanded data
         X_train, y_train, train_video_ids, train_accounts, train_horizons = self.create_sequences(train_df_scaled)
         X_val, y_val, val_video_ids, val_accounts, val_horizons = self.create_sequences(val_df_scaled)
         X_test, y_test, test_video_ids, test_accounts, test_horizons = self.create_sequences(test_df_scaled)
@@ -1038,55 +1371,46 @@ class LSTMDataPreparator:
 def main():
     """Main entry point."""
     
-    # Configuration for HOURLY TIME-SERIES processing with VARIABLE HORIZONS
-    VIDEO_DATA_DIR = "video_data/list32/90"  # Videos from 32 KOLs, posted in last 90 days
+    # Configuration theo yêu cầu thầy
+    VIDEO_DATA_DIR = "video_data/list32/90"
     OUTPUT_DIR = "data_processing/processed"
-    
-    # SEQUENCE LENGTH
-    SEQUENCE_LENGTH = 1       # Use ONLY 1 snapshot (current requirement)
-                              # FUTURE: Change to 4-10 for multiple snapshots (early signal)
-    
-    # VARIABLE PREDICTION HORIZONS - Single model learns all!
-    PREDICTION_HORIZONS = [1]   # Sample T=1,2,3,6,12,24 hours
-                                # Model can predict ANY of these horizons
-    
-    MAX_DAYS = 7              # Use snapshots within first 7 days (168 hours)
+    MAX_DAYS = 7  # 7 days = 168 hours
     
     # Initialize preparator
+    # Model sẽ tự động dùng:
+    # - 3 snapshots (giờ 1, 2, 3)
+    # - 7 features: views, likes, shares, comments, hour_of_day, day_of_week, time_horizon
+    # - Time horizons: 1-7 days (24, 48, 72, 96, 120, 144, 168 hours)
     preparator = LSTMDataPreparator(
         video_data_dir=VIDEO_DATA_DIR,
         output_dir=OUTPUT_DIR,
-        sequence_length=SEQUENCE_LENGTH,
-        prediction_horizons=PREDICTION_HORIZONS,
         max_days=MAX_DAYS
     )
     
     # Run pipeline
     sequences = preparator.run_pipeline()
     
-    print("\n✨ Data is ready for LSTM training with VARIABLE HORIZONS!")
-    print(f"\n📖 Model Input/Output:")
-    if SEQUENCE_LENGTH == 1:
-        print(f"  Input:  Single snapshot at hour X + hours_since_post + target_horizon")
-        print(f"         Shape: (n_samples, 1, 17_features) - includes T as feature")
-    else:
-        print(f"  Input:  Last {SEQUENCE_LENGTH} hourly snapshots + hours_since_post + target_horizon")
-        print(f"         Shape: (n_samples, {SEQUENCE_LENGTH}, 17_features)")
-    print(f"  Output: Metrics at hour X + T (where T is specified in input)")
-    print(f"         Shape: (n_samples, 4) - [views, likes, shares, comments]")
+    print("\n✨ Data is ready for LSTM training!")
+    print(f"\n📖 Model Specification (theo yêu cầu thầy):")
     print(f"")
-    print(f"  🎯 Horizons: {PREDICTION_HORIZONS}")
-    print(f"     Single model predicts ANY of these horizons!")
+    print(f"  Input X:")
+    print(f"    Shape: (n_samples, 3, 7)")
+    print(f"    - 3 snapshots: giờ 1, 2, 3 sau khi đăng")
+    print(f"    - 7 features: views, likes, shares, comments, hour_of_day, day_of_week, time_horizon")
     print(f"")
-    print(f"To load the data:")
+    print(f"  Output y:")
+    print(f"    Shape: (n_samples, 4)")
+    print(f"    - 4 metrics: views, likes, shares, comments")
+    print(f"    - Tại time_horizon (1-7 days sau khi đăng)")
+    print(f"")
+    print(f"  Time horizons: 24h, 48h, 72h, 96h, 120h, 144h, 168h")
+    print(f"                 (1 day, 2 days, 3 days, ..., 7 days)")
+    print(f"")
+    print(f"To load data:")
     print(f"  X_train = np.load('{OUTPUT_DIR}/X_train.npy')")
     print(f"  y_train = np.load('{OUTPUT_DIR}/y_train.npy')")
-    print(f"")
     print(f"  X_val = np.load('{OUTPUT_DIR}/X_val.npy')")
     print(f"  y_val = np.load('{OUTPUT_DIR}/y_val.npy')")
-    print(f"")
-    print(f"  X_test = np.load('{OUTPUT_DIR}/X_test.npy')")
-    print(f"  y_test = np.load('{OUTPUT_DIR}/y_test.npy')")
 
 
 if __name__ == "__main__":
