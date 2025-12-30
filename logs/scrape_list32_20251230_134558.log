@@ -1803,3 +1803,35 @@
     at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
 2025-12-30 13:59:44,246 - TikTok.Scraper - INFO - ✓ Found 38 videos in API response
 2025-12-30 13:59:45,147 - TikTok.Scraper - DEBUG - [Browser WARNING] [SDK] 1767077985142        0 already inited
+2025-12-30 13:59:47,602 - TikTok.Scraper - DEBUG - [Browser WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+2025-12-30 13:59:50,729 - TikTok.Scraper - DEBUG - [Browser WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+2025-12-30 13:59:50,756 - TikTok.Scraper - DEBUG - [Browser WARNING] [00:12.544][warn][multiplex](1) demux waterlevel change to full, abort request
+2025-12-30 13:59:50,858 - TikTok.Scraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 13:59:51,243 - TikTok.Scraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 13:59:51,246 - TikTok.Scraper - DEBUG - [Browser WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+2025-12-30 13:59:51,250 - TikTok.Scraper - DEBUG - [Browser WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+2025-12-30 13:59:53,244 - TikTok.Scraper - INFO - ✓ Video grid loaded
+2025-12-30 13:59:53,245 - TikTok.Scraper - INFO - 📦 Extracting initial videos from page hydration data...
+2025-12-30 13:59:53,266 - TikTok.Scraper - DEBUG - ✗ No valid page data found
+2025-12-30 13:59:53,266 - TikTok.Scraper - WARNING - ⚠️ Could not extract hydration data - will rely on network interception
+2025-12-30 13:59:53,266 - TikTok.Scraper - INFO - 🔄 Starting scroll loop to trigger API calls...
+2025-12-30 13:59:54,029 - TikTok.Scraper - INFO - 🌐 Intercepted API call: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767077161&aid=1988&app_language=en&app_nam...
+2025-12-30 13:59:54,674 - TikTok.Scraper - INFO - ✓ Found 16 videos in API response
+2025-12-30 14:00:03,279 - TikTok.Scraper - DEBUG - Skipping pinned video: 7168715387952188699
+2025-12-30 14:00:03,279 - TikTok.Scraper - DEBUG - Skipping pinned video: 7447859711581490450
+2025-12-30 14:00:03,279 - TikTok.Scraper - DEBUG - Skipping pinned video: 7244517214521675014
+2025-12-30 14:00:03,279 - TikTok.Scraper - INFO - ⏹️ Reached milestone - video 7588913227761765652 is before cutoff
+2025-12-30 14:00:03,281 - TikTok.Scraper - INFO - ✅ Total videos fetched: 0
+2025-12-30 14:00:03,281 - TikTok.Scraper - INFO -    - From hydration data: 0
+2025-12-30 14:00:03,281 - TikTok.Scraper - INFO -    - From network API: 1679
+2025-12-30 14:00:03,282 - TikTok.Scraper - INFO -    - Total API calls: 65
+2025-12-30 14:00:03,285 - TikTok.Scraper - ERROR - No videos fetched
+2025-12-30 14:00:03,285 - Crawler - WARNING -   Failed: No videos found
+2025-12-30 14:00:03,285 - TikTok.Scraper - INFO - Console logging stopped
+2025-12-30 14:00:03,315 - TikTok.Scraper - INFO - Console logs saved to JSON: logs/console/console_20251230_140003.json
+2025-12-30 14:00:04,032 - Crawler - INFO - 
+✅ Run complete! Summary saved to video_data/20251230_134558/run_summary_20251230_134558.json
+2025-12-30 14:00:04,032 - Crawler - INFO -    - Profiles processed: 32
+2025-12-30 14:00:04,032 - Crawler - INFO -    - Success: 0
+2025-12-30 14:00:04,033 - Crawler - INFO -    - Failed: 32
+2025-12-30 14:00:04,033 - Crawler - INFO -    - Total videos: 0

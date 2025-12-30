@@ -1773,3 +1773,24 @@ Browser Console Log - 2025-12-30T13:46:00.144854
     at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
     at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
     at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[13:59:45.142] [LOG] ws.opened
+[13:59:45.147] [WARNING] [SDK] 1767077985142        0 already inited
+[13:59:47.602] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[13:59:49.654] [DEBUG] Error
+[13:59:49.913] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767077989872] appid: 1988, userInfo:{"user_unique_id":"7589538601223669268","web_id":"7589538608043673109"}
+[13:59:49.917] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767077989872] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[13:59:50.050] [LOG] [browser check] %s, os:  Chrome Windows
+[13:59:50.095] [INFO] Loading the script 'https://accounts.google.com/gsi/client' violates the following Content Security Policy directive: "script-src 'report-sample' 'unsafe-eval' apis.google.com c.paypal.com cdn.ampproject.org client-api.arkoselabs.com code.jquery.com connect.facebook.net developers.kakao.com interactives.ap.org js.hcaptcha.com js.hsforms.net pay.google.com recaptcha.google.com s20.tiktokcdn.com s3.amazonaws.com sf16-website-login.neutral.ttwstatic.com sf16-website.neutral.ttwstatic.com sf16m-website-login.neutral.ttwstatic.com ssl.bing.com static.captchami.com tiktok.captchami.com unpkg.com www.vimeo.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken.
+[13:59:50.729] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+[13:59:50.756] [WARNING] [00:12.544][warn][multiplex](1) demux waterlevel change to full, abort request
+[13:59:50.858] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[13:59:50.984] [DEBUG] Error
+[13:59:51.107] [DEBUG] Error
+[13:59:51.243] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[13:59:51.246] [WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+[13:59:51.250] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[13:59:51.281] [DEBUG] Error
+
+================================================================================
+Console logging ended - 2025-12-30T14:00:03.285817
+================================================================================
