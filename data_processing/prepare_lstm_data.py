@@ -38,7 +38,8 @@ class LSTMDataPreparator:
     def __init__(self, 
                  video_data_dir: str,
                  output_dir: str = "data_processing/processed",
-                 max_days: int = 7):
+                 max_days: int = 7,
+                 enable_augmentation: bool = True):
         """
         Initialize the data preparator.
         
@@ -46,6 +47,7 @@ class LSTMDataPreparator:
             video_data_dir: Root directory containing video data
             output_dir: Directory to save processed data and artifacts
             max_days: Maximum days since posting to include (7 days = 168h)
+            enable_augmentation: Whether to enable data augmentation (default: True)
         """
         self.video_data_dir = Path(video_data_dir)
         self.output_dir = Path(output_dir)
@@ -56,6 +58,7 @@ class LSTMDataPreparator:
         self.prediction_horizons = [24, 48, 72, 96, 120, 144, 168]  # 1-7 days
         self.max_days = max_days
         self.max_hours = max_days * 24  # 168 hours for 7 days
+        self.enable_augmentation = enable_augmentation
         
         self.scaler = StandardScaler()
         self.feature_columns = None
@@ -1040,38 +1043,26 @@ class LSTMDataPreparator:
                        val_df: pd.DataFrame, 
                        test_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
-        Scale all features including target_horizon.
+        NO LONGER SCALES features - normalization removed.
+        Just returns copies of the dataframes without transformation.
         
         Args:
             train_df, val_df, test_df: Split DataFrames
             
         Returns:
-            Tuple of scaled DataFrames
+            Tuple of unscaled DataFrames (normalization disabled)
         """
-        print("\n📊 Scaling features...")
-        
-        # Scale all features from feature_columns
-        scale_columns = self.feature_columns
+        print("\n📊 Skipping feature normalization (disabled)...")
         
         if len(train_df) == 0:
             raise ValueError("Train set is empty!")
         
-        # Fit scaler on training data only
-        self.scaler.fit(train_df[scale_columns])
-        
-        # Transform all splits
+        # Just return copies without any scaling
         train_df_scaled = train_df.copy()
-        train_df_scaled[scale_columns] = self.scaler.transform(train_df[scale_columns])
-        
         val_df_scaled = val_df.copy() if len(val_df) > 0 else pd.DataFrame()
-        if len(val_df) > 0:
-            val_df_scaled[scale_columns] = self.scaler.transform(val_df[scale_columns])
-        
         test_df_scaled = test_df.copy() if len(test_df) > 0 else pd.DataFrame()
-        if len(test_df) > 0:
-            test_df_scaled[scale_columns] = self.scaler.transform(test_df[scale_columns])
         
-        print(f"✅ Scaled {len(scale_columns)} features: {', '.join(scale_columns)}")
+        print(f"✅ Features used without normalization: {', '.join(self.feature_columns)}")
         
         return train_df_scaled, val_df_scaled, test_df_scaled
     
@@ -1323,9 +1314,13 @@ class LSTMDataPreparator:
         df = self.clean_and_prepare(self.raw_data)
         
         # 3. Augment data BEFORE creating snapshots (synthetic videos need raw data)
-        df = self.augment_videos_for_accounts(df, min_videos_base=25)
+        if self.enable_augmentation:
+            print("\n🔬 Data augmentation: ENABLED")
+            df = self.augment_videos_for_accounts(df, min_videos_base=25)
+        else:
+            print("\n🔬 Data augmentation: DISABLED (using real data only)")
         
-        # Store augmented data for target lookup (includes synthetic videos)
+        # Store augmented data for target lookup (includes synthetic videos if enabled)
         self.augmented_data = df.copy()
         
         # 4. Keep only first 3 snapshots per video + add temporal features
@@ -1392,6 +1387,13 @@ class LSTMDataPreparator:
 
 def main():
     """Main entry point."""
+    import argparse
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Prepare LSTM data for TikTok video analytics')
+    parser.add_argument('--no-augmentation', action='store_true', 
+                       help='Disable data augmentation (faster for testing)')
+    args = parser.parse_args()
     
     # Configuration theo yêu cầu thầy
     VIDEO_DATA_DIR = "video_data/list32/90"
@@ -1406,7 +1408,8 @@ def main():
     preparator = LSTMDataPreparator(
         video_data_dir=VIDEO_DATA_DIR,
         output_dir=OUTPUT_DIR,
-        max_days=MAX_DAYS
+        max_days=MAX_DAYS,
+        enable_augmentation=not args.no_augmentation
     )
     
     # Run pipeline

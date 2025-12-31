@@ -1,0 +1,86 @@
+================================================================================
+LSTM DATA PROCESSING REPORT
+================================================================================
+Generated: 2025-12-30 10:35:39
+
+Configuration:
+  - Sequence length: 3
+  - Prediction horizons: [24, 48, 72, 96, 120, 144, 168]
+  - Model type: Variable horizon (single model predicts any T)
+  - Max days coverage: 7
+  - Data augmentation: ENABLED
+
+Data Augmentation Summary:
+  - Accounts augmented: 30/30
+  - Synthetic videos created: 726
+  - Method: Linear interpolation between existing videos + noise
+
+  Augmented accounts:
+    • atusmain: 1 real + 26 synthetic = 27 total
+    • bac_hello2: 3 real + 32 synthetic = 35 total
+    • bnh.trng.lui: 1 real + 28 synthetic = 29 total
+    • congb_: 10 real + 24 synthetic = 34 total
+    • dieplamanh: 17 real + 15 synthetic = 32 total
+    • dieunhiofficial: 7 real + 27 synthetic = 34 total
+    • donhathoang13: 4 real + 28 synthetic = 32 total
+    • duyyy.real.channel: 10 real + 25 synthetic = 35 total
+    • fhn2812: 1 real + 27 synthetic = 28 total
+    • haidang_doo: 2 real + 23 synthetic = 25 total
+    • haiichieu: 4 real + 22 synthetic = 26 total
+    • hansara.official: 3 real + 30 synthetic = 33 total
+    • hieuthuhai2222: 2 real + 31 synthetic = 33 total
+    • huynguyen.3101: 1 real + 24 synthetic = 25 total
+    • ising52hz: 16 real + 19 synthetic = 35 total
+    • jenny.huynh._: 4 real + 23 synthetic = 27 total
+    • jukysan: 3 real + 29 synthetic = 32 total
+    • khanhvyccf: 1 real + 25 synthetic = 26 total
+    • khoailangthang: 2 real + 28 synthetic = 30 total
+    • lehoanglong4493: 8 real + 27 synthetic = 35 total
+    • linhbarbie: 3 real + 22 synthetic = 25 total
+    • lyduc17: 3 real + 24 synthetic = 27 total
+    • ngthanhnhan2807: 4 real + 29 synthetic = 33 total
+    • ocean.gill: 5 real + 25 synthetic = 30 total
+    • phuongmychiofficial: 13 real + 16 synthetic = 29 total
+    • phuongnam.dv: 3 real + 27 synthetic = 30 total
+    • quankhonggo: 5 real + 20 synthetic = 25 total
+    • realpewpew: 23 real + 4 synthetic = 27 total
+    • ribisachi36: 5 real + 26 synthetic = 31 total
+    • yunbray: 6 real + 20 synthetic = 26 total
+
+Sequence counts per account:
+Account                        Videos     Train      Val        Test       Total     
+--------------------------------------------------------------------------------
+atusmain                       27         18         4          6          6         
+bac_hello2                     35         60         11         8          8         
+bnh.trng.lui                   29         20         4          5          5         
+congb_                         34         62         12         14         14        
+dieplamanh                     32         73         13         17         17        
+dieunhiofficial                34         81         12         12         12        
+donhathoang13                  32         87         25         17         17        
+duyyy.real.channel             35         58         17         15         15        
+fhn2812                        28         32         6          8          8         
+haidang_doo                    25         16         4          4          4         
+haiichieu                      26         48         10         10         10        
+hansara.official               33         42         9          12         12        
+hieuthuhai2222                 33         113        22         25         25        
+huynguyen.3101                 25         22         4          6          6         
+ising52hz                      25         13         3          7          7         
+jenny.huynh._                  27         51         14         10         10        
+jukysan                        32         69         16         17         17        
+khanhvyccf                     26         36         9          9          9         
+khoailangthang                 30         81         15         20         20        
+lehoanglong4493                35         59         10         14         14        
+linhbarbie                     25         50         11         10         10        
+lyduc17                        27         49         13         18         18        
+ngthanhnhan2807                33         87         25         23         23        
+ocean.gill                     30         61         12         16         16        
+phuongmychiofficial            29         55         17         16         16        
+phuongnam.dv                   30         42         9          10         10        
+quankhonggo                    25         44         7          11         11        
+realpewpew                     27         39         8          10         10        
+ribisachi36                    31         50         8          14         14        
+yunbray                        26         53         12         15         15        
+--------------------------------------------------------------------------------
+TOTAL                          886        1571       342        379        379       
+
+================================================================================
