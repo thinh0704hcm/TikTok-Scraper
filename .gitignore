@@ -12,4 +12,8 @@ db_connection.py
 *.db
 logs/
 video_data/
+profile_data/
 processed/
+specific_video_data/
+video_comments_data/
+progress_tracking/

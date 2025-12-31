@@ -338,6 +338,67 @@ class PlaywrightProfileScraper:
             logger.debug(f"Error extracting page data: {e}")
             return None
     
+    async def get_pinned_video_ids(self, username: str = None) -> set:
+        """
+        Get IDs of pinned videos from the user's profile page.
+        Pinned videos have a badge element with "Pinned" text.
+        
+        Args:
+            username: Optional username - if provided will navigate to profile first
+            
+        Returns:
+            Set of video IDs that are pinned
+        """
+        try:
+            # Navigate to profile if username provided
+            if username:
+                url = f"https://www.tiktok.com/@{username}"
+                await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
+                await asyncio.sleep(2)
+            
+            # Find pinned videos by looking for badge elements with "Pinned" text
+            pinned_ids = await self.page.evaluate('''
+                () => {
+                    const pinnedIds = [];
+                    
+                    // Find all video cards
+                    const videoCards = document.querySelectorAll('[data-e2e="user-post-item"]');
+                    
+                    for (const card of videoCards) {
+                        // Check if this card has a pinned badge
+                        const badge = card.querySelector('[data-e2e="video-card-badge"]');
+                        if (badge) {
+                            const badgeText = badge.textContent?.trim().toLowerCase() || '';
+                            if (badgeText.includes('pinned') || badgeText.includes('ghim')) {
+                                // Get video link from card
+                                const videoLink = card.querySelector('a[href*="/video/"]');
+                                if (videoLink) {
+                                    const href = videoLink.getAttribute('href') || '';
+                                    const match = href.match(/\\/video\\/(\\d+)/);
+                                    if (match) {
+                                        pinnedIds.push(match[1]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    return pinnedIds;
+                }
+            ''')
+            
+            pinned_set = set(pinned_ids)
+            if pinned_set:
+                logger.info(f"Found {len(pinned_set)} pinned video(s): {pinned_set}")
+            else:
+                logger.debug("No pinned videos found")
+                
+            return pinned_set
+            
+        except Exception as e:
+            logger.warning(f"Error detecting pinned videos: {e}")
+            return set()
+    
     # ========================================================================
     # VIDEO SCRAPING (Playwright scrolling method)
     # ========================================================================
@@ -346,7 +407,8 @@ class PlaywrightProfileScraper:
         self,
         username: str,
         max_videos: int = 1000,
-        lookback_days: int = 365
+        lookback_days: int = 365,
+        skip_pinned: bool = False
     ) -> List[VideoData]:
         """
         Get all videos from a user within the lookback period using Playwright scrolling.
@@ -355,12 +417,14 @@ class PlaywrightProfileScraper:
             username: TikTok username (without @)
             max_videos: Maximum number of videos to fetch
             lookback_days: How many days back to look
+            skip_pinned: If True, skip pinned videos
         """
         cutoff_timestamp = int((datetime.now() - timedelta(days=lookback_days)).timestamp())
         url = f"https://www.tiktok.com/@{username}"
         
         videos = []
         seen_ids = set()
+        pinned_ids = set()
         
         try:
             # Clear previous responses
@@ -390,12 +454,22 @@ class PlaywrightProfileScraper:
             except:
                 logger.warning("Video grid not found, continuing anyway...")
             
+            # Detect pinned videos if skip_pinned is enabled
+            if skip_pinned:
+                pinned_ids = await self.get_pinned_video_ids()
+                if pinned_ids:
+                    logger.info(f"Will skip {len(pinned_ids)} pinned video(s)")
+            
             # Extract initial videos from page data
             data = await self._extract_page_data()
             if data:
                 initial_videos = self._extract_videos_from_page_data(data, username, cutoff_timestamp)
                 for video in initial_videos:
                     if video.video_id not in seen_ids:
+                        # Skip pinned videos if requested
+                        if skip_pinned and video.video_id in pinned_ids:
+                            logger.debug(f"Skipping pinned video: {video.video_id}")
+                            continue
                         seen_ids.add(video.video_id)
                         videos.append(video)
                         self.stats["videos_scraped"] += 1
@@ -448,6 +522,11 @@ class PlaywrightProfileScraper:
                                 
                             video = self._parse_video_data(item, username)
                             if video and video.video_id not in seen_ids:
+                                # Skip pinned videos if requested
+                                if skip_pinned and video.video_id in pinned_ids:
+                                    logger.debug(f"Skipping pinned video: {video.video_id}")
+                                    continue
+                                    
                                 seen_ids.add(video.video_id)
                                 
                                 # Check if within lookback period
@@ -679,7 +758,8 @@ class PlaywrightProfileScraper:
         username: str,
         output_dir: Path,
         max_videos: int = 1000,
-        lookback_days: int = 365
+        lookback_days: int = 365,
+        skip_pinned: bool = False
     ) -> Dict[str, Any]:
         """
         Scrape user profile and create time series dataset (daily aggregation).
@@ -689,12 +769,15 @@ class PlaywrightProfileScraper:
             output_dir: Directory to save output files
             max_videos: Maximum videos to fetch
             lookback_days: Days to look back (default 365 = 1 year)
+            skip_pinned: If True, skip pinned videos
         
         Returns:
             Dictionary with videos, time series, and metadata
         """
         logger.info(f"Starting time series scrape for @{username}")
         logger.info(f"Lookback: {lookback_days} days")
+        if skip_pinned:
+            logger.info("Skipping pinned videos: enabled")
         
         # Calculate date range
         now = datetime.now()
@@ -706,7 +789,7 @@ class PlaywrightProfileScraper:
         username_dir.mkdir(parents=True, exist_ok=True)
         
         # Fetch all videos
-        videos = await self.get_user_videos(username, max_videos, lookback_days)
+        videos = await self.get_user_videos(username, max_videos, lookback_days, skip_pinned=skip_pinned)
         
         if not videos:
             logger.error("No videos fetched")

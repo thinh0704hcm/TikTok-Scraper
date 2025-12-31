@@ -289,7 +289,8 @@ async def scrape_profile_time_series(
     resume: bool = True,
     verbose: bool = False,
     logger = None,
-    list_name: str = "default"
+    list_name: str = "default",
+    skip_pinned: bool = False
 ) -> Dict[str, Any]:
     """
     Scrape time series data for multiple TikTok profiles.
@@ -300,6 +301,7 @@ async def scrape_profile_time_series(
         max_videos: Max videos per profile
         resume: Skip already completed profiles
         logger: Logger instance
+        skip_pinned: Skip pinned videos
     
     Returns:
         Summary of scraping results
@@ -312,6 +314,8 @@ async def scrape_profile_time_series(
     logger.info(f"Lookback: {lookback_days} days")
     logger.info(f"Max videos per profile: {max_videos}")
     logger.info(f"Total profiles: {len(account_ids)}")
+    if skip_pinned:
+        logger.info("Skipping pinned videos: ENABLED")
     logger.info("=" * 70)
     
     # Initialize progress tracker
@@ -377,7 +381,8 @@ async def scrape_profile_time_series(
                     username=account_id if is_username else None,
                     output_dir=output_dir,
                     max_videos=max_videos,
-                    lookback_days=lookback_days
+                    lookback_days=lookback_days,
+                    skip_pinned=skip_pinned
                 )
                 
                 if "error" in summary:
@@ -558,6 +563,8 @@ def main():
                         help="Force non-headless mode")
     parser.add_argument("--xvfb", action="store_true",
                         help="Use Xvfb pseudo-headless (Linux only)")
+    parser.add_argument("--skip-pinned", action="store_true",
+                        help="Skip pinned videos (videos with 'Pinned' badge)")
     parser.add_argument("--test", action="store_true",
                         help="Test mode (2 profiles)")
     parser.add_argument("--verbose", action="store_true",
@@ -642,6 +649,7 @@ def main():
     print(f"Resume: {not args.no_resume}")
     print(f"Headless: {headless_mode}")
     print(f"Verbose: {args.verbose}")
+    print(f"Skip pinned: {args.skip_pinned}")
     if args.xvfb:
         print(f"Display: Xvfb (pseudo-headless)")
     if args.proxy:
@@ -656,7 +664,8 @@ def main():
             max_videos=args.max_videos,
             resume=not args.no_resume,
             verbose=args.verbose,
-            list_name=list_name
+            list_name=list_name,
+            skip_pinned=args.skip_pinned
         ))
     finally:
         # Cleanup

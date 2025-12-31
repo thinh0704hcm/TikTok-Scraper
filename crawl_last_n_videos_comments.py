@@ -76,9 +76,130 @@ class CommentData:
 class CommentScraper(PlaywrightProfileScraper):
     """Extended scraper for TikTok comments"""
     
+    async def start(self):
+        """Start the browser with maximized window"""
+        logger.info("Starting Playwright browser...")
+        
+        from playwright.async_api import async_playwright
+        
+        self.playwright = await async_playwright().start()
+        
+        launch_args = {
+            'headless': self.headless,
+            'slow_mo': self.slow_mo,
+            'args': [
+                '--disable-blink-features=AutomationControlled',
+                '--no-sandbox',
+                '--disable-web-resources',
+                '--start-maximized',  # Start maximized
+            ]
+        }
+        
+        # Add proxy if provided
+        if self.proxy_server:
+            logger.info(f"Using proxy: {self.proxy_server}")
+            launch_args['proxy'] = {'server': self.proxy_server}
+        elif self.proxy:
+            logger.info(f"Using proxy: {self.proxy}")
+            launch_args['proxy'] = {'server': self.proxy}
+        
+        self.browser = await self.playwright.chromium.launch(**launch_args)
+        
+        context_args = {
+            'viewport': None,  # No viewport = use full window size
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'locale': 'en-US',
+            'no_viewport': True,  # Allow browser to use actual window size
+        }
+        
+        # Add proxy with credentials to context if parsed
+        if self.proxy_server:
+            context_args['proxy'] = {'server': self.proxy_server}
+            if self.proxy_username and self.proxy_password:
+                context_args['http_credentials'] = {
+                    'username': self.proxy_username,
+                    'password': self.proxy_password,
+                }
+                logger.info("Proxy credentials added to context")
+        
+        self.context = await self.browser.new_context(**context_args)
+        
+        # Anti-detection
+        await self.context.add_init_script("""
+            () => {
+                Object.defineProperty(navigator, 'webdriver', {
+                    get: () => undefined,
+                });
+            }
+        """)
+        
+        self.page = await self.context.new_page()
+        
+        # Set up request/response interception
+        self.page.on("request", self._on_request)
+        self.page.on("response", self._on_response)
+        
+        logger.info("Navigating to TikTok...")
+        await self.page.goto('https://www.tiktok.com/', wait_until='domcontentloaded', timeout=45000)
+        await asyncio.sleep(3)
+        
+        await self._update_cookies()
+        logger.info("Browser ready!")
+    
+    async def get_pinned_video_ids(self, username: str) -> List[str]:
+        """
+        Get list of pinned video IDs for a user by checking their profile.
+        
+        Args:
+            username: TikTok username
+            
+        Returns:
+            List of pinned video IDs
+        """
+        pinned_ids = []
+        try:
+            url = f"https://www.tiktok.com/@{username}"
+            await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
+            await asyncio.sleep(3)
+            
+            # Find all video items with pinned badge
+            pinned_ids = await self.page.evaluate('''
+                () => {
+                    const pinnedVideos = [];
+                    // Find all video items
+                    const videoItems = document.querySelectorAll('[data-e2e="user-post-item"]');
+                    
+                    for (const item of videoItems) {
+                        // Check if this item has a pinned badge
+                        const badge = item.querySelector('[data-e2e="video-card-badge"], [class*="DivBadge"]');
+                        if (badge && badge.textContent.toLowerCase().includes('pinned')) {
+                            // Get video link to extract ID
+                            const link = item.querySelector('a[href*="/video/"]');
+                            if (link) {
+                                const href = link.getAttribute('href');
+                                const match = href.match(/\\/video\\/(\\d+)/);
+                                if (match) {
+                                    pinnedVideos.push(match[1]);
+                                }
+                            }
+                        }
+                    }
+                    return pinnedVideos;
+                }
+            ''')
+            
+            if pinned_ids:
+                logger.info(f"Found {len(pinned_ids)} pinned videos: {pinned_ids}")
+            
+        except Exception as e:
+            logger.debug(f"Error getting pinned videos: {e}")
+        
+        return pinned_ids
+    
     async def get_video_comments(
         self,
         video_id: str,
+        username: str,
         max_comments: int = 10000
     ) -> List[CommentData]:
         """
@@ -86,12 +207,13 @@ class CommentScraper(PlaywrightProfileScraper):
         
         Args:
             video_id: TikTok video ID
+            username: TikTok username (for constructing URL)
             max_comments: Maximum number of comments to fetch
         
         Returns:
             List of comment data
         """
-        url = f"https://www.tiktok.com/@placeholder/video/{video_id}"
+        url = f"https://www.tiktok.com/@{username}/video/{video_id}"
         
         comments = []
         seen_ids = set()
@@ -118,98 +240,274 @@ class CommentScraper(PlaywrightProfileScraper):
             
             await asyncio.sleep(self.wait_time + 2)
             
-            # Wait for comment section or video content
+            # Check for CAPTCHA
+            page_content = await self.page.content()
+            for captcha_text in self.CAPTCHA_LOCATORS:
+                if captcha_text.lower() in page_content.lower():
+                    logger.warning(f"⚠️  CAPTCHA detected: '{captcha_text}'")
+                    logger.warning("Please solve the CAPTCHA manually...")
+                    await asyncio.sleep(30)  # Give time to solve
+                    break
+            
+            # Wait for video content and comment button to load
             try:
-                await self.page.wait_for_selector('[data-e2e="browse-video"]', timeout=10000)
+                await self.page.wait_for_selector('[data-e2e="browse-video"], video', timeout=15000)
+                logger.info("✓ Video content loaded")
             except:
-                logger.warning("Video content not found, continuing anyway...")
+                logger.warning("Video content not found quickly, checking page...")
+                current_url = self.page.url
+                logger.info(f"Current URL: {current_url}")
             
-            # Try to click on comment section to expand it
-            try:
-                comment_button = await self.page.query_selector('[data-e2e="browse-comment"]')
-                if comment_button:
-                    await comment_button.click()
-                    await asyncio.sleep(1)
-            except Exception as e:
-                logger.debug(f"Could not click comment button: {e}")
+            # Wait for comment button to be visible and clickable
+            await asyncio.sleep(2)
             
-            # Scroll to load comments
-            scroll_count = 0
-            max_scrolls = 100
-            no_new_comments_count = 0
-            processed_urls = set()
-            scrolls_without_response = 0
+            # Click on comment button to open comment section
+            comment_button_clicked = False
+            comment_button_selectors = [
+                'button[aria-label*="comment" i]',
+                'button[aria-label*="Comment" i]',
+                '[data-e2e="comment-icon"]',
+                '[data-e2e="comment-count"]',
+                'button:has([data-e2e="comment-icon"])',
+                'button:has([data-e2e="comment-count"])',
+            ]
             
-            while len(comments) < max_comments and scroll_count < max_scrolls:
-                # Scroll in comment section or main page
+            for selector in comment_button_selectors:
                 try:
-                    # Try scrolling in comment container first
+                    comment_button = await self.page.wait_for_selector(selector, timeout=5000)
+                    if comment_button:
+                        logger.info(f"✓ Found comment button with selector: {selector}")
+                        await comment_button.click()
+                        comment_button_clicked = True
+                        logger.info("✓ Clicked on comment button to open comment section")
+                        await asyncio.sleep(3)  # Wait for comment panel to open
+                        break
+                except Exception as e:
+                    logger.debug(f"Comment button not found with selector {selector}: {e}")
+                    continue
+            
+            if not comment_button_clicked:
+                logger.warning("Could not find/click comment button, trying alternative approach...")
+                # Try clicking on any element that contains comment info
+                try:
                     await self.page.evaluate('''
                         () => {
-                            const commentContainer = document.querySelector('[data-e2e="comment-list"]');
-                            if (commentContainer) {
-                                commentContainer.scrollBy(0, commentContainer.clientHeight);
-                            } else {
-                                window.scrollBy(0, window.innerHeight);
+                            const buttons = document.querySelectorAll('button');
+                            for (const btn of buttons) {
+                                if (btn.getAttribute('aria-label') && 
+                                    btn.getAttribute('aria-label').toLowerCase().includes('comment')) {
+                                    btn.click();
+                                    return true;
+                                }
                             }
+                            return false;
                         }
                     ''')
-                except:
-                    # Fallback to window scroll
-                    await self.page.evaluate('window.scrollBy(0, window.innerHeight)')
-                
-                await asyncio.sleep(self.wait_time)
-                
-                # Check intercepted responses for comment API calls
-                responses = self.get_responses('api/comment/list')
-                
-                # Check if we got any new responses
-                new_responses = [r for r, _ in responses if r.url not in processed_urls]
-                if not new_responses:
-                    scrolls_without_response += 1
-                    if scrolls_without_response >= 10:
-                        logger.warning(f"No API responses intercepted after 10 scrolls")
-                        scrolls_without_response = 0
-                else:
-                    scrolls_without_response = 0
-                
-                comments_before = len(comments)
-                
-                for resp, json_data in responses:
-                    # Skip already processed responses
-                    if resp.url in processed_urls:
-                        continue
-                    processed_urls.add(resp.url)
-                    
-                    if json_data and 'comments' in json_data:
-                        comment_list = json_data['comments']
-                        logger.debug(f"Processing response with {len(comment_list)} comments")
-                        
-                        for item in comment_list:
-                            if not isinstance(item, dict):
-                                continue
-                            
-                            comment = self._parse_comment_data(item, video_id)
-                            if comment and comment.comment_id not in seen_ids:
-                                seen_ids.add(comment.comment_id)
-                                comments.append(comment)
-                                logger.debug(f"Added comment {comment.comment_id}")
-                
-                # Check if we got new comments
-                new_comments = len(comments) - comments_before
-                if new_comments == 0:
-                    no_new_comments_count += 1
-                    if no_new_comments_count >= 5:
-                        logger.info(f"No new comments after 5 scrolls, stopping")
+                    await asyncio.sleep(3)
+                except Exception as e:
+                    logger.debug(f"Alternative click failed: {e}")
+            
+            # Now wait for comment list to appear
+            await asyncio.sleep(2)
+            
+            # Try to find comment container
+            comment_container = None
+            comment_selectors = [
+                '[class*="DivCommentListContainer"]',
+                '[class*="CommentListContainer"]',
+            ]
+            
+            for selector in comment_selectors:
+                try:
+                    comment_container = await self.page.wait_for_selector(selector, timeout=5000)
+                    if comment_container:
+                        logger.info(f"✓ Comment section found with selector: {selector}")
                         break
+                except:
+                    continue
+            
+            if not comment_container:
+                logger.warning("Comment section container not found after clicking button")
+            
+            # Parse comments from DOM instead of API responses
+            logger.info("Scrolling comment section until all comments are loaded...")
+            
+            # Scroll to load ALL comments first using wheel events, then parse
+            scroll_count = 0
+            max_scrolls = 200
+            no_scroll_progress_count = 0
+            last_comment_count = 0
+            
+            while scroll_count < max_scrolls:
+                # Get container bounding box to position mouse correctly
+                container_info = await self.page.evaluate('''
+                    () => {
+                        const commentContainer = document.querySelector(
+                            '[class*="DivCommentListContainer"]'
+                        );
+                        
+                        if (!commentContainer) {
+                            return { found: false, error: 'Container not found' };
+                        }
+                        
+                        const rect = commentContainer.getBoundingClientRect();
+                        const commentItems = document.querySelectorAll('[class*="DivVirtualItemContainer"]');
+                        
+                        return {
+                            found: true,
+                            x: rect.left + rect.width / 2,
+                            y: rect.top + rect.height / 2,
+                            scrollTop: commentContainer.scrollTop,
+                            scrollHeight: commentContainer.scrollHeight,
+                            clientHeight: commentContainer.clientHeight,
+                            commentCount: commentItems.length
+                        };
+                    }
+                ''')
+                
+                if not container_info.get('found'):
+                    logger.error(f"Comment container not found: {container_info.get('error')}")
+                    break
+                
+                current_comment_count = container_info.get('commentCount', 0)
+                max_scroll = container_info['scrollHeight'] - container_info['clientHeight']
+                is_at_bottom = container_info['scrollTop'] >= max_scroll - 10
+                
+                if scroll_count == 0:
+                    logger.info(f"Starting scroll - Found {current_comment_count} comments initially")
+                
+                # Move mouse to comment container and scroll with wheel
+                await self.page.mouse.move(container_info['x'], container_info['y'])
+                await self.page.mouse.wheel(0, 500)  # Scroll down 500px
+                
+                # Wait for content to load
+                await asyncio.sleep(0.8)
+                
+                # Check if we got more comments
+                if current_comment_count > last_comment_count:
+                    no_scroll_progress_count = 0
+                    last_comment_count = current_comment_count
                 else:
-                    no_new_comments_count = 0
-                    logger.debug(f"Scroll {scroll_count}: +{new_comments} comments (total: {len(comments)})")
+                    no_scroll_progress_count += 1
+                
+                # Log progress periodically
+                if scroll_count % 10 == 0:
+                    logger.info(f"Scroll {scroll_count}: {current_comment_count} comments loaded")
+                
+                # Check if we're done
+                if is_at_bottom and no_scroll_progress_count >= 3:
+                    logger.info(f"Reached bottom of comments after {scroll_count} scrolls")
+                    break
+                
+                if no_scroll_progress_count >= 5:
+                    logger.info(f"No new comments after 5 scrolls, assuming all comments loaded")
+                    break
                 
                 scroll_count += 1
-                
-                if (scroll_count % 10 == 0):
-                    logger.info(f"Scrolled {scroll_count} times, found {len(comments)} comments")
+            
+            logger.info(f"Finished scrolling after {scroll_count} scrolls. Now parsing all comments from DOM...")
+            
+            # Now parse ALL comments from DOM at once
+            dom_comments = await self.page.evaluate('''
+                () => {
+                    const comments = [];
+                    
+                    // Find all comment items using the virtual item container class
+                    const commentItems = document.querySelectorAll('[class*="DivVirtualItemContainer"]');
+                    
+                    console.log('Total comment items found:', commentItems.length);
+                    
+                    let index = 0;
+                    for (const item of commentItems) {
+                        try {
+                            // Extract author username
+                            let authorUsername = '';
+                            let authorUniqueId = '';
+                            
+                            // Look for author link
+                            const authorLink = item.querySelector('a[href*="/@"]');
+                            if (authorLink) {
+                                authorUsername = authorLink.textContent?.trim() || '';
+                                const href = authorLink.getAttribute('href') || '';
+                                const match = href.match(/@([^/?]+)/);
+                                if (match) authorUniqueId = match[1];
+                            }
+                            
+                            // Extract comment text - look for span with text content
+                            let commentText = '';
+                            
+                            // Try to find text spans (usually comment text is in a span)
+                            const textSpans = item.querySelectorAll('span[data-e2e="comment-level-1"] span, span');
+                            for (const span of textSpans) {
+                                const text = span.textContent?.trim() || '';
+                                // Filter out short texts (likely buttons/labels)
+                                if (text.length > 1 && text.length > commentText.length && 
+                                    text !== authorUsername &&
+                                    !text.match(/^\\d+[KMB]?$/) && // not just numbers (likes)
+                                    !text.match(/^\\d+[dhmw]/) && // not time ago
+                                    text !== 'Reply' &&
+                                    text !== 'View' &&
+                                    text !== 'View more') {
+                                    commentText = text;
+                                }
+                            }
+                            
+                            // Extract time
+                            let timeText = '';
+                            const allText = item.textContent || '';
+                            const timeMatch = allText.match(/(\\d+[dhmw] ago|[A-Z][a-z]+ \\d+)/);
+                            if (timeMatch) timeText = timeMatch[1];
+                            
+                            // Generate unique ID
+                            const commentId = 'dom_' + index;
+                            
+                            if (authorUsername && commentText && commentText.length > 0) {
+                                comments.push({
+                                    comment_id: commentId,
+                                    author_username: authorUsername,
+                                    author_unique_id: authorUniqueId || authorUsername.replace('@', ''),
+                                    text: commentText.substring(0, 2000),
+                                    time_text: timeText,
+                                    like_count: 0,
+                                    reply_count: 0,
+                                    is_verified: false
+                                });
+                            }
+                            
+                            index++;
+                        } catch (e) {
+                            console.error('Error parsing comment:', e);
+                        }
+                    }
+                    
+                    console.log('Successfully parsed comments:', comments.length);
+                    return comments;
+                }
+            ''')
+            
+            logger.info(f"Found {len(dom_comments)} comments in DOM")
+            
+            # Process DOM comments
+            for dom_comment in dom_comments:
+                comment_id = dom_comment['comment_id']
+                if comment_id not in seen_ids:
+                    seen_ids.add(comment_id)
+                    
+                    # Create CommentData object
+                    comment = CommentData(
+                        comment_id=comment_id,
+                        video_id=video_id,
+                        author_username=dom_comment['author_username'],
+                        author_unique_id=dom_comment['author_unique_id'],
+                        text=dom_comment['text'],
+                        create_time=0,
+                        create_time_iso=dom_comment['time_text'],
+                        like_count=dom_comment['like_count'],
+                        reply_count=dom_comment['reply_count'],
+                        is_author_verified=dom_comment['is_verified'],
+                        scraped_at=datetime.now().isoformat()
+                    )
+                    comments.append(comment)
             
             logger.info(f"Total comments fetched: {len(comments)}")
             return comments
@@ -303,6 +601,7 @@ async def crawl_comments_from_last_n_videos(
         "n_videos": n_videos,
         "scraped_at": datetime.now().isoformat(),
         "videos_processed": [],
+        "pinned_videos_skipped": [],
         "total_comments": 0,
         "errors": []
     }
@@ -328,11 +627,28 @@ async def crawl_comments_from_last_n_videos(
                 results["errors"].append(error_msg)
                 return results
             
-            # Sort by create time and take the N most recent
-            videos_sorted = sorted(videos, key=lambda v: v.create_timestamp, reverse=True)
-            videos_to_crawl = videos_sorted[:n_videos]
+            # Get pinned video IDs to skip them
+            logger.info("Checking for pinned videos to skip...")
+            pinned_video_ids = await scraper.get_pinned_video_ids(username)
+            if pinned_video_ids:
+                logger.info(f"Found {len(pinned_video_ids)} pinned videos to skip: {pinned_video_ids}")
+            else:
+                logger.info("No pinned videos found")
             
-            logger.info(f"Found {len(videos)} videos, selecting {len(videos_to_crawl)} most recent")
+            # Sort by create time and filter out pinned videos
+            videos_sorted = sorted(videos, key=lambda v: v.create_timestamp, reverse=True)
+            
+            # Filter out pinned videos
+            non_pinned_videos = [v for v in videos_sorted if v.video_id not in pinned_video_ids]
+            skipped_pinned = len(videos_sorted) - len(non_pinned_videos)
+            if skipped_pinned > 0:
+                logger.info(f"Skipped {skipped_pinned} pinned videos")
+                results["pinned_videos_skipped"] = pinned_video_ids
+            
+            # Take the N most recent non-pinned videos
+            videos_to_crawl = non_pinned_videos[:n_videos]
+            
+            logger.info(f"Found {len(videos)} videos, skipped {skipped_pinned} pinned, selecting {len(videos_to_crawl)} most recent non-pinned")
             
             # Step 2: Crawl comments for each video
             for idx, video in enumerate(videos_to_crawl, 1):
@@ -346,6 +662,7 @@ async def crawl_comments_from_last_n_videos(
                 try:
                     comments = await scraper.get_video_comments(
                         video_id=video.video_id,
+                        username=username,
                         max_comments=10000
                     )
                     
@@ -463,6 +780,9 @@ Examples:
     
     args = parser.parse_args()
     
+    # Ensure logs directory exists
+    os.makedirs('logs', exist_ok=True)
+    
     # Setup logging
     logging.basicConfig(
         level=getattr(logging, args.log_level),
@@ -470,7 +790,7 @@ Examples:
         handlers=[
             logging.StreamHandler(),
             logging.FileHandler(
-                f'crawl_comments_{args.username}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log',
+                f'logs/crawl_comments_{args.username}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log',
                 encoding='utf-8'
             )
         ]
