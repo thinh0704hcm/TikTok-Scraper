@@ -332,15 +332,15 @@ class CommentScraper(PlaywrightProfileScraper):
             # Parse comments from DOM instead of API responses
             logger.info("Scrolling comment section until all comments are loaded...")
             
-            # Scroll to load ALL comments first using wheel events, then parse
+            # Scroll to load ALL comments first - try multiple scroll methods
             scroll_count = 0
             max_scrolls = 200
             no_scroll_progress_count = 0
             last_comment_count = 0
             
             while scroll_count < max_scrolls:
-                # Get container bounding box to position mouse correctly
-                container_info = await self.page.evaluate('''
+                # Scroll using multiple methods for better compatibility
+                scroll_result = await self.page.evaluate('''
                     () => {
                         const commentContainer = document.querySelector(
                             '[class*="DivCommentListContainer"]'
@@ -350,35 +350,67 @@ class CommentScraper(PlaywrightProfileScraper):
                             return { found: false, error: 'Container not found' };
                         }
                         
-                        const rect = commentContainer.getBoundingClientRect();
-                        const commentItems = document.querySelectorAll('[class*="DivVirtualItemContainer"]');
-                        
-                        return {
-                            found: true,
-                            x: rect.left + rect.width / 2,
-                            y: rect.top + rect.height / 2,
+                        const before = {
                             scrollTop: commentContainer.scrollTop,
                             scrollHeight: commentContainer.scrollHeight,
-                            clientHeight: commentContainer.clientHeight,
-                            commentCount: commentItems.length
+                            clientHeight: commentContainer.clientHeight
                         };
+                        
+                        const commentItems = document.querySelectorAll('[class*="DivVirtualItemContainer"]');
+                        const commentCount = commentItems.length;
+                        
+                        // Try multiple scroll methods
+                        // Method 1: scrollBy on container
+                        commentContainer.scrollBy(0, 500);
+                        
+                        // Method 2: If we have comments, scroll last one into view
+                        if (commentItems.length > 0) {
+                            const lastComment = commentItems[commentItems.length - 1];
+                            lastComment.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        }
+                        
+                        // Method 3: Set scrollTop directly as fallback
+                        commentContainer.scrollTop += 500;
+                        
+                        return new Promise(resolve => {
+                            setTimeout(() => {
+                                const after = {
+                                    scrollTop: commentContainer.scrollTop,
+                                    scrollHeight: commentContainer.scrollHeight,
+                                    clientHeight: commentContainer.clientHeight
+                                };
+                                
+                                const newCommentCount = document.querySelectorAll('[class*="DivVirtualItemContainer"]').length;
+                                const maxScroll = after.scrollHeight - after.clientHeight;
+                                const isAtBottom = after.scrollTop >= maxScroll - 10;
+                                const scrolled = after.scrollTop > before.scrollTop;
+                                
+                                resolve({
+                                    found: true,
+                                    before,
+                                    after,
+                                    scrolled,
+                                    isAtBottom,
+                                    commentCountBefore: commentCount,
+                                    commentCountAfter: newCommentCount,
+                                    maxScroll
+                                });
+                            }, 200);
+                        });
                     }
                 ''')
                 
-                if not container_info.get('found'):
-                    logger.error(f"Comment container not found: {container_info.get('error')}")
+                if not scroll_result.get('found'):
+                    logger.error(f"Comment container not found: {scroll_result.get('error')}")
                     break
                 
-                current_comment_count = container_info.get('commentCount', 0)
-                max_scroll = container_info['scrollHeight'] - container_info['clientHeight']
-                is_at_bottom = container_info['scrollTop'] >= max_scroll - 10
+                current_comment_count = scroll_result.get('commentCountAfter', 0)
+                is_at_bottom = scroll_result.get('isAtBottom', False)
+                scrolled = scroll_result.get('scrolled', False)
                 
                 if scroll_count == 0:
                     logger.info(f"Starting scroll - Found {current_comment_count} comments initially")
-                
-                # Move mouse to comment container and scroll with wheel
-                await self.page.mouse.move(container_info['x'], container_info['y'])
-                await self.page.mouse.wheel(0, 500)  # Scroll down 500px
+                    logger.info(f"Container scroll state: {scroll_result['before']['scrollTop']}/{scroll_result['before']['scrollHeight']}")
                 
                 # Wait for content to load
                 await asyncio.sleep(0.8)
@@ -386,21 +418,22 @@ class CommentScraper(PlaywrightProfileScraper):
                 # Check if we got more comments
                 if current_comment_count > last_comment_count:
                     no_scroll_progress_count = 0
+                    logger.debug(f"Progress: {last_comment_count} -> {current_comment_count} comments")
                     last_comment_count = current_comment_count
                 else:
                     no_scroll_progress_count += 1
                 
                 # Log progress periodically
-                if scroll_count % 10 == 0:
-                    logger.info(f"Scroll {scroll_count}: {current_comment_count} comments loaded")
+                if scroll_count % 5 == 0:
+                    logger.info(f"Scroll {scroll_count}: {current_comment_count} comments loaded, scrolled={scrolled}, at_bottom={is_at_bottom}")
                 
                 # Check if we're done
                 if is_at_bottom and no_scroll_progress_count >= 3:
                     logger.info(f"Reached bottom of comments after {scroll_count} scrolls")
                     break
                 
-                if no_scroll_progress_count >= 5:
-                    logger.info(f"No new comments after 5 scrolls, assuming all comments loaded")
+                if no_scroll_progress_count >= 8:
+                    logger.info(f"No new comments after 8 attempts, assuming all comments loaded")
                     break
                 
                 scroll_count += 1
@@ -765,10 +798,22 @@ Examples:
     )
     
     parser.add_argument(
+        '--no-headless',
+        action='store_true',
+        help='Force non-headless mode (show browser)'
+    )
+    
+    parser.add_argument(
         '--proxy',
         type=str,
         default=None,
         help='Proxy server (default: use hardcoded proxy)'
+    )
+    
+    parser.add_argument(
+        '--no-proxy',
+        action='store_true',
+        help='Do not use proxy (use direct connection)'
     )
     
     parser.add_argument(
@@ -796,12 +841,18 @@ Examples:
         ]
     )
     
+    # Determine headless mode
+    headless_mode = args.headless and not args.no_headless
+    
+    # Determine proxy
+    proxy_to_use = None if args.no_proxy else args.proxy
+    
     # Run crawler
     results = asyncio.run(crawl_comments_from_last_n_videos(
         username=args.username,
         n_videos=args.n,
-        headless=args.headless,
-        proxy=args.proxy
+        headless=headless_mode,
+        proxy=proxy_to_use
     ))
     
     # Print summary

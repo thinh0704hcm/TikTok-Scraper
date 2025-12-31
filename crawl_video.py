@@ -563,8 +563,10 @@ def main():
                         help="Force non-headless mode")
     parser.add_argument("--xvfb", action="store_true",
                         help="Use Xvfb pseudo-headless (Linux only)")
-    parser.add_argument("--skip-pinned", action="store_true",
-                        help="Skip pinned videos (videos with 'Pinned' badge)")
+    parser.add_argument("--skip-pinned", action="store_true", default=True,
+                        help="Skip pinned videos (default: True). Use --no-skip-pinned to include them")
+    parser.add_argument("--no-skip-pinned", action="store_false", dest="skip_pinned",
+                        help="Include pinned videos (override default)")
     parser.add_argument("--test", action="store_true",
                         help="Test mode (2 profiles)")
     parser.add_argument("--verbose", action="store_true",

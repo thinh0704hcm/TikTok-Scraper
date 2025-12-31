@@ -245,7 +245,14 @@ class PlaywrightProfileScraper:
             'args': [
                 '--disable-blink-features=AutomationControlled',
                 '--no-sandbox',
-                '--disable-web-resources',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--disable-gpu',
+                '--disable-web-security',
+                '--disable-features=IsolateOrigins,site-per-process',
             ]
         }
         
@@ -259,10 +266,25 @@ class PlaywrightProfileScraper:
         
         self.browser = await self.playwright.chromium.launch(**launch_args)
         
+        # Better user agent
+        user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        
         context_args = {
             'viewport': {'width': 1920, 'height': 1080},
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'user_agent': user_agent,
             'locale': 'en-US',
+            'timezone_id': 'America/New_York',
+            'permissions': ['geolocation'],
+            'geolocation': {'latitude': 40.7128, 'longitude': -74.0060},
+            'color_scheme': 'light',
+            'extra_http_headers': {
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'DNT': '1',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+            }
         }
         
         # Add proxy with credentials to context if parsed
@@ -277,12 +299,36 @@ class PlaywrightProfileScraper:
         
         self.context = await self.browser.new_context(**context_args)
         
-        # Anti-detection
+        # Enhanced anti-detection
         await self.context.add_init_script("""
             () => {
+                // Remove webdriver property
                 Object.defineProperty(navigator, 'webdriver', {
                     get: () => undefined,
                 });
+                
+                // Override plugins
+                Object.defineProperty(navigator, 'plugins', {
+                    get: () => [1, 2, 3, 4, 5],
+                });
+                
+                // Override languages
+                Object.defineProperty(navigator, 'languages', {
+                    get: () => ['en-US', 'en'],
+                });
+                
+                // Chrome runtime
+                window.chrome = {
+                    runtime: {},
+                };
+                
+                // Permissions
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.query = (parameters) => (
+                    parameters.name === 'notifications' ?
+                        Promise.resolve({ state: Notification.permission }) :
+                        originalQuery(parameters)
+                );
             }
         """)
         
@@ -294,7 +340,46 @@ class PlaywrightProfileScraper:
         
         logger.info("Navigating to TikTok...")
         await self.page.goto('https://www.tiktok.com/', wait_until='domcontentloaded', timeout=45000)
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
+        
+        # Simulate human behavior
+        try:
+            # Random mouse movements
+            import random
+            for _ in range(3):
+                x = random.randint(100, 1000)
+                y = random.randint(100, 700)
+                await self.page.mouse.move(x, y)
+                await asyncio.sleep(random.uniform(0.1, 0.3))
+            
+            # Scroll a bit
+            await self.page.evaluate('window.scrollBy(0, 100)')
+            await asyncio.sleep(1)
+            await self.page.evaluate('window.scrollBy(0, -50)')
+            await asyncio.sleep(1)
+        except Exception as e:
+            logger.debug(f"Human behavior simulation error: {e}")
+        
+        # Check if TikTok shows error page
+        error_check = await self.page.evaluate('''
+            () => {
+                const bodyText = document.body.innerText;
+                if (bodyText.includes('Something went wrong') || 
+                    bodyText.includes('Please try again later')) {
+                    return { hasError: true, text: bodyText.substring(0, 200) };
+                }
+                return { hasError: false };
+            }
+        ''')
+        
+        if error_check.get('hasError'):
+            logger.error(f"TikTok error page detected: {error_check.get('text')}")
+            # Take screenshot for debugging
+            try:
+                await self.page.screenshot(path='tiktok_error.png')
+                logger.info("Screenshot saved to tiktok_error.png")
+            except:
+                pass
         
         await self._update_cookies()
         logger.info("Browser ready!")
@@ -446,7 +531,29 @@ class PlaywrightProfileScraper:
                     else:
                         raise
             
-            await asyncio.sleep(self.wait_time + 1)
+            await asyncio.sleep(self.wait_time + 2)
+            
+            # Check if error page is shown
+            error_check = await self.page.evaluate('''
+                () => {
+                    const bodyText = document.body.innerText;
+                    if (bodyText.includes('Something went wrong') || 
+                        bodyText.includes('Please try again later')) {
+                        return { hasError: true, text: bodyText.substring(0, 200) };
+                    }
+                    return { hasError: false };
+                }
+            ''')
+            
+            if error_check.get('hasError'):
+                logger.error(f"TikTok error page on profile: {error_check.get('text')}")
+                # Take screenshot
+                try:
+                    await self.page.screenshot(path=f'tiktok_profile_error_{username}.png')
+                    logger.error(f"Screenshot saved to tiktok_profile_error_{username}.png")
+                except:
+                    pass
+                raise Exception(f"TikTok blocked request: {error_check.get('text')}")
             
             # Wait for video grid
             try:
