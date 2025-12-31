@@ -544,20 +544,20 @@ class LSTMDataPreparator:
         
         return df_resampled
     
-    def augment_videos_for_accounts(self, df: pd.DataFrame, min_videos_base: int = 30) -> pd.DataFrame:
+    def augment_videos_for_accounts(self, df: pd.DataFrame, min_videos_base: int = 25) -> pd.DataFrame:
         """
         Create synthetic videos for accounts with insufficient data using interpolation.
         This helps ensure all accounts have enough data for per-KOL training (MVP approach).
-        Target: 30 + random(0-10) videos per account for robust train/val/test splits.
+        Target: 25 + random(0-10) videos per account for robust train/val/test splits.
         
         Args:
             df: Cleaned DataFrame
-            min_videos_base: Base minimum videos per account (default: 30)
+            min_videos_base: Base minimum videos per account (default: 25)
             
         Returns:
             DataFrame with augmented synthetic videos
         """
-        print(f"\n🔬 Augmenting data for accounts with <{min_videos_base} videos...")
+        print(f"\n🔬 Augmenting data to ~{min_videos_base}-{min_videos_base+10} videos per account...")
         
         augmented_dfs = []
         augmentation_stats = {}
@@ -565,7 +565,7 @@ class LSTMDataPreparator:
         for account, account_group in df.groupby('author_username'):
             n_videos = account_group['video_id'].nunique()
             
-            # Add small random number to target (30 + 0-10 = 30-40 videos per account)
+            # Add small random number to target (25 + 0-10 = 25-35 videos per account)
             min_videos_target = min_videos_base + np.random.randint(0, 11)
             
             if n_videos >= min_videos_target:
@@ -583,11 +583,18 @@ class LSTMDataPreparator:
             video_list = list(existing_videos)
             
             if len(video_list) < 2:
-                # Can't interpolate with only 1 video, just duplicate it
+                # Can't interpolate with only 1 video, duplicate with small noise
                 for i in range(n_synthetic_needed):
                     synthetic_video = account_group.copy()
                     synthetic_video['video_id'] = f"{account_group['video_id'].iloc[0]}_synthetic_{i+1}"
                     synthetic_video['is_synthetic'] = True
+                    
+                    # Add ±3% noise to make it slightly different
+                    for col in ['views', 'likes', 'shares', 'comments']:
+                        if col in synthetic_video.columns:
+                            noise = np.random.uniform(0.97, 1.03, len(synthetic_video))
+                            synthetic_video[col] = (synthetic_video[col] * noise).astype(int).clip(lower=0)
+                    
                     augmented_dfs.append(synthetic_video)
             else:
                 # Interpolate between pairs of videos
@@ -626,7 +633,8 @@ class LSTMDataPreparator:
     
     def _interpolate_videos(self, vid1: pd.DataFrame, vid2: pd.DataFrame, account: str, idx: int) -> pd.DataFrame:
         """
-        Create a synthetic video by interpolating between two real videos.
+        Create a synthetic video by interpolating between two real videos with small noise.
+        Ensures synthetic video has snapshots at reasonable times for t=1h, 2h, 3h creation.
         
         Args:
             vid1, vid2: DataFrames of two videos to interpolate between
@@ -636,77 +644,77 @@ class LSTMDataPreparator:
         Returns:
             DataFrame representing synthetic video
         """
-        vid1 = vid1.sort_values('scraped_at')
-        vid2 = vid2.sort_values('scraped_at')
+        vid1 = vid1.sort_values('t_since_post')
+        vid2 = vid2.sort_values('t_since_post')
         
-        # Use the video with more snapshots as template
-        template = vid1 if len(vid1) >= len(vid2) else vid2
-        synthetic = template.copy()
+        # Get unique t_since_post times from both videos
+        t_times_1 = vid1['t_since_post'].values
+        t_times_2 = vid2['t_since_post'].values
         
-        # Generate new video_id
-        synthetic['video_id'] = f"{account}_synthetic_video_{idx}"
-        synthetic['is_synthetic'] = True
+        # Merge and get unique times, ensuring we cover t=1,2,3
+        all_times = np.unique(np.concatenate([t_times_1, t_times_2, [1, 2, 3]]))
+        # Keep times up to 7 days
+        all_times = all_times[all_times <= 168]
         
-        # Interpolate numeric metrics (blend between the two videos)
-        alpha = np.random.uniform(0.3, 0.7)  # Interpolation weight
+        # Create synthetic video with these times
+        synthetic_rows = []
         
-        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
-            if col in vid1.columns and col in vid2.columns:
-                # Match by index position (rough time alignment)
-                for i in range(min(len(synthetic), len(vid1), len(vid2))):
-                    val1 = vid1.iloc[i][col] if i < len(vid1) else vid1.iloc[-1][col]
-                    val2 = vid2.iloc[i][col] if i < len(vid2) else vid2.iloc[-1][col]
-                    synthetic.iloc[i, synthetic.columns.get_loc(col)] = int(alpha * val1 + (1 - alpha) * val2)
+        # Set new posted_at (random between vid1 and vid2)
+        posted1 = vid1['posted_at'].iloc[0]
+        posted2 = vid2['posted_at'].iloc[0]
+        if posted1 < posted2:
+            time_diff = (posted2 - posted1).total_seconds()
+            posted_at = posted1 + pd.Timedelta(seconds=np.random.uniform(0, time_diff))
+        else:
+            posted_at = posted1
         
-        # Add small random noise to make it more realistic (±5%)
+        # Interpolation weight
+        alpha = np.random.uniform(0.4, 0.6)
+        
+        for t in all_times:
+            # Interpolate metrics at this time point
+            # Find closest snapshots in vid1 and vid2
+            closest_idx_1 = np.argmin(np.abs(t_times_1 - t))
+            closest_idx_2 = np.argmin(np.abs(t_times_2 - t))
+            
+            snap1 = vid1.iloc[closest_idx_1]
+            snap2 = vid2.iloc[closest_idx_2]
+            
+            # Create interpolated snapshot
+            new_snap = {
+                'video_id': f"{account}_synthetic_video_{idx}",
+                'author_username': account,
+                'posted_at': posted_at,
+                'scraped_at': posted_at + pd.Timedelta(hours=float(t)),
+                't_since_post': t,
+                'is_synthetic': True
+            }
+            
+            # Interpolate metrics
+            for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+                if col in snap1.index and col in snap2.index:
+                    val1 = snap1[col]
+                    val2 = snap2[col]
+                    new_snap[col] = int(alpha * val1 + (1 - alpha) * val2)
+            
+            # Add small noise (±3%)
+            for col in ['views', 'likes', 'shares', 'comments', 'collects']:
+                if col in new_snap:
+                    noise = np.random.uniform(0.97, 1.03)
+                    new_snap[col] = max(0, int(new_snap[col] * noise))
+            
+            synthetic_rows.append(new_snap)
+        
+        synthetic = pd.DataFrame(synthetic_rows)
+        
+        # Ensure monotonically increasing
+        synthetic = synthetic.sort_values('t_since_post')
         for col in ['views', 'likes', 'shares', 'comments', 'collects']:
             if col in synthetic.columns:
-                noise = np.random.uniform(0.95, 1.05, len(synthetic))
-                synthetic[col] = (synthetic[col] * noise).astype(int)
-                synthetic[col] = synthetic[col].clip(lower=0)  # Ensure non-negative
-        
-        # Ensure monotonically increasing values (views/engagement should never decrease)
-        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
-            if col in synthetic.columns:
-                # Sort by scraped_at to ensure temporal order
-                synthetic = synthetic.sort_values('scraped_at')
                 values = synthetic[col].values
-                
-                # Force monotonic increase: each value must be >= previous value
                 for i in range(1, len(values)):
                     if values[i] < values[i-1]:
                         values[i] = values[i-1]
-                
-                synthetic[col] = values
-        
-        # Cap unrealistic growth rates (prevent 300k-400k jumps in 30min-1hour)
-        # Max realistic growth rates per hour: views=150k, likes=15k, shares=5k, comments=2k
-        max_growth_rates = {
-            'views': 150000,      # Max 150k views/hour (viral videos)
-            'likes': 15000,       # Max 15k likes/hour
-            'shares': 5000,       # Max 5k shares/hour  
-            'comments': 2000,     # Max 2k comments/hour
-            'collects': 3000      # Max 3k collects/hour
-        }
-        
-        synthetic = synthetic.sort_values('scraped_at')
-        
-        for col in ['views', 'likes', 'shares', 'comments', 'collects']:
-            if col in synthetic.columns and 't_since_post' in synthetic.columns:
-                values = synthetic[col].values.copy()
-                times = synthetic['t_since_post'].values  # In hours
-                
-                # Check and cap growth between consecutive snapshots
-                for i in range(1, len(values)):
-                    time_diff = max(times[i] - times[i-1], 0.01)  # Avoid division by zero
-                    growth = values[i] - values[i-1]
-                    growth_rate = growth / time_diff  # Growth per hour
-                    
-                    # If growth rate exceeds max, cap the value
-                    if growth_rate > max_growth_rates[col]:
-                        max_allowed_growth = max_growth_rates[col] * time_diff
-                        values[i] = int(values[i-1] + max_allowed_growth)
-                
                 synthetic[col] = values
         
         return synthetic
@@ -833,9 +841,15 @@ class LSTMDataPreparator:
         """
         print(f"\n🔄 Expanding data with time horizons...")
         
-        # Prepare raw data for target lookup
-        raw_df = self.raw_data.copy()
-        raw_df['t_since_post'] = (raw_df['scraped_at'] - raw_df['posted_at']).dt.total_seconds() / 3600
+        # Use augmented data (includes synthetic videos) for target lookup
+        if hasattr(self, 'augmented_data') and self.augmented_data is not None:
+            raw_df = self.augmented_data.copy()
+        else:
+            raw_df = self.raw_data.copy()
+        
+        # Ensure t_since_post exists
+        if 't_since_post' not in raw_df.columns:
+            raw_df['t_since_post'] = (raw_df['scraped_at'] - raw_df['posted_at']).dt.total_seconds() / 3600
         
         expanded_dfs = []
         horizon_stats = {T: 0 for T in self.prediction_horizons}
@@ -1074,6 +1088,10 @@ class LSTMDataPreparator:
         """
         print(f"\n🪟 Creating sequences from expanded data...")
         
+        # Store mapping of scaled to original horizon values for reporting
+        unique_horizons = df['target_horizon'].unique()
+        horizon_mapping = {h: h for h in unique_horizons}  # Will work with scaled values
+        
         X_list = []
         y_list = []
         video_id_list = []
@@ -1081,7 +1099,7 @@ class LSTMDataPreparator:
         horizon_list = []
         
         videos_with_sequences = set()
-        horizon_stats = {T: 0 for T in self.prediction_horizons}
+        horizon_stats = {}  # Use dict to handle any horizon values
         
         # Group by (video_id, target_horizon)
         for (video_id, target_horizon), group in df.groupby(['video_id', 'target_horizon']):
@@ -1124,8 +1142,7 @@ class LSTMDataPreparator:
             horizon_list.append(target_horizon)  # Keep as-is (may be scaled)
             
             videos_with_sequences.add(video_id)
-            # For stats, need original horizon value - get from unscaled df
-            # Just count all for now
+            # Count by horizon (may be scaled)
             if target_horizon not in horizon_stats:
                 horizon_stats[target_horizon] = 0
             horizon_stats[target_horizon] += 1
@@ -1143,10 +1160,12 @@ class LSTMDataPreparator:
             print(f"   X shape: {X.shape} - (samples, 3 snapshots, 7 features)")
             print(f"   y shape: {y.shape} - (samples, 4 metrics)")
             print(f"   Features: [views, likes, shares, comments, hour_of_day, day_of_week, target_horizon]")
-            print(f"\n   Sequences per horizon:")
-            for T in self.prediction_horizons:
-                if T in horizon_stats:
-                    print(f"      T={T}h ({T//24}d): {horizon_stats[T]} sequences")
+            print(f"\n   Sequences distribution:")
+            if horizon_stats:
+                sorted_horizons = sorted(horizon_stats.items(), key=lambda x: x[0])
+                for h_val, count in sorted_horizons:
+                    print(f"      Horizon value {h_val:.3f}: {count} sequences")
+            print(f"   Note: target_horizon is scaled - use metadata to see original horizons")
         
         return X, y, video_id_list, account_list, horizon_list
     
@@ -1303,11 +1322,14 @@ class LSTMDataPreparator:
         # 2. Clean and prepare
         df = self.clean_and_prepare(self.raw_data)
         
-        # 3. Keep only first 3 snapshots per video + add temporal features
-        df = self.prepare_snapshots(df)
+        # 3. Augment data BEFORE creating snapshots (synthetic videos need raw data)
+        df = self.augment_videos_for_accounts(df, min_videos_base=25)
         
-        # 4. Augment data (synthetic videos)
-        df = self.augment_videos_for_accounts(df, min_videos_base=30)
+        # Store augmented data for target lookup (includes synthetic videos)
+        self.augmented_data = df.copy()
+        
+        # 4. Keep only first 3 snapshots per video + add temporal features
+        df = self.prepare_snapshots(df)
         
         # 5. Expand with time horizons and find targets
         df = self.expand_with_horizons(df)
