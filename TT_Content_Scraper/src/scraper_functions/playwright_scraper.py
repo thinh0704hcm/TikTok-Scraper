@@ -1156,6 +1156,7 @@ class PlaywrightScraper:
     ) -> List[CommentData]:
         """
         Navigate to video and scrape comments
+        ✅ FIXED: Clicks comment button to open panel
         Also triggers label interception for the video
         """
         url = f"https://www.tiktok.com/@{username}/video/{video_id}"
@@ -1170,6 +1171,7 @@ class PlaywrightScraper:
                     cms = data.get("comments", [])
                     if cms:
                         self.intercepted_comments_buffer.extend(cms)
+                        logger.debug(f"Intercepted {len(cms)} comments from API")
                 except:
                     pass
         
@@ -1177,50 +1179,121 @@ class PlaywrightScraper:
         self.page.on("response", self._comment_handler)
         
         try:
+            logger.debug(f"Navigating to video {video_id}...")
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(3)
             
-            # Wait for comments
+            # ✅ NEW: Click the comment button to open comments panel
+            comment_button_selectors = [
+                '[data-e2e="comment-icon"]',  # The icon span
+                'button[aria-label*="comment"]',  # Button with "comment" in aria-label
+                'button[aria-label*="Comment"]',  # Capital C
+                '[data-e2e="browse-comment"]',  # Alternative selector
+            ]
+            
+            comment_button_clicked = False
+            for selector in comment_button_selectors:
+                try:
+                    logger.debug(f"Trying to click comment button: {selector}")
+                    await self.page.wait_for_selector(selector, timeout=5000)
+                    await self.page.click(selector)
+                    logger.info("✓ Clicked comment button to open panel")
+                    comment_button_clicked = True
+                    await asyncio.sleep(2)  # Wait for panel to open
+                    break
+                except Exception as e:
+                    logger.debug(f"Failed to click {selector}: {e}")
+                    continue
+            
+            if not comment_button_clicked:
+                logger.warning("⚠️ Could not find/click comment button - comments may not load")
+            
+            # Wait for comments to load
             try:
                 await self.page.wait_for_selector('[data-e2e="comment-item"]', timeout=5000)
+                logger.debug("✓ Comment panel loaded")
             except:
-                logger.debug("No comments found")
+                logger.debug("No comments found (panel may be empty)")
                 return []
             
-            # Scroll to load comments
+            # Scroll to load more comments
             scrolls = 0
-            while len(comments) < max_comments and scrolls < 10:
-                await self.page.evaluate('window.scrollBy(0, 500)')
-                await asyncio.sleep(2)
-                
-                # Process buffer
-                while self.intercepted_comments_buffer:
-                    c_raw = self.intercepted_comments_buffer.pop(0)
-                    
-                    try:
-                        c_id = c_raw.get('cid')
-                        if c_id and c_id not in seen_ids:
-                            user = c_raw.get('user', {})
-                            comments.append(CommentData(
-                                comment_id=c_id,
-                                video_id=video_id,
-                                text=c_raw.get('text', ''),
-                                create_time=int(c_raw.get('create_time', 0)),
-                                create_time_iso=datetime.fromtimestamp(int(c_raw.get('create_time', 0))).isoformat(),
-                                digg_count=c_raw.get('digg_count', 0),
-                                reply_count=c_raw.get('reply_comment_total', 0),
-                                user_id=user.get('uid', ''),
-                                username=user.get('unique_id', ''),
-                                nickname=user.get('nickname', ''),
-                                scraped_at=datetime.now().isoformat()
-                            ))
-                            seen_ids.add(c_id)
-                            self.stats["comments_scraped"] += 1
-                    except:
-                        pass
-                
-                scrolls += 1
+            max_scrolls = min(20, max_comments // 25)  # Estimate ~25 comments per scroll
+            no_new_comments_count = 0
             
+            while len(comments) < max_comments and scrolls < max_scrolls:
+                # Scroll inside the comment panel
+                try:
+                    # Try to scroll the comment list container
+                    await self.page.evaluate('''
+                        () => {
+                            // Find comment container and scroll it
+                            const commentContainer = document.querySelector('[data-e2e="comment-list"]') ||
+                                                    document.querySelector('[class*="CommentList"]') ||
+                                                    document.querySelector('[class*="comment-list"]');
+                            if (commentContainer) {
+                                commentContainer.scrollTop = commentContainer.scrollHeight;
+                            } else {
+                                // Fallback: scroll the whole page
+                                window.scrollBy(0, 500);
+                            }
+                        }
+                    ''')
+                except:
+                    # Fallback: just scroll the page
+                    await self.page.evaluate('window.scrollBy(0, 500)')
+                
+                await asyncio.sleep(2)
+                scrolls += 1
+                
+                # Process intercepted comments
+                if self.intercepted_comments_buffer:
+                    comments_before = len(comments)
+                    
+                    while self.intercepted_comments_buffer:
+                        c_raw = self.intercepted_comments_buffer.pop(0)
+                        
+                        try:
+                            c_id = c_raw.get('cid')
+                            if c_id and c_id not in seen_ids:
+                                user = c_raw.get('user', {})
+                                comments.append(CommentData(
+                                    comment_id=c_id,
+                                    video_id=video_id,
+                                    text=c_raw.get('text', ''),
+                                    create_time=int(c_raw.get('create_time', 0)),
+                                    create_time_iso=datetime.fromtimestamp(int(c_raw.get('create_time', 0))).isoformat(),
+                                    digg_count=c_raw.get('digg_count', 0),
+                                    reply_count=c_raw.get('reply_comment_total', 0),
+                                    user_id=user.get('uid', ''),
+                                    username=user.get('unique_id', ''),
+                                    nickname=user.get('nickname', ''),
+                                    scraped_at=datetime.now().isoformat()
+                                ))
+                                seen_ids.add(c_id)
+                                self.stats["comments_scraped"] += 1
+                        except Exception as e:
+                            logger.debug(f"Error parsing comment: {e}")
+                    
+                    new_comments = len(comments) - comments_before
+                    if new_comments > 0:
+                        logger.debug(f"Scroll {scrolls}: +{new_comments} comments (total: {len(comments)})")
+                        no_new_comments_count = 0
+                    else:
+                        no_new_comments_count += 1
+                else:
+                    no_new_comments_count += 1
+                
+                # Stop if no new comments after 3 scrolls
+                if no_new_comments_count >= 3:
+                    logger.debug("No new comments after 3 scrolls - stopping")
+                    break
+            
+            logger.info(f"✓ Scraped {len(comments)} comments for video {video_id}")
+            return comments
+            
+        except Exception as e:
+            logger.error(f"Error scraping comments for video {video_id}: {e}")
             return comments
             
         finally:
