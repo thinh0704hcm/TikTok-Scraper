@@ -1171,9 +1171,9 @@ class PlaywrightScraper:
                     cms = data.get("comments", [])
                     if cms:
                         self.intercepted_comments_buffer.extend(cms)
-                        logger.debug(f"Intercepted {len(cms)} comments from API")
-                except:
-                    pass
+                        logger.debug(f"📨 Intercepted {len(cms)} comments from API")
+                except Exception as e:
+                    logger.debug(f"Error parsing comment API response: {e}")
         
         self._comment_handler = handle_comment_response
         self.page.on("response", self._comment_handler)
@@ -1208,39 +1208,53 @@ class PlaywrightScraper:
             if not comment_button_clicked:
                 logger.warning("⚠️ Could not find/click comment button - comments may not load")
             
-            # Wait for comments to load
-            try:
-                await self.page.wait_for_selector('[data-e2e="comment-item"]', timeout=5000)
-                logger.debug("✓ Comment panel loaded")
-            except:
-                logger.debug("No comments found (panel may be empty)")
-                return []
+            # Wait a bit for initial comments to load
+            await asyncio.sleep(2)
+            
+            # Process any already-intercepted comments
+            if self.intercepted_comments_buffer:
+                logger.debug(f"Processing {len(self.intercepted_comments_buffer)} initial comments")
             
             # Scroll to load more comments
             scrolls = 0
             max_scrolls = min(20, max_comments // 25)  # Estimate ~25 comments per scroll
             no_new_comments_count = 0
             
+            logger.debug(f"Starting scroll loop (max {max_scrolls} scrolls)")
+            
             while len(comments) < max_comments and scrolls < max_scrolls:
-                # Scroll inside the comment panel
+                # Scroll the comment list container
                 try:
-                    # Try to scroll the comment list container
-                    await self.page.evaluate('''
+                    scrolled = await self.page.evaluate('''
                         () => {
-                            // Find comment container and scroll it
-                            const commentContainer = document.querySelector('[data-e2e="comment-list"]') ||
-                                                    document.querySelector('[class*="CommentList"]') ||
-                                                    document.querySelector('[class*="comment-list"]');
+                            // Find the comment list container
+                            const commentContainer = 
+                                document.querySelector('[data-e2e="comment-list"]') ||
+                                document.querySelector('.css-10o05hi-5e6d46e3--DivCommentListContainer') ||
+                                document.querySelector('[class*="CommentListContainer"]') ||
+                                document.querySelector('[class*="comment-list"]');
+                            
                             if (commentContainer) {
+                                const oldScroll = commentContainer.scrollTop;
                                 commentContainer.scrollTop = commentContainer.scrollHeight;
-                            } else {
-                                // Fallback: scroll the whole page
-                                window.scrollBy(0, 500);
+                                return commentContainer.scrollTop > oldScroll;
                             }
+                            
+                            // Fallback: scroll the page
+                            const oldPageScroll = window.scrollY;
+                            window.scrollBy(0, 500);
+                            return window.scrollY > oldPageScroll;
                         }
                     ''')
-                except:
-                    # Fallback: just scroll the page
+                    
+                    if scrolled:
+                        logger.debug(f"Scroll {scrolls + 1}: Scrolled comment container")
+                    else:
+                        logger.debug(f"Scroll {scrolls + 1}: No more scroll (reached bottom)")
+                        
+                except Exception as e:
+                    logger.debug(f"Scroll error: {e}, trying page scroll")
+                    # Fallback: scroll the page
                     await self.page.evaluate('window.scrollBy(0, 500)')
                 
                 await asyncio.sleep(2)
@@ -1288,6 +1302,31 @@ class PlaywrightScraper:
                 if no_new_comments_count >= 3:
                     logger.debug("No new comments after 3 scrolls - stopping")
                     break
+            
+            # Process any remaining comments in buffer
+            while self.intercepted_comments_buffer:
+                c_raw = self.intercepted_comments_buffer.pop(0)
+                try:
+                    c_id = c_raw.get('cid')
+                    if c_id and c_id not in seen_ids:
+                        user = c_raw.get('user', {})
+                        comments.append(CommentData(
+                            comment_id=c_id,
+                            video_id=video_id,
+                            text=c_raw.get('text', ''),
+                            create_time=int(c_raw.get('create_time', 0)),
+                            create_time_iso=datetime.fromtimestamp(int(c_raw.get('create_time', 0))).isoformat(),
+                            digg_count=c_raw.get('digg_count', 0),
+                            reply_count=c_raw.get('reply_comment_total', 0),
+                            user_id=user.get('uid', ''),
+                            username=user.get('unique_id', ''),
+                            nickname=user.get('nickname', ''),
+                            scraped_at=datetime.now().isoformat()
+                        ))
+                        seen_ids.add(c_id)
+                        self.stats["comments_scraped"] += 1
+                except:
+                    pass
             
             logger.info(f"✓ Scraped {len(comments)} comments for video {video_id}")
             return comments
