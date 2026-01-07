@@ -181,6 +181,7 @@ class VideoData:
     create_timestamp: int
     hashtags: List[str]
     stats: Dict[str, Any]
+    url: str
     diversification_labels: List[str] = field(default_factory=list)  # NEW: For Pipeline 2
     music_title: Optional[str] = None
     scraped_at: Optional[str] = None
@@ -265,6 +266,7 @@ class PlaywrightScraper:
         self._console_handler = None
         self._label_handler = None  # NEW: Label interceptor
         self._comment_handler = None  # NEW: Comment interceptor
+        self._detail_handler = None  # NEW: Detail metadata interceptor
         
         self.stats = {
             "videos_scraped": 0,
@@ -767,32 +769,123 @@ class PlaywrightScraper:
     # ========================================================================
     
     async def _extract_page_data(self) -> Optional[Dict]:
-        """Extract data from page scripts"""
+        """Extract data from page scripts - extract specific paths to avoid circular refs"""
         try:
+            # Extract just the parts we need to avoid circular reference issues
             data = await self.page.evaluate('''
                 () => {
-                    function deepClone(obj) {
-                        try {
-                            return JSON.parse(JSON.stringify(obj));
-                        } catch(e) {
+                    try {
+                        console.log('[DEBUG] Starting extraction...');
+                        
+                        // Check both sources
+                        const sources = {
+                            UNIVERSAL: window.__UNIVERSAL_DATA_FOR_REHYDRATION__,
+                            SIGI: window.SIGI_STATE
+                        };
+                        
+                        let mainSource = null;
+                        let sourceName = null;
+                        
+                        for (const [name, src] of Object.entries(sources)) {
+                            if (src) {
+                                console.log(`[DEBUG] ${name}: found (type: ${typeof src})`);
+                                
+                                // Try both Object.keys() and Object.getOwnPropertyNames()
+                                const enumKeys = Object.keys(src);
+                                const allKeys = Object.getOwnPropertyNames(src);
+                                
+                                console.log(`[DEBUG] ${name} enumerable keys:`, enumKeys.slice(0, 10));
+                                console.log(`[DEBUG] ${name} all properties:`, allKeys.slice(0, 20));
+                                
+                                if (allKeys.length > 0) {
+                                    mainSource = src;
+                                    sourceName = name;
+                                    break;
+                                }
+                            } else {
+                                console.log(`[DEBUG] ${name}: not found`);
+                            }
+                        }
+                        
+                        if (!mainSource) {
+                            console.log('[DEBUG] No valid source found');
                             return null;
                         }
+                        
+                        console.log(`[DEBUG] Using source: ${sourceName}`);
+                        
+                        // Extract only serializable parts
+                        const result = {};
+                        
+                        // Get __DEFAULT_SCOPE__ if it exists
+                        if (mainSource.__DEFAULT_SCOPE__) {
+                            console.log('[DEBUG] Found __DEFAULT_SCOPE__');
+                            result.__DEFAULT_SCOPE__ = {};
+                            const scope = mainSource.__DEFAULT_SCOPE__;
+                            
+                            const scopeKeys = Object.getOwnPropertyNames(scope);
+                            console.log('[DEBUG] __DEFAULT_SCOPE__ properties:', scopeKeys.slice(0, 20));
+                            
+                            // Extract video-detail
+                            if (scope['webapp.video-detail']) {
+                                try {
+                                    result.__DEFAULT_SCOPE__['webapp.video-detail'] = 
+                                        JSON.parse(JSON.stringify(scope['webapp.video-detail']));
+                                    console.log('[DEBUG] ✓ Extracted webapp.video-detail');
+                                } catch(e) {
+                                    console.log('[DEBUG] ✗ Failed to extract webapp.video-detail:', e.message);
+                                }
+                            }
+                            
+                            // Extract item-detail
+                            if (scope['webapp.item-detail']) {
+                                try {
+                                    result.__DEFAULT_SCOPE__['webapp.item-detail'] = 
+                                        JSON.parse(JSON.stringify(scope['webapp.item-detail']));
+                                    console.log('[DEBUG] ✓ Extracted webapp.item-detail');
+                                } catch(e) {
+                                    console.log('[DEBUG] ✗ Failed to extract webapp.item-detail:', e.message);
+                                }
+                            }
+                        } else {
+                            console.log('[DEBUG] __DEFAULT_SCOPE__ not found in source');
+                        }
+                        
+                        // Get ItemModule if it exists
+                        if (mainSource.ItemModule) {
+                            console.log('[DEBUG] Found ItemModule');
+                            try {
+                                result.ItemModule = JSON.parse(JSON.stringify(mainSource.ItemModule));
+                                console.log('[DEBUG] ✓ Extracted ItemModule');
+                            } catch(e) {
+                                console.log('[DEBUG] ✗ Failed to extract ItemModule:', e.message);
+                            }
+                        } else {
+                            console.log('[DEBUG] ItemModule not found in source');
+                        }
+                        
+                        const resultKeys = Object.keys(result);
+                        console.log('[DEBUG] Final result keys:', resultKeys);
+                        
+                        if (resultKeys.length > 0) {
+                            console.log('[DEBUG] ✓ Extraction successful');
+                            return result;
+                        }
+                        
+                        console.log('[DEBUG] No data could be extracted');
+                        return null;
+                    } catch(e) {
+                        console.log('[DEBUG] ✗ Error in extraction:', e.message);
+                        return null;
                     }
-                    
-                    if (typeof window.__UNIVERSAL_DATA_FOR_REHYDRATION__ !== 'undefined') {
-                        return deepClone(window.__UNIVERSAL_DATA_FOR_REHYDRATION__);
-                    }
-                    
-                    if (typeof window.SIGI_STATE !== 'undefined') {
-                        return deepClone(window.SIGI_STATE);
-                    }
-                    
-                    return null;
                 }
             ''')
             
             if data and isinstance(data, dict):
+                logger.debug(f"✓ Extracted page data with keys: {list(data.keys())}")
                 return data
+            
+            logger.debug("Page data not found or serialization failed")
             return None
             
         except Exception as e:
@@ -800,28 +893,16 @@ class PlaywrightScraper:
             return None
     
     def _parse_video_data(self, item: Dict, username: str) -> Optional[VideoData]:
-        """Parse video data and attach labels from cache"""
+        """Parse video data from API response (network-only)"""
         try:
-            if not isinstance(item, dict):
-                return None
-            
             video_id = str(item.get('id', ''))
             if not video_id:
                 return None
 
-            if self._is_pinned_video(item):
-                logger.debug(f"Skipping pinned video: {video_id}")
-                return None
-            
-            # Check for labels in item first, then cache
-            labels = item.get('diversificationLabels', [])
-            if not labels and video_id in self.video_labels_cache:
-                labels = self.video_labels_cache[video_id]
-            
             author = item.get('author', {})
-            if not isinstance(author, dict):
+            if isinstance(author, str):
                 author = {}
-            
+
             stats = item.get('statsV2') or item.get('stats', {})
             if not isinstance(stats, dict):
                 stats = {}
@@ -849,6 +930,11 @@ class PlaywrightScraper:
             music = item.get('music', {})
             if not isinstance(music, dict):
                 music = {}
+
+            url = f"https://www.tiktok.com/@{username}/video/{video_id}"
+            
+            # Extract diversification labels
+            labels = item.get('diversificationLabels', []) or []
             
             return VideoData(
                 video_id=video_id,
@@ -859,7 +945,8 @@ class PlaywrightScraper:
                 create_timestamp=create_time,
                 hashtags=hashtags,
                 stats=normalized_stats,
-                diversification_labels=labels or [],
+                url=url,
+                diversification_labels=labels,
                 music_title=music.get('title', '') if music else None,
                 scraped_at=datetime.now().isoformat()
             )
@@ -896,163 +983,87 @@ class PlaywrightScraper:
         milestone_datetime: Optional[datetime] = None
     ) -> List[VideoData]:
         """
-        Get videos using BOTH initial hydration data AND network interception.
-        ✅ FIXED: Proper event handler with detailed logging
+        Get videos relying ONLY on network interception (api/post/item_list). No hydration parsing.
         """
-        
-        if milestone_datetime:
-            cutoff_timestamp = int(milestone_datetime.timestamp())
-            logger.info(f"Using milestone datetime: {milestone_datetime.strftime('%Y-%m-%d %H:%M:%S')}")
-        else:
-            cutoff_timestamp = 0
-            logger.info("No milestone set - fetching all videos")
-        
+
         url = f"https://www.tiktok.com/@{username}"
-        videos = []
-        seen_ids = set()
-        
-        # Clear buffer before starting
+        videos: List[VideoData] = []
+        seen_ids: Set[str] = set()
+        cutoff_timestamp = int(milestone_datetime.timestamp()) if milestone_datetime else 0
+
         self.intercepted_videos.clear()
-        
+
         async def handle_api_response(response: Response):
-            """Intercept and parse api/post/item_list responses"""
-            try:
-                if "api/post/item_list" in response.url and response.status == 200:
-                    self.stats["api_calls"] += 1
-                    logger.info(f"🌐 Intercepted API call: {response.url[:100]}...")
-                    
-                    try:
-                        json_data = await response.json()
-                        item_list = json_data.get("itemList", [])
-                        
-                        if item_list:
-                            # Limit buffer size to prevent memory bloat
-                            if len(self.intercepted_videos) < 200:
-                                logger.info(f"✓ Found {len(item_list)} videos in API response")
-                                self.intercepted_videos.extend(item_list)
-                                self.stats["videos_from_network"] += len(item_list)
-                            else:
-                                logger.warning("Intercepted videos buffer full, processing existing batch first")
-                        else:
-                            logger.debug("API response had no itemList")
-                            
-                    except json.JSONDecodeError as e:
-                        logger.error(f"Failed to decode JSON from API response: {e}")
-                    except Exception as e:
-                        logger.error(f"Error parsing API response: {e}")
-                        
-            except Exception as e:
-                logger.debug(f"Error in response handler: {e}")
-        
-        # Store handler reference for proper cleanup
+            if "api/post/item_list" in response.url and response.status == 200:
+                try:
+                    json_data = await response.json()
+                    item_list = json_data.get("itemList", [])
+                    if item_list:
+                        self.intercepted_videos.extend(item_list)
+                        logger.info(f"🌐 Intercepted {len(item_list)} videos from API")
+                except Exception:
+                    pass
+
         self._response_handler = handle_api_response
         self.page.on("response", self._response_handler)
-        
+
         try:
             logger.info(f"Navigating to @{username}...")
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
-            await asyncio.sleep(self.wait_time + 2)
-            
-            try:
-                await self.page.wait_for_selector('[data-e2e="user-post-item"]', timeout=15000)
-                logger.info("✓ Video grid loaded")
-            except:
-                logger.warning("Video grid not found - account might be private or empty")
-                return []
-            
-            logger.info("📦 Extracting initial videos from page hydration data...")
-            data = await self._extract_page_data()
-            
-            if data:
-                initial_videos = self._extract_videos_from_page_data(data, username, cutoff_timestamp)
-                for video in initial_videos:
-                    if video.video_id not in seen_ids:
-                        seen_ids.add(video.video_id)
-                        videos.append(video)
-                        self.stats["videos_scraped"] += 1
-                        self.stats["videos_from_hydration"] += 1
-                
-                logger.info(f"✓ Extracted {len(initial_videos)} videos from hydration data")
-            else:
-                logger.warning("⚠️ Could not extract hydration data - will rely on network interception")
-            
+            await asyncio.sleep(3)
+
             scroll_count = 0
             max_scrolls = 50
-            no_new_videos_count = 0
+            no_new_data = 0
             reached_milestone = False
-            
-            logger.info("🔄 Starting scroll loop to trigger API calls...")
-            
-            while len(videos) < max_videos and scroll_count < max_scrolls and not reached_milestone:
+
+            while len(videos) < max_videos and scroll_count < max_scrolls:
                 await self.page.evaluate('window.scrollBy(0, window.innerHeight * 2)')
-                scroll_count += 1
-                await asyncio.sleep(self.wait_time)
-                
+                await asyncio.sleep(2)
+
                 if self.intercepted_videos:
-                    videos_before = len(videos)
-                    
-                    # Process and immediately clear buffer to free memory
                     current_batch = self.intercepted_videos.copy()
                     self.intercepted_videos.clear()
-                    
+
+                    added_in_batch = 0
                     for item in current_batch:
                         video = self._parse_video_data(item, username)
-                        
                         if video and video.video_id not in seen_ids:
                             if video.create_timestamp >= cutoff_timestamp:
                                 seen_ids.add(video.video_id)
                                 videos.append(video)
-                                self.stats["videos_scraped"] += 1
+                                added_in_batch += 1
                             else:
-                                logger.info(f"⏹️ Reached milestone - video {video.video_id} is before cutoff")
                                 reached_milestone = True
-                                break
-                    
-                    new_count = len(videos) - videos_before
-                    
-                    if new_count > 0:
-                        logger.info(f"Scroll {scroll_count}: +{new_count} videos (total: {len(videos)})")
-                        no_new_videos_count = 0
+
+                    if reached_milestone:
+                        logger.info("⏹️ Reached milestone date")
+                        break
+
+                    if added_in_batch > 0:
+                        logger.info(f"Scroll {scroll_count}: +{added_in_batch} videos (Total: {len(videos)})")
+                        no_new_data = 0
                     else:
-                        no_new_videos_count += 1
+                        no_new_data += 1
                 else:
-                    no_new_videos_count += 1
-                    logger.debug(f"Scroll {scroll_count}: No new videos intercepted")
-                
-                if no_new_videos_count >= 5:
-                    logger.info("No new videos after 5 scrolls - stopping")
+                    no_new_data += 1
+                    logger.debug(f"Scroll {scroll_count}: No API data yet...")
+
+                if no_new_data >= 5:
+                    logger.info("No new API data after 5 scrolls. Stopping.")
                     break
-            
-            logger.info(f"✅ Total videos fetched: {len(videos)}")
-            logger.info(f"   - From hydration data: {self.stats['videos_from_hydration']}")
-            logger.info(f"   - From network API: {self.stats['videos_from_network']}")
-            logger.info(f"   - Total API calls: {self.stats['api_calls']}")
-            
+
+                scroll_count += 1
+
             return videos
-            
-        except Exception as e:
-            logger.error(f"Error getting user videos: {e}")
-            import traceback
-            traceback.print_exc()
-            return videos
-            
+
         finally:
-            # CRITICAL - Always remove event listener
-            try:
-                if self._response_handler:
-                    self.page.remove_listener("response", self._response_handler)
-                    self._response_handler = None
-                    logger.debug("Response handler removed")
-            except Exception as e:
-                logger.error(f"Failed to remove response handler: {e}")
-                # Nuclear option: remove all response listeners
+            if self._response_handler:
                 try:
-                    self.page.remove_all_listeners("response")
-                    logger.warning("Used remove_all_listeners as fallback")
-                except:
+                    self.page.remove_listener("response", self._response_handler)
+                except Exception:
                     pass
-            
-            # Clear buffers
+                self._response_handler = None
             self.intercepted_videos.clear()
     
     def _extract_videos_from_page_data(
@@ -1156,8 +1167,7 @@ class PlaywrightScraper:
     ) -> List[CommentData]:
         """
         Navigate to video and scrape comments
-        ✅ FIXED: Clicks comment button to open panel
-        Also triggers label interception for the video
+        ✅ Verifies comment panel opens before scraping
         """
         url = f"https://www.tiktok.com/@{username}/video/{video_id}"
         comments = []
@@ -1183,12 +1193,12 @@ class PlaywrightScraper:
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(3)
             
-            # ✅ NEW: Click the comment button to open comments panel
+            # Click the comment button to open comments panel
             comment_button_selectors = [
-                '[data-e2e="comment-icon"]',  # The icon span
-                'button[aria-label*="comment"]',  # Button with "comment" in aria-label
-                'button[aria-label*="Comment"]',  # Capital C
-                '[data-e2e="browse-comment"]',  # Alternative selector
+                '[data-e2e="comment-icon"]',
+                'button[aria-label*="comment"]',
+                'button[aria-label*="Comment"]',
+                '[data-e2e="browse-comment"]',
             ]
             
             comment_button_clicked = False
@@ -1197,18 +1207,30 @@ class PlaywrightScraper:
                     logger.debug(f"Trying to click comment button: {selector}")
                     await self.page.wait_for_selector(selector, timeout=5000)
                     await self.page.click(selector)
-                    logger.info("✓ Clicked comment button to open panel")
+                    logger.info("✓ Clicked comment button")
                     comment_button_clicked = True
-                    await asyncio.sleep(2)  # Wait for panel to open
+                    await asyncio.sleep(2)
                     break
                 except Exception as e:
                     logger.debug(f"Failed to click {selector}: {e}")
                     continue
             
             if not comment_button_clicked:
-                logger.warning("⚠️ Could not find/click comment button - comments may not load")
+                logger.warning("⚠️ Could not find/click comment button")
             
-            # Wait a bit for initial comments to load
+            # Verify comment panel opened
+            try:
+                await self.page.wait_for_selector(
+                    '[class*="DivCommentListContainer"]',
+                    timeout=5000,
+                    state='visible'
+                )
+                logger.info("✓ Comment panel verified open")
+            except Exception as e:
+                logger.error(f"❌ Comment panel did not open: {e}")
+                return []
+            
+            # Wait for initial comments to load
             await asyncio.sleep(2)
             
             # Process any already-intercepted comments
@@ -1217,7 +1239,7 @@ class PlaywrightScraper:
             
             # Scroll to load more comments
             scrolls = 0
-            max_scrolls = min(20, max_comments // 25)  # Estimate ~25 comments per scroll
+            max_scrolls = min(30, (max_comments // 20) + 5)
             no_new_comments_count = 0
             
             logger.debug(f"Starting scroll loop (max {max_scrolls} scrolls)")
@@ -1225,39 +1247,63 @@ class PlaywrightScraper:
             while len(comments) < max_comments and scrolls < max_scrolls:
                 # Scroll the comment list container
                 try:
-                    scrolled = await self.page.evaluate('''
+                    scroll_result = await self.page.evaluate('''
                         () => {
-                            // Find the comment list container
-                            const commentContainer = 
-                                document.querySelector('[data-e2e="comment-list"]') ||
-                                document.querySelector('.css-10o05hi-5e6d46e3--DivCommentListContainer') ||
-                                document.querySelector('[class*="CommentListContainer"]') ||
-                                document.querySelector('[class*="comment-list"]');
+                            // Try to find scrollable comment container
+                            const selectors = [
+                                '[class*="DivCommentListContainer"]',
+                                '[class*="CommentListContainer"]',
+                                '[data-e2e="comment-list"]',
+                                '[class*="comment-list"]',
+                                'div[class*="DivContainer"][style*="overflow"]'
+                            ];
                             
-                            if (commentContainer) {
-                                const oldScroll = commentContainer.scrollTop;
-                                commentContainer.scrollTop = commentContainer.scrollHeight;
-                                return commentContainer.scrollTop > oldScroll;
+                            let scrolled = false;
+                            let scrolledSelector = null;
+                            let oldScrollTop = 0;
+                            let newScrollTop = 0;
+                            
+                            for (const selector of selectors) {
+                                const container = document.querySelector(selector);
+                                if (container) {
+                                    const hasScroll = container.scrollHeight > container.clientHeight;
+                                    const isScrollable = window.getComputedStyle(container).overflowY !== 'visible';
+                                    
+                                    if (hasScroll && isScrollable) {
+                                        oldScrollTop = container.scrollTop;
+                                        container.scrollTop = container.scrollTop + 800;
+                                        newScrollTop = container.scrollTop;
+                                        
+                                        if (newScrollTop > oldScrollTop) {
+                                            scrolled = true;
+                                            scrolledSelector = selector;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                             
-                            // Fallback: scroll the page
-                            const oldPageScroll = window.scrollY;
-                            window.scrollBy(0, 500);
-                            return window.scrollY > oldPageScroll;
+                            return {
+                                scrolled: scrolled,
+                                selector: scrolledSelector,
+                                scrollAmount: newScrollTop - oldScrollTop
+                            };
                         }
                     ''')
                     
-                    if scrolled:
-                        logger.debug(f"Scroll {scrolls + 1}: Scrolled comment container")
+                    if scroll_result['scrolled']:
+                        logger.debug(f"✓ Scrolled {scroll_result['scrollAmount']}px in {scroll_result['selector']}")
                     else:
-                        logger.debug(f"Scroll {scrolls + 1}: No more scroll (reached bottom)")
+                        logger.debug("⚠️ Could not find scrollable container, trying page scroll")
+                        await self.page.evaluate('window.scrollBy(0, 800)')
                         
                 except Exception as e:
-                    logger.debug(f"Scroll error: {e}, trying page scroll")
-                    # Fallback: scroll the page
-                    await self.page.evaluate('window.scrollBy(0, 500)')
+                    logger.debug(f"Scroll error: {e}")
+                    # Fallback
+                    await self.page.evaluate('window.scrollBy(0, 800)')
                 
-                await asyncio.sleep(2)
+                # Wait for new comments to load
+                await asyncio.sleep(2.5)
                 scrolls += 1
                 
                 # Process intercepted comments
@@ -1276,7 +1322,9 @@ class PlaywrightScraper:
                                     video_id=video_id,
                                     text=c_raw.get('text', ''),
                                     create_time=int(c_raw.get('create_time', 0)),
-                                    create_time_iso=datetime.fromtimestamp(int(c_raw.get('create_time', 0))).isoformat(),
+                                    create_time_iso=datetime.fromtimestamp(
+                                        int(c_raw.get('create_time', 0))
+                                    ).isoformat(),
                                     digg_count=c_raw.get('digg_count', 0),
                                     reply_count=c_raw.get('reply_comment_total', 0),
                                     user_id=user.get('uid', ''),
@@ -1298,10 +1346,38 @@ class PlaywrightScraper:
                 else:
                     no_new_comments_count += 1
                 
-                # Stop if no new comments after 3 scrolls
-                if no_new_comments_count >= 3:
-                    logger.debug("No new comments after 3 scrolls - stopping")
+                # Stop if no new comments after 4 scrolls (increased from 3)
+                if no_new_comments_count >= 4:
+                    logger.debug("No new comments after 4 scrolls - stopping")
                     break
+                
+                # Check if we've reached the bottom
+                if scrolls > 5:  # Only check after a few scrolls
+                    try:
+                        at_bottom = await self.page.evaluate('''
+                            () => {
+                                const selectors = [
+                                    '[class*="DivCommentListContainer"]',
+                                    '[class*="CommentListContainer"]',
+                                    '[data-e2e="comment-list"]'
+                                ];
+                                
+                                for (const selector of selectors) {
+                                    const container = document.querySelector(selector);
+                                    if (container) {
+                                        const scrollDiff = container.scrollHeight - container.scrollTop - container.clientHeight;
+                                        return scrollDiff < 50;  // Within 50px of bottom
+                                    }
+                                }
+                                return false;
+                            }
+                        ''')
+                        
+                        if at_bottom and no_new_comments_count >= 2:
+                            logger.debug("Reached container bottom")
+                            break
+                    except Exception:
+                        pass
             
             # Process any remaining comments in buffer
             while self.intercepted_comments_buffer:
@@ -1315,7 +1391,9 @@ class PlaywrightScraper:
                             video_id=video_id,
                             text=c_raw.get('text', ''),
                             create_time=int(c_raw.get('create_time', 0)),
-                            create_time_iso=datetime.fromtimestamp(int(c_raw.get('create_time', 0))).isoformat(),
+                            create_time_iso=datetime.fromtimestamp(
+                                int(c_raw.get('create_time', 0))
+                            ).isoformat(),
                             digg_count=c_raw.get('digg_count', 0),
                             reply_count=c_raw.get('reply_comment_total', 0),
                             user_id=user.get('uid', ''),
@@ -1342,6 +1420,336 @@ class PlaywrightScraper:
                     self._comment_handler = None
             except:
                 pass
+
+    async def get_video_metadata_from_network(self, url: str) -> Optional[VideoData]:
+        """
+        Navigate to video URL and capture metadata from API endpoints or hydration data.
+        Tries network interception first, falls back to page data extraction.
+        """
+        self.intercepted_video_detail = None
+        self.captured_initial_data = None
+
+        try:
+            path_parts = urlparse(url).path.strip('/').split('/')
+            username = path_parts[0].replace('@', '') if len(path_parts) > 0 else "unknown"
+            video_id = path_parts[2] if len(path_parts) > 2 else None
+        except Exception:
+            username = "unknown"
+            video_id = None
+
+        async def detail_listener(response: Response):
+            # Broader set of potential API endpoints
+            targets = [
+                "api/item_detail",
+                "api/iteminfo", 
+                "api/general/search/single",
+                "api/item/detail",
+                "api/post/item_list",
+                "api/recommend/item_list"
+            ]
+            
+            if response.status == 200 and any(t in response.url for t in targets):
+                try:
+                    data = await response.json()
+                    item = None
+                    
+                    if isinstance(data, dict):
+                        # Try multiple paths to find item data
+                        if data.get("itemInfo") and data["itemInfo"].get("itemStruct"):
+                            item = data["itemInfo"]["itemStruct"]
+                        elif data.get("itemStruct"):
+                            item = data.get("itemStruct")
+                        elif data.get("itemList") and len(data["itemList"]) > 0:
+                            # Sometimes returned in a list
+                            item = data["itemList"][0]
+                        elif data.get("data") and isinstance(data["data"], dict):
+                            if data["data"].get("item"):
+                                item = data["data"]["item"]
+                    
+                    if item and isinstance(item, dict):
+                        self.intercepted_video_detail = item
+                        logger.debug(f"🎯 Captured video metadata from API: {response.url[:80]}")
+                except Exception as e:
+                    logger.debug(f"Error parsing response from {response.url[:60]}: {e}")
+
+        self._detail_handler = detail_listener
+        self.page.on("response", self._detail_handler)
+
+        # Inject script BEFORE navigation to capture initial data as soon as it appears
+        await self.page.add_init_script("""
+            (() => {
+                console.log('[CAPTURE] Init script loaded');
+                window.__CAPTURED_INITIAL_DATA__ = null;
+                let captured = false;
+                
+                // Poll for window.__UNIVERSAL_DATA_FOR_REHYDRATION__ to appear
+                const pollInterval = setInterval(() => {
+                    if (captured) {
+                        clearInterval(pollInterval);
+                        return;
+                    }
+                    
+                    // Check if the object exists
+                    const hasUNIVERSAL = typeof window.__UNIVERSAL_DATA_FOR_REHYDRATION__ !== 'undefined';
+                    const hasSIGI = typeof window.SIGI_STATE !== 'undefined';
+                    
+                    if (hasUNIVERSAL || hasSIGI) {
+                        console.log('[CAPTURE] Data object detected!');
+                        const source = window.__UNIVERSAL_DATA_FOR_REHYDRATION__ || window.SIGI_STATE;
+                        
+                        try {
+                            // Try to extract data immediately before it becomes a Proxy
+                            const result = {};
+                            
+                            // Try to access __DEFAULT_SCOPE__ via bracket notation
+                            const defaultScope = source['__DEFAULT_SCOPE__'];
+                            if (defaultScope) {
+                                console.log('[CAPTURE] Found __DEFAULT_SCOPE__');
+                                result.__DEFAULT_SCOPE__ = {};
+                                
+                                const videoDetail = defaultScope['webapp.video-detail'];
+                                if (videoDetail) {
+                                    result.__DEFAULT_SCOPE__['webapp.video-detail'] = videoDetail;
+                                    console.log('[CAPTURE] ✓ Captured webapp.video-detail');
+                                }
+                                
+                                const itemDetail = defaultScope['webapp.item-detail'];
+                                if (itemDetail) {
+                                    result.__DEFAULT_SCOPE__['webapp.item-detail'] = itemDetail;
+                                    console.log('[CAPTURE] ✓ Captured webapp.item-detail');
+                                }
+                            }
+                            
+                            // Try ItemModule
+                            const itemModule = source['ItemModule'];
+                            if (itemModule) {
+                                result.ItemModule = itemModule;
+                                console.log('[CAPTURE] ✓ Captured ItemModule');
+                            }
+                            
+                            if (Object.keys(result).length > 0) {
+                                window.__CAPTURED_INITIAL_DATA__ = result;
+                                captured = true;
+                                clearInterval(pollInterval);
+                                console.log('[CAPTURE] ✓ Capture complete! Keys:', Object.keys(result));
+                            } else {
+                                console.log('[CAPTURE] Object found but no data extracted');
+                            }
+                        } catch(e) {
+                            console.log('[CAPTURE] ✗ Error during capture:', e.message);
+                        }
+                    }
+                }, 50); // Check every 50ms
+                
+                // Stop after 10 seconds
+                setTimeout(() => {
+                    if (!captured) {
+                        console.log('[CAPTURE] Timeout - data not found');
+                        clearInterval(pollInterval);
+                    }
+                }, 10000);
+            })();
+        """)
+
+        try:
+            logger.debug(f"Navigating to {url}")
+            await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
+            
+            # Wait a bit longer for API calls
+            await asyncio.sleep(2)
+
+            # Check if we got data from API
+            for _ in range(8):
+                if self.intercepted_video_detail:
+                    break
+                await asyncio.sleep(0.5)
+
+            if self.intercepted_video_detail:
+                return self._parse_video_data(self.intercepted_video_detail, username)
+            
+            # Fallback 1: Check captured initial data from page load
+            logger.debug("API not captured, checking captured initial data...")
+            captured_data = await self.page.evaluate("() => window.__CAPTURED_INITIAL_DATA__")
+            
+            if captured_data and isinstance(captured_data, dict):
+                logger.debug(f"✓ Got captured initial data, keys: {list(captured_data.keys())}")
+                item = None
+                
+                # Method 1: Check ItemModule with video_id
+                if video_id:
+                    item_module = captured_data.get('ItemModule', {})
+                    if isinstance(item_module, dict) and video_id in item_module:
+                        item = item_module[video_id]
+                        logger.debug(f"✓ Found in captured ItemModule[{video_id}]")
+                
+                # Method 2: Check __DEFAULT_SCOPE__
+                if not item:
+                    default_scope = captured_data.get('__DEFAULT_SCOPE__', {})
+                    if isinstance(default_scope, dict):
+                        # Try video-detail
+                        video_detail = default_scope.get('webapp.video-detail', {})
+                        if video_detail.get('itemInfo', {}).get('itemStruct'):
+                            item = video_detail['itemInfo']['itemStruct']
+                            logger.debug("✓ Found in captured webapp.video-detail")
+                        
+                        # Try item-detail
+                        if not item:
+                            item_detail = default_scope.get('webapp.item-detail', {})
+                            if item_detail.get('itemInfo', {}).get('itemStruct'):
+                                item = item_detail['itemInfo']['itemStruct']
+                                logger.debug("✓ Found in captured webapp.item-detail")
+                
+                # Method 3: Search all ItemModule values
+                if not item:
+                    item_module = captured_data.get('ItemModule', {})
+                    if isinstance(item_module, dict):
+                        for vid, data in item_module.items():
+                            if isinstance(data, dict) and data.get('id') == video_id:
+                                item = data
+                                logger.debug(f"✓ Found by searching captured ItemModule")
+                                break
+                
+                if item and isinstance(item, dict):
+                    logger.debug("✓ Extracted from captured initial data")
+                    return self._parse_video_data(item, username)
+            
+            # Fallback 2: Try extracting from page hydration data (old method)
+            logger.debug("No captured data, trying page extraction...")
+            page_data = await self._extract_page_data()
+            
+            if page_data:
+                logger.debug(f"Page data keys: {list(page_data.keys())[:10]}")
+                item = None
+                
+                # Method 1: Check ItemModule with video_id
+                if video_id:
+                    item_module = page_data.get('ItemModule', {})
+                    if isinstance(item_module, dict) and video_id in item_module:
+                        item = item_module[video_id]
+                        logger.debug(f"✓ Found in ItemModule[{video_id}]")
+                
+                # Method 2: Check __DEFAULT_SCOPE__
+                if not item:
+                    default_scope = page_data.get('__DEFAULT_SCOPE__', {})
+                    if isinstance(default_scope, dict):
+                        logger.debug(f"Default scope keys: {list(default_scope.keys())[:5]}")
+                        
+                        # Try video-detail
+                        video_detail = default_scope.get('webapp.video-detail', {})
+                        if video_detail.get('itemInfo', {}).get('itemStruct'):
+                            item = video_detail['itemInfo']['itemStruct']
+                            logger.debug("✓ Found in webapp.video-detail")
+                        
+                        # Try item-detail
+                        if not item:
+                            item_detail = default_scope.get('webapp.item-detail', {})
+                            if item_detail.get('itemInfo', {}).get('itemStruct'):
+                                item = item_detail['itemInfo']['itemStruct']
+                                logger.debug("✓ Found in webapp.item-detail")
+                
+                # Method 3: Search all ItemModule values
+                if not item:
+                    item_module = page_data.get('ItemModule', {})
+                    if isinstance(item_module, dict):
+                        for vid, data in item_module.items():
+                            if isinstance(data, dict) and data.get('id') == video_id:
+                                item = data
+                                logger.debug(f"✓ Found by searching ItemModule")
+                                break
+                
+                if item and isinstance(item, dict):
+                    logger.debug("✓ Extracted from page hydration data")
+                    return self._parse_video_data(item, username)
+                else:
+                    logger.debug("No valid item found in page data")
+            else:
+                logger.debug("Page data extraction returned None")
+            
+            logger.warning("⚠️ Could not capture metadata from API or page data")
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error getting metadata: {e}")
+            return None
+        finally:
+            if self._detail_handler:
+                try:
+                    self.page.remove_listener("response", self._detail_handler)
+                except Exception:
+                    pass
+                self._detail_handler = None
+
+    async def run_pipeline_2a_fetch_list(self, username: str, lookback_days: int):
+        """Pipeline 2a: Save video URLs to txt using API interception only."""
+        output_dir = Path("video_list") / datetime.now().strftime('%Y%m%d')
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_file = output_dir / f"{username}.txt"
+
+        milestone = datetime.now() - timedelta(days=lookback_days)
+        logger.info(f"📍 Fetching list for @{username} (Milestone: {milestone.date()})")
+
+        videos = await self.get_user_videos(username, 1000, milestone)
+
+        if videos:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                for v in videos:
+                    f.write(f"{v.url}\n")
+            logger.info(f"✅ Saved {len(videos)} URLs to {output_file}")
+            return str(output_file)
+        return None
+
+    async def run_pipeline_2b_process_from_file(self, file_path: str):
+        """Pipeline 2b: Process video URL list from file (network-only metadata)."""
+        if not os.path.exists(file_path):
+            logger.error("File not found.")
+            return
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            urls = [line.strip() for line in f if line.strip()]
+
+        logger.info(f"📂 Processing {len(urls)} videos from {file_path}")
+
+        input_path = Path(file_path)
+        username_from_file = input_path.stem
+        date_str = datetime.now().strftime('%Y%m%d')
+        output_base = Path(f"comments_data/{date_str}/{username_from_file}")
+        output_base.mkdir(parents=True, exist_ok=True)
+
+        await self._setup_label_interceptor()
+
+        for idx, url in enumerate(urls, 1):
+            try:
+                logger.info(f"Processing {idx}/{len(urls)}: {url}")
+
+                video_data = await self.get_video_metadata_from_network(url)
+                if not video_data:
+                    logger.warning("   ❌ Skipping (No metadata captured)")
+                    continue
+
+                if video_data.video_id in self.video_labels_cache:
+                    video_data.diversification_labels = self.video_labels_cache[video_data.video_id]
+
+                comments = await self.get_video_comments(video_data.video_id, video_data.author_username)
+                logger.info(f"   ✓ Comments: {len(comments)} | Labels: {len(video_data.diversification_labels)}")
+
+                data = {
+                    "video_metadata": asdict(video_data),
+                    "comments_count": len(comments),
+                    "comments": [asdict(c) for c in comments]
+                }
+
+                save_path = output_base / f"{video_data.video_id}.json"
+                with open(save_path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                if idx % 5 == 0:
+                    await asyncio.sleep(5)
+                if idx % self.restart_browser_every == 0:
+                    await self.restart_browser()
+                    await self._setup_label_interceptor()
+
+            except Exception as e:
+                logger.error(f"Error on {url}: {e}")
     
     async def run_pipeline_2_detailed(
         self, 
