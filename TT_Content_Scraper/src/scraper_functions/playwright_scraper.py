@@ -808,6 +808,10 @@ class PlaywrightScraper:
             video_id = str(item.get('id', ''))
             if not video_id:
                 return None
+
+            if self._is_pinned_video(item):
+                logger.debug(f"Skipping pinned video: {video_id}")
+                return None
             
             # Check for labels in item first, then cache
             labels = item.get('diversificationLabels', [])
