@@ -8,7 +8,6 @@ test_data/
 *.mp4
 test_folder/
 **toast.py
-db_connection.py
 *.db
 logs/
 **/processed*/
