@@ -223,13 +223,16 @@ class PlaywrightScraper:
         proxy: Optional[str] = None,
         fingerprint_file: Optional[str] = None,
         restart_browser_every: int = 10,
-        max_console_logs: int = 1000
+        max_console_logs: int = 1000,
+        memory_restart_mb: Optional[int] = None
     ):
         self.headless = headless
         self.slow_mo = slow_mo
         self.wait_time = wait_time
         self.restart_browser_every = restart_browser_every
         self.max_console_logs = max_console_logs
+        self.memory_restart_mb = memory_restart_mb
+        self._process = psutil.Process() if PSUTIL_AVAILABLE else None
         
         # Load fingerprint
         if fingerprint_file and Path(fingerprint_file).exists():
@@ -695,6 +698,22 @@ class PlaywrightScraper:
         
         logger.info("✓ Browser restarted")
         logger.info("=" * 70)
+
+    async def _maybe_restart_for_memory(self) -> bool:
+        """Restart browser if RSS exceeds configured threshold."""
+        if not self.memory_restart_mb or not self._process:
+            return False
+        try:
+            rss_mb = self._process.memory_info().rss / 1024 / 1024
+        except Exception:
+            return False
+        if rss_mb >= self.memory_restart_mb:
+            logger.info(
+                f"♻️ Restarting browser due to memory usage {rss_mb:.1f} MB >= {self.memory_restart_mb} MB"
+            )
+            await self.restart_browser()
+            return True
+        return False
 
     async def _update_cookies(self):
         """Update cookies from browser"""
@@ -1198,7 +1217,7 @@ class PlaywrightScraper:
                 await self.page.wait_for_selector(selector, timeout=5000)
                 await self.page.click(selector)
                 logger.info("✓ Clicked comment button")
-                await asyncio.sleep(1.5)
+                await asyncio.sleep(0.8)
             except:
                 logger.warning("⚠️ Could not click comment button (might be already open or different layout)")
 
@@ -1225,7 +1244,7 @@ class PlaywrightScraper:
                     
                     # 2. Use Mouse Wheel (Physical scroll simulation)
                     await self.page.mouse.wheel(0, 3000)
-                    await asyncio.sleep(random.uniform(1.5, 2.5))
+                    await asyncio.sleep(random.uniform(0.8, 1.2))
                     
                     scrolls += 1
                     
@@ -1440,11 +1459,11 @@ class PlaywrightScraper:
                     pass
                 self._detail_handler = None
 
-    async def run_pipeline_2a_fetch_list(self, username: str, lookback_days: int):
+    async def run_pipeline_2a_fetch_list(self, username: str, lookback_days: int, run_timestamp: str):
         """Pipeline 2a: Save video URLs to txt using API interception only."""
-        output_dir = Path("video_list") / datetime.now().strftime('%Y%m%d')
+        output_dir = Path("video_list") / run_timestamp
         output_dir.mkdir(parents=True, exist_ok=True)
-        output_file = output_dir / f"{username}.txt"
+        output_file = output_dir / "all_videos.txt"
 
         milestone = datetime.now() - timedelta(days=lookback_days)
         logger.info(f"📍 Fetching list for @{username} (Milestone: {milestone.date()})")
@@ -1452,14 +1471,17 @@ class PlaywrightScraper:
         videos = await self.get_user_videos(username, 1000, milestone)
 
         if videos:
-            with open(output_file, 'w', encoding='utf-8') as f:
+            with open(output_file, 'a', encoding='utf-8') as f:
                 for v in videos:
                     f.write(f"{v.url}\n")
             logger.info(f"✅ Saved {len(videos)} URLs to {output_file}")
+
+            # Memory gate: restart if RSS exceeds threshold
+            await self._maybe_restart_for_memory()
             return str(output_file)
         return None
 
-    async def run_pipeline_2b_process_from_file(self, file_path: str):
+    async def run_pipeline_2b_process_from_file(self, file_path: str, run_timestamp: str):
         """Pipeline 2b: Process video URL list from file (network-only metadata)."""
         if not os.path.exists(file_path):
             logger.error("File not found.")
@@ -1472,9 +1494,8 @@ class PlaywrightScraper:
 
         input_path = Path(file_path)
         username_from_file = input_path.stem
-        date_str = datetime.now().strftime('%Y%m%d')
-        output_base = Path(f"comments_data/{date_str}/{username_from_file}")
-        output_base.mkdir(parents=True, exist_ok=True)
+        base_output_dir = Path("comments_data") / run_timestamp
+        base_output_dir.mkdir(parents=True, exist_ok=True)
 
         await self._setup_label_interceptor()
 
@@ -1499,9 +1520,16 @@ class PlaywrightScraper:
                     "comments": [asdict(c) for c in comments]
                 }
 
-                save_path = output_base / f"{video_data.video_id}.json"
+                user_dir = base_output_dir / (video_data.author_username or username_from_file)
+                user_dir.mkdir(parents=True, exist_ok=True)
+                save_path = user_dir / f"{video_data.video_id}.json"
                 with open(save_path, 'w', encoding='utf-8') as f:
                     json.dump(data, f, indent=2, ensure_ascii=False)
+
+                # Memory gate: restart if RSS exceeds configured threshold
+                if await self._maybe_restart_for_memory():
+                    await self._setup_label_interceptor()
+                    continue
 
                 if idx % 5 == 0:
                     await asyncio.sleep(5)
@@ -1516,6 +1544,7 @@ class PlaywrightScraper:
         self, 
         username: str, 
         lookback_days: int,
+        run_timestamp: str,
         max_comments_per_video: int = 500
     ):
         """
@@ -1525,15 +1554,14 @@ class PlaywrightScraper:
         2. Visit each video individually
         3. Capture diversification labels via network interception
         4. Capture comments
-        5. Save to: comments_data/{date}/{username}/{video_id}.json
+        5. Save to: comments_data/{timestamp}/{username}/{video_id}.json
         """
         logger.info("=" * 70)
         logger.info(f"🚀 PIPELINE 2: Deep scrape for @{username} (Last {lookback_days} days)")
         logger.info("=" * 70)
         
         # Setup output directory
-        date_str = datetime.now().strftime('%Y%m%d')
-        base_dir = Path("comments_data") / date_str / username
+        base_dir = Path("comments_data") / run_timestamp / username
         base_dir.mkdir(parents=True, exist_ok=True)
         
         # Step 1: Get video list (filtered by date)
@@ -1699,11 +1727,14 @@ async def run_pipeline_2(usernames: List[str], lookback_days: int = 30):
         ]
     )
     
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
     logger.info("=" * 70)
     logger.info("PIPELINE 2: DEEP SCRAPING WITH COMMENTS")
     logger.info("=" * 70)
     logger.info(f"Profiles: {len(usernames)}")
     logger.info(f"Lookback: {lookback_days} days")
+    logger.info(f"Run timestamp: {run_timestamp}")
     
     scraper = PlaywrightScraper(
         headless=False,
@@ -1715,7 +1746,7 @@ async def run_pipeline_2(usernames: List[str], lookback_days: int = 30):
         
         for idx, username in enumerate(usernames):
             try:
-                await scraper.run_pipeline_2_detailed(username, lookback_days)
+                await scraper.run_pipeline_2_detailed(username, lookback_days, run_timestamp)
                 
                 # Restart between users
                 if username != usernames[-1]:

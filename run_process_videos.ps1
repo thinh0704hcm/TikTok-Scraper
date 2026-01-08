@@ -15,13 +15,16 @@ Write-Host ""
 
 # URL list file (output from Pipeline 2a)
 # Example: "video_list/20260107/phuongmychiofficial.txt"
-$URL_FILE = "video_list/20260107/phuongmychiofficial.txt"
+$URL_FILE = "video_list\20260108_131623\all_videos.txt"
 
 # Max comments per video
-$MAX_COMMENTS = 500
+$MAX_COMMENTS = 100
 
 # Browser restart frequency (restart every N videos)
-$RESTART_EVERY = 5
+$RESTART_EVERY = 20
+
+# Memory-based restart (RSS MB threshold). Leave $null to disable.
+$MEM_RESTART_MB = 2000
 
 # Headless mode (set to $true to hide browser)
 $HEADLESS = $false
@@ -42,6 +45,10 @@ $args = @(
 $args += "--max-comments", $MAX_COMMENTS
 $args += "--restart-every", $RESTART_EVERY
 
+if ($MEM_RESTART_MB) {
+    $args += "--mem-restart-mb", $MEM_RESTART_MB
+}
+
 if ($HEADLESS) {
     $args += "--headless"
 }
@@ -58,6 +65,9 @@ Write-Host "Configuration:" -ForegroundColor Yellow
 Write-Host "  URL file: $URL_FILE"
 Write-Host "  Max comments/video: $MAX_COMMENTS"
 Write-Host "  Restart every: $RESTART_EVERY videos"
+if ($MEM_RESTART_MB) {
+    Write-Host "  Mem restart: $MEM_RESTART_MB MB"
+}
 Write-Host "  Headless: $HEADLESS"
 Write-Host "  Verbose: $VERBOSE"
 Write-Host ""

@@ -14,25 +14,28 @@ Write-Host ""
 # ============================================================================
 
 # Account list (file in crawl_account/ folder, without .txt)
-$ACCOUNT_LIST = "list1"
+$ACCOUNT_LIST = "list99"
 
 # OR use direct path to account file:
 # $ACCOUNT_FILE = "crawl_account/custom_list.txt"
 
 # Lookback period (days)
-$LOOKBACK_DAYS = 30
+$LOOKBACK_DAYS = 90
 
 # Limit number of profiles (leave empty for all)
 $MAX_PROFILES = $null
 
 # Browser restart frequency (restart every N profiles)
-$RESTART_EVERY = 5
+$RESTART_EVERY = 10
+
+# Memory-based restart (RSS MB threshold). Leave $null to disable.
+$MEM_RESTART_MB = 2000
 
 # Headless mode (set to $true to hide browser)
 $HEADLESS = $false
 
 # Verbose logging (set to $true for detailed logs)
-$VERBOSE = $true
+$VERBOSE = $false
 
 # ============================================================================
 # BUILD COMMAND
@@ -58,6 +61,10 @@ if ($MAX_PROFILES) {
 
 $args += "--restart-every", $RESTART_EVERY
 
+if ($MEM_RESTART_MB) {
+    $args += "--mem-restart-mb", $MEM_RESTART_MB
+}
+
 if ($HEADLESS) {
     $args += "--headless"
 }
@@ -77,6 +84,9 @@ if ($MAX_PROFILES) {
     Write-Host "  Max profiles: $MAX_PROFILES"
 }
 Write-Host "  Restart every: $RESTART_EVERY profiles"
+if ($MEM_RESTART_MB) {
+    Write-Host "  Mem restart: $MEM_RESTART_MB MB"
+}
 Write-Host "  Headless: $HEADLESS"
 Write-Host "  Verbose: $VERBOSE"
 Write-Host ""

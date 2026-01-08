@@ -48,9 +48,14 @@ async def run_2a(
     lookback_days: int,
     headless: bool,
     restart_every: int,
-    proxy: Optional[str]
+    proxy: Optional[str],
+    memory_restart_mb: Optional[int]
 ) -> None:
     logger = logging.getLogger("Pipeline2a")
+    
+    # Create single run timestamp for all profiles
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    logger.info(f"Run timestamp: {run_timestamp}")
 
     scraper = PlaywrightScraper(
         headless=headless,
@@ -60,6 +65,7 @@ async def run_2a(
         fingerprint_file='browser_fingerprint.json',
         restart_browser_every=restart_every,
         max_console_logs=1000,
+        memory_restart_mb=memory_restart_mb,
     )
 
     try:
@@ -70,7 +76,7 @@ async def run_2a(
             logger.info("=" * 70)
 
             try:
-                await scraper.run_pipeline_2a_fetch_list(username=username, lookback_days=lookback_days)
+                await scraper.run_pipeline_2a_fetch_list(username=username, lookback_days=lookback_days, run_timestamp=run_timestamp)
             except Exception as e:
                 logger.error(f"Error on @{username}: {e}")
 
@@ -89,6 +95,7 @@ def main():
     parser.add_argument("--lookback", type=int, default=DEFAULT_LOOKBACK_DAYS, help="Days to look back")
     parser.add_argument("--max-profiles", type=int, default=None, help="Limit profiles")
     parser.add_argument("--restart-every", type=int, default=DEFAULT_RESTART_EVERY, help="Restart browser every N profiles")
+    parser.add_argument("--mem-restart-mb", type=int, default=None, help="Restart browser if RSS exceeds this MB")
     parser.add_argument("--headless", action="store_true", help="Run headless")
     parser.add_argument("--proxy", type=str, default=None, help="Proxy URL")
     parser.add_argument("--verbose", action="store_true", help="Verbose logging")
@@ -121,6 +128,7 @@ def main():
             headless=args.headless,
             restart_every=args.restart_every,
             proxy=args.proxy,
+            memory_restart_mb=args.mem_restart_mb,
         )
     )
 
