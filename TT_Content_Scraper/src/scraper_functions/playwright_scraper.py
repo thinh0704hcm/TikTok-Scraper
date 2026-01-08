@@ -1166,8 +1166,7 @@ class PlaywrightScraper:
         max_comments: int = 500
     ) -> List[CommentData]:
         """
-        Navigate to video and scrape comments
-        ✅ Verifies comment panel opens before scraping
+        Navigate to video and scrape comments using Mouse Wheel scrolling.
         """
         url = f"https://www.tiktok.com/@{username}/video/{video_id}"
         comments = []
@@ -1182,8 +1181,8 @@ class PlaywrightScraper:
                     if cms:
                         self.intercepted_comments_buffer.extend(cms)
                         logger.debug(f"📨 Intercepted {len(cms)} comments from API")
-                except Exception as e:
-                    logger.debug(f"Error parsing comment API response: {e}")
+                except Exception:
+                    pass
         
         self._comment_handler = handle_comment_response
         self.page.on("response", self._comment_handler)
@@ -1191,129 +1190,50 @@ class PlaywrightScraper:
         try:
             logger.debug(f"Navigating to video {video_id}...")
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
-            await asyncio.sleep(3)
-            
-            # Click the comment button to open comments panel
-            comment_button_selectors = [
-                '[data-e2e="comment-icon"]',
-                'button[aria-label*="comment"]',
-                'button[aria-label*="Comment"]',
-                '[data-e2e="browse-comment"]',
-            ]
-            
-            comment_button_clicked = False
-            for selector in comment_button_selectors:
-                try:
-                    logger.debug(f"Trying to click comment button: {selector}")
-                    await self.page.wait_for_selector(selector, timeout=5000)
-                    await self.page.click(selector)
-                    logger.info("✓ Clicked comment button")
-                    comment_button_clicked = True
-                    await asyncio.sleep(2)
-                    break
-                except Exception as e:
-                    logger.debug(f"Failed to click {selector}: {e}")
-                    continue
-            
-            if not comment_button_clicked:
-                logger.warning("⚠️ Could not find/click comment button")
-            
-            # Verify comment panel opened
-            try:
-                await self.page.wait_for_selector(
-                    '[class*="DivCommentListContainer"]',
-                    timeout=5000,
-                    state='visible'
-                )
-                logger.info("✓ Comment panel verified open")
-            except Exception as e:
-                logger.error(f"❌ Comment panel did not open: {e}")
-                return []
-            
-            # Wait for initial comments to load
             await asyncio.sleep(2)
             
-            # Process any already-intercepted comments
-            if self.intercepted_comments_buffer:
-                logger.debug(f"Processing {len(self.intercepted_comments_buffer)} initial comments")
-            
-            # Scroll to load more comments
+            # Click the comment button
+            try:
+                selector = '[data-e2e="comment-icon"]'
+                await self.page.wait_for_selector(selector, timeout=5000)
+                await self.page.click(selector)
+                logger.info("✓ Clicked comment button")
+                await asyncio.sleep(1.5)
+            except:
+                logger.warning("⚠️ Could not click comment button (might be already open or different layout)")
+
+            # Verify panel open
+            comment_container_selector = 'div[class*="DivCommentListContainer"]'
+            try:
+                await self.page.wait_for_selector(comment_container_selector, timeout=5000)
+                logger.info("✓ Comment panel verified open")
+            except:
+                logger.error("❌ Comment panel did not open")
+                return []
+
+            # Scroll loop using MOUSE WHEEL (Fix for Infinite Scroll)
             scrolls = 0
-            max_scrolls = min(30, (max_comments // 20) + 5)
-            no_new_comments_count = 0
+            max_scrolls = min(50, (max_comments // 20) + 5)
+            no_new_data_count = 0
             
             logger.debug(f"Starting scroll loop (max {max_scrolls} scrolls)")
             
             while len(comments) < max_comments and scrolls < max_scrolls:
-                # Scroll the comment list container
                 try:
-                    scroll_result = await self.page.evaluate('''
-                        () => {
-                            // Try to find scrollable comment container
-                            const selectors = [
-                                '[class*="DivCommentListContainer"]',
-                                '[class*="CommentListContainer"]',
-                                '[data-e2e="comment-list"]',
-                                '[class*="comment-list"]',
-                                'div[class*="DivContainer"][style*="overflow"]'
-                            ];
-                            
-                            let scrolled = false;
-                            let scrolledSelector = null;
-                            let oldScrollTop = 0;
-                            let newScrollTop = 0;
-                            
-                            for (const selector of selectors) {
-                                const container = document.querySelector(selector);
-                                if (container) {
-                                    const hasScroll = container.scrollHeight > container.clientHeight;
-                                    const isScrollable = window.getComputedStyle(container).overflowY !== 'visible';
-                                    
-                                    if (hasScroll && isScrollable) {
-                                        oldScrollTop = container.scrollTop;
-                                        container.scrollTop = container.scrollTop + 800;
-                                        newScrollTop = container.scrollTop;
-                                        
-                                        if (newScrollTop > oldScrollTop) {
-                                            scrolled = true;
-                                            scrolledSelector = selector;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            return {
-                                scrolled: scrolled,
-                                selector: scrolledSelector,
-                                scrollAmount: newScrollTop - oldScrollTop
-                            };
-                        }
-                    ''')
+                    # 1. Hover over the container to ensure wheel targets it
+                    await self.page.hover(comment_container_selector)
                     
-                    if scroll_result['scrolled']:
-                        logger.debug(f"✓ Scrolled {scroll_result['scrollAmount']}px in {scroll_result['selector']}")
-                    else:
-                        logger.debug("⚠️ Could not find scrollable container, trying page scroll")
-                        await self.page.evaluate('window.scrollBy(0, 800)')
-                        
-                except Exception as e:
-                    logger.debug(f"Scroll error: {e}")
-                    # Fallback
-                    await self.page.evaluate('window.scrollBy(0, 800)')
-                
-                # Wait for new comments to load
-                await asyncio.sleep(2.5)
-                scrolls += 1
-                
-                # Process intercepted comments
-                if self.intercepted_comments_buffer:
-                    comments_before = len(comments)
+                    # 2. Use Mouse Wheel (Physical scroll simulation)
+                    await self.page.mouse.wheel(0, 3000)
+                    await asyncio.sleep(random.uniform(1.5, 2.5))
                     
-                    while self.intercepted_comments_buffer:
-                        c_raw = self.intercepted_comments_buffer.pop(0)
-                        
-                        try:
+                    scrolls += 1
+                    
+                    # Process buffer
+                    if self.intercepted_comments_buffer:
+                        comments_before = len(comments)
+                        while self.intercepted_comments_buffer:
+                            c_raw = self.intercepted_comments_buffer.pop(0)
                             c_id = c_raw.get('cid')
                             if c_id and c_id not in seen_ids:
                                 user = c_raw.get('user', {})
@@ -1322,9 +1242,7 @@ class PlaywrightScraper:
                                     video_id=video_id,
                                     text=c_raw.get('text', ''),
                                     create_time=int(c_raw.get('create_time', 0)),
-                                    create_time_iso=datetime.fromtimestamp(
-                                        int(c_raw.get('create_time', 0))
-                                    ).isoformat(),
+                                    create_time_iso=datetime.fromtimestamp(int(c_raw.get('create_time', 0))).isoformat(),
                                     digg_count=c_raw.get('digg_count', 0),
                                     reply_count=c_raw.get('reply_comment_total', 0),
                                     user_id=user.get('uid', ''),
@@ -1334,97 +1252,125 @@ class PlaywrightScraper:
                                 ))
                                 seen_ids.add(c_id)
                                 self.stats["comments_scraped"] += 1
-                        except Exception as e:
-                            logger.debug(f"Error parsing comment: {e}")
-                    
-                    new_comments = len(comments) - comments_before
-                    if new_comments > 0:
-                        logger.debug(f"Scroll {scrolls}: +{new_comments} comments (total: {len(comments)})")
-                        no_new_comments_count = 0
-                    else:
-                        no_new_comments_count += 1
-                else:
-                    no_new_comments_count += 1
-                
-                # Stop if no new comments after 4 scrolls (increased from 3)
-                if no_new_comments_count >= 4:
-                    logger.debug("No new comments after 4 scrolls - stopping")
-                    break
-                
-                # Check if we've reached the bottom
-                if scrolls > 5:  # Only check after a few scrolls
-                    try:
-                        at_bottom = await self.page.evaluate('''
-                            () => {
-                                const selectors = [
-                                    '[class*="DivCommentListContainer"]',
-                                    '[class*="CommentListContainer"]',
-                                    '[data-e2e="comment-list"]'
-                                ];
-                                
-                                for (const selector of selectors) {
-                                    const container = document.querySelector(selector);
-                                    if (container) {
-                                        const scrollDiff = container.scrollHeight - container.scrollTop - container.clientHeight;
-                                        return scrollDiff < 50;  // Within 50px of bottom
-                                    }
-                                }
-                                return false;
-                            }
-                        ''')
                         
-                        if at_bottom and no_new_comments_count >= 2:
-                            logger.debug("Reached container bottom")
-                            break
-                    except Exception:
-                        pass
-            
-            # Process any remaining comments in buffer
-            while self.intercepted_comments_buffer:
-                c_raw = self.intercepted_comments_buffer.pop(0)
-                try:
-                    c_id = c_raw.get('cid')
-                    if c_id and c_id not in seen_ids:
-                        user = c_raw.get('user', {})
-                        comments.append(CommentData(
-                            comment_id=c_id,
-                            video_id=video_id,
-                            text=c_raw.get('text', ''),
-                            create_time=int(c_raw.get('create_time', 0)),
-                            create_time_iso=datetime.fromtimestamp(
-                                int(c_raw.get('create_time', 0))
-                            ).isoformat(),
-                            digg_count=c_raw.get('digg_count', 0),
-                            reply_count=c_raw.get('reply_comment_total', 0),
-                            user_id=user.get('uid', ''),
-                            username=user.get('unique_id', ''),
-                            nickname=user.get('nickname', ''),
-                            scraped_at=datetime.now().isoformat()
-                        ))
-                        seen_ids.add(c_id)
-                        self.stats["comments_scraped"] += 1
-                except:
-                    pass
-            
-            logger.info(f"✓ Scraped {len(comments)} comments for video {video_id}")
+                        if len(comments) > comments_before:
+                            logger.debug(f"Scroll {scrolls}: Total {len(comments)} comments")
+                            no_new_data_count = 0
+                        else:
+                            no_new_data_count += 1
+                    else:
+                        no_new_data_count += 1
+
+                    if no_new_data_count >= 5:
+                        logger.debug("No new comments after 5 scrolls - stopping")
+                        break
+
+                except Exception as e:
+                    logger.debug(f"Scroll error: {e}")
+                    # Fallback to general page scroll
+                    await self.page.mouse.wheel(0, 3000)
+                    await asyncio.sleep(2)
+
             return comments
             
         except Exception as e:
-            logger.error(f"Error scraping comments for video {video_id}: {e}")
+            logger.error(f"Error scraping comments: {e}")
             return comments
             
         finally:
-            try:
-                if self._comment_handler:
+            if self._comment_handler:
+                try:
                     self.page.remove_listener("response", self._comment_handler)
-                    self._comment_handler = None
+                except:
+                    pass
+                self._comment_handler = None
+
+    async def get_video_metadata_from_dom(self, page: Page) -> Optional[Dict]:
+        """
+        Extracts video metadata directly from the hydration script tag in the DOM.
+        This bypasses network interception and window object availability issues.
+        """
+        try:
+            logger.debug("Attempting to extract metadata from DOM script tag...")
+            
+            # 1. Target the script tag by the ID
+            # We use state='attached' because the script is inside the DOM but not visible to the eye
+            selector = '#__UNIVERSAL_DATA_FOR_REHYDRATION__'
+            
+            try:
+                # Short timeout because if it's there, it's there immediately on load
+                await page.wait_for_selector(selector, state='attached', timeout=2000)
             except:
-                pass
+                # Fallback: TikTok sometimes switches to this ID instead
+                selector = '#SIGI_STATE'
+                try:
+                    await page.wait_for_selector(selector, state='attached', timeout=1000)
+                except:
+                    logger.debug("Hydration script tags not found in DOM.")
+                    return None
+
+            # 2. Extract the raw JSON string content
+            json_text = await page.locator(selector).text_content()
+            
+            if not json_text:
+                logger.warning("Found script tag but it was empty.")
+                return None
+
+            # 3. Parse JSON
+            data = json.loads(json_text)
+            item_struct = {}
+            
+            # 4. Navigate the JSON structure
+            try:
+                # Path A: Universal Data structure
+                if '__DEFAULT_SCOPE__' in data:
+                    default_scope = data['__DEFAULT_SCOPE__']
+                    # Try video-detail first
+                    video_detail = default_scope.get('webapp.video-detail', {})
+                    item_struct = video_detail.get('itemInfo', {}).get('itemStruct', {})
+                    
+                    # Try item-detail if video-detail is empty
+                    if not item_struct:
+                        item_detail = default_scope.get('webapp.item-detail', {})
+                        item_struct = item_detail.get('itemInfo', {}).get('itemStruct', {})
+
+                # Path B: SIGI_STATE structure (usually keyed by Video ID)
+                elif 'ItemModule' in data:
+                    item_module = data['ItemModule']
+                    # Get the first object key (Video ID)
+                    first_key = next(iter(item_module))
+                    item_struct = item_module[first_key]
+
+                # 5. Extract the specific fields
+                labels = item_struct.get('diversificationLabels')
+                video_id = item_struct.get('id')
+                
+                if video_id:
+                    logger.info(f"✅ Extracted metadata from DOM. Labels: {labels}")
+                    
+                    # Update your internal cache immediately
+                    if labels:
+                        self.video_labels_cache[video_id] = labels
+                    
+                    return item_struct
+                else:
+                    logger.warning("Parsed JSON but could not find valid itemStruct.")
+                    return None
+
+            except Exception as e:
+                logger.error(f"Error navigating JSON structure: {e}")
+                return None
+
+        except Exception as e:
+            logger.error(f"DOM extraction failed: {e}")
+            return None
 
     async def get_video_metadata_from_network(self, url: str) -> Optional[VideoData]:
         """
-        Navigate to video URL and capture metadata from API endpoints or hydration data.
-        Tries network interception first, falls back to page data extraction.
+        Navigate to video URL and capture metadata.
+        Priority: 
+        1. DOM Script Tag Extraction (Fastest, bypasses AdBlock/Network issues)
+        2. API Interception (Fallback)
         """
         self.intercepted_video_detail = None
         self.captured_initial_data = None
@@ -1432,134 +1378,47 @@ class PlaywrightScraper:
         try:
             path_parts = urlparse(url).path.strip('/').split('/')
             username = path_parts[0].replace('@', '') if len(path_parts) > 0 else "unknown"
-            video_id = path_parts[2] if len(path_parts) > 2 else None
         except Exception:
             username = "unknown"
-            video_id = None
 
+        # Setup API Listener (Fallback)
         async def detail_listener(response: Response):
-            # Broader set of potential API endpoints
-            targets = [
-                "api/item_detail",
-                "api/iteminfo", 
-                "api/general/search/single",
-                "api/item/detail",
-                "api/post/item_list",
-                "api/recommend/item_list"
-            ]
-            
+            targets = ["api/item_detail", "api/iteminfo", "api/general/search/single", "api/item/detail"]
             if response.status == 200 and any(t in response.url for t in targets):
                 try:
                     data = await response.json()
                     item = None
-                    
                     if isinstance(data, dict):
-                        # Try multiple paths to find item data
                         if data.get("itemInfo") and data["itemInfo"].get("itemStruct"):
                             item = data["itemInfo"]["itemStruct"]
                         elif data.get("itemStruct"):
                             item = data.get("itemStruct")
-                        elif data.get("itemList") and len(data["itemList"]) > 0:
-                            # Sometimes returned in a list
-                            item = data["itemList"][0]
-                        elif data.get("data") and isinstance(data["data"], dict):
-                            if data["data"].get("item"):
-                                item = data["data"]["item"]
                     
-                    if item and isinstance(item, dict):
+                    if item:
                         self.intercepted_video_detail = item
                         logger.debug(f"🎯 Captured video metadata from API: {response.url[:80]}")
-                except Exception as e:
-                    logger.debug(f"Error parsing response from {response.url[:60]}: {e}")
+                except:
+                    pass
 
         self._detail_handler = detail_listener
         self.page.on("response", self._detail_handler)
-
-        # Inject script BEFORE navigation to capture initial data as soon as it appears
-        await self.page.add_init_script("""
-            (() => {
-                console.log('[CAPTURE] Init script loaded');
-                window.__CAPTURED_INITIAL_DATA__ = null;
-                let captured = false;
-                
-                // Poll for window.__UNIVERSAL_DATA_FOR_REHYDRATION__ to appear
-                const pollInterval = setInterval(() => {
-                    if (captured) {
-                        clearInterval(pollInterval);
-                        return;
-                    }
-                    
-                    // Check if the object exists
-                    const hasUNIVERSAL = typeof window.__UNIVERSAL_DATA_FOR_REHYDRATION__ !== 'undefined';
-                    const hasSIGI = typeof window.SIGI_STATE !== 'undefined';
-                    
-                    if (hasUNIVERSAL || hasSIGI) {
-                        console.log('[CAPTURE] Data object detected!');
-                        const source = window.__UNIVERSAL_DATA_FOR_REHYDRATION__ || window.SIGI_STATE;
-                        
-                        try {
-                            // Try to extract data immediately before it becomes a Proxy
-                            const result = {};
-                            
-                            // Try to access __DEFAULT_SCOPE__ via bracket notation
-                            const defaultScope = source['__DEFAULT_SCOPE__'];
-                            if (defaultScope) {
-                                console.log('[CAPTURE] Found __DEFAULT_SCOPE__');
-                                result.__DEFAULT_SCOPE__ = {};
-                                
-                                const videoDetail = defaultScope['webapp.video-detail'];
-                                if (videoDetail) {
-                                    result.__DEFAULT_SCOPE__['webapp.video-detail'] = videoDetail;
-                                    console.log('[CAPTURE] ✓ Captured webapp.video-detail');
-                                }
-                                
-                                const itemDetail = defaultScope['webapp.item-detail'];
-                                if (itemDetail) {
-                                    result.__DEFAULT_SCOPE__['webapp.item-detail'] = itemDetail;
-                                    console.log('[CAPTURE] ✓ Captured webapp.item-detail');
-                                }
-                            }
-                            
-                            // Try ItemModule
-                            const itemModule = source['ItemModule'];
-                            if (itemModule) {
-                                result.ItemModule = itemModule;
-                                console.log('[CAPTURE] ✓ Captured ItemModule');
-                            }
-                            
-                            if (Object.keys(result).length > 0) {
-                                window.__CAPTURED_INITIAL_DATA__ = result;
-                                captured = true;
-                                clearInterval(pollInterval);
-                                console.log('[CAPTURE] ✓ Capture complete! Keys:', Object.keys(result));
-                            } else {
-                                console.log('[CAPTURE] Object found but no data extracted');
-                            }
-                        } catch(e) {
-                            console.log('[CAPTURE] ✗ Error during capture:', e.message);
-                        }
-                    }
-                }, 50); // Check every 50ms
-                
-                // Stop after 10 seconds
-                setTimeout(() => {
-                    if (!captured) {
-                        console.log('[CAPTURE] Timeout - data not found');
-                        clearInterval(pollInterval);
-                    }
-                }, 10000);
-            })();
-        """)
 
         try:
             logger.debug(f"Navigating to {url}")
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             
-            # Wait a bit longer for API calls
-            await asyncio.sleep(2)
+            # --- STRATEGY 1: DOM EXTRACTION (NEW FIX) ---
+            # Try to grab data immediately from the HTML source
+            dom_data = await self.get_video_metadata_from_dom(self.page)
+            if dom_data:
+                return self._parse_video_data(dom_data, username)
+            
+            # --- STRATEGY 2: NETWORK FALLBACK ---
+            logger.debug("DOM extraction yielded no result, waiting for API response...")
+            await asyncio.sleep(3) 
 
-            # Check if we got data from API
-            for _ in range(8):
+            # Check if we got data from API listener
+            for _ in range(5):
                 if self.intercepted_video_detail:
                     break
                 await asyncio.sleep(0.5)
@@ -1567,105 +1426,7 @@ class PlaywrightScraper:
             if self.intercepted_video_detail:
                 return self._parse_video_data(self.intercepted_video_detail, username)
             
-            # Fallback 1: Check captured initial data from page load
-            logger.debug("API not captured, checking captured initial data...")
-            captured_data = await self.page.evaluate("() => window.__CAPTURED_INITIAL_DATA__")
-            
-            if captured_data and isinstance(captured_data, dict):
-                logger.debug(f"✓ Got captured initial data, keys: {list(captured_data.keys())}")
-                item = None
-                
-                # Method 1: Check ItemModule with video_id
-                if video_id:
-                    item_module = captured_data.get('ItemModule', {})
-                    if isinstance(item_module, dict) and video_id in item_module:
-                        item = item_module[video_id]
-                        logger.debug(f"✓ Found in captured ItemModule[{video_id}]")
-                
-                # Method 2: Check __DEFAULT_SCOPE__
-                if not item:
-                    default_scope = captured_data.get('__DEFAULT_SCOPE__', {})
-                    if isinstance(default_scope, dict):
-                        # Try video-detail
-                        video_detail = default_scope.get('webapp.video-detail', {})
-                        if video_detail.get('itemInfo', {}).get('itemStruct'):
-                            item = video_detail['itemInfo']['itemStruct']
-                            logger.debug("✓ Found in captured webapp.video-detail")
-                        
-                        # Try item-detail
-                        if not item:
-                            item_detail = default_scope.get('webapp.item-detail', {})
-                            if item_detail.get('itemInfo', {}).get('itemStruct'):
-                                item = item_detail['itemInfo']['itemStruct']
-                                logger.debug("✓ Found in captured webapp.item-detail")
-                
-                # Method 3: Search all ItemModule values
-                if not item:
-                    item_module = captured_data.get('ItemModule', {})
-                    if isinstance(item_module, dict):
-                        for vid, data in item_module.items():
-                            if isinstance(data, dict) and data.get('id') == video_id:
-                                item = data
-                                logger.debug(f"✓ Found by searching captured ItemModule")
-                                break
-                
-                if item and isinstance(item, dict):
-                    logger.debug("✓ Extracted from captured initial data")
-                    return self._parse_video_data(item, username)
-            
-            # Fallback 2: Try extracting from page hydration data (old method)
-            logger.debug("No captured data, trying page extraction...")
-            page_data = await self._extract_page_data()
-            
-            if page_data:
-                logger.debug(f"Page data keys: {list(page_data.keys())[:10]}")
-                item = None
-                
-                # Method 1: Check ItemModule with video_id
-                if video_id:
-                    item_module = page_data.get('ItemModule', {})
-                    if isinstance(item_module, dict) and video_id in item_module:
-                        item = item_module[video_id]
-                        logger.debug(f"✓ Found in ItemModule[{video_id}]")
-                
-                # Method 2: Check __DEFAULT_SCOPE__
-                if not item:
-                    default_scope = page_data.get('__DEFAULT_SCOPE__', {})
-                    if isinstance(default_scope, dict):
-                        logger.debug(f"Default scope keys: {list(default_scope.keys())[:5]}")
-                        
-                        # Try video-detail
-                        video_detail = default_scope.get('webapp.video-detail', {})
-                        if video_detail.get('itemInfo', {}).get('itemStruct'):
-                            item = video_detail['itemInfo']['itemStruct']
-                            logger.debug("✓ Found in webapp.video-detail")
-                        
-                        # Try item-detail
-                        if not item:
-                            item_detail = default_scope.get('webapp.item-detail', {})
-                            if item_detail.get('itemInfo', {}).get('itemStruct'):
-                                item = item_detail['itemInfo']['itemStruct']
-                                logger.debug("✓ Found in webapp.item-detail")
-                
-                # Method 3: Search all ItemModule values
-                if not item:
-                    item_module = page_data.get('ItemModule', {})
-                    if isinstance(item_module, dict):
-                        for vid, data in item_module.items():
-                            if isinstance(data, dict) and data.get('id') == video_id:
-                                item = data
-                                logger.debug(f"✓ Found by searching ItemModule")
-                                break
-                
-                if item and isinstance(item, dict):
-                    logger.debug("✓ Extracted from page hydration data")
-                    return self._parse_video_data(item, username)
-                else:
-                    logger.debug("No valid item found in page data")
-            else:
-                logger.debug("Page data extraction returned None")
-            
-            logger.warning("⚠️ Could not capture metadata from API or page data")
+            logger.warning("⚠️ Could not capture metadata from DOM or API")
             return None
             
         except Exception as e:
@@ -1675,7 +1436,7 @@ class PlaywrightScraper:
             if self._detail_handler:
                 try:
                     self.page.remove_listener("response", self._detail_handler)
-                except Exception:
+                except:
                     pass
                 self._detail_handler = None
 
