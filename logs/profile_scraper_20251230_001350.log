@@ -1,9 +1,0 @@
-2025-12-30 00:13:50,615 - ProfileScraper - INFO - ======================================================================
-2025-12-30 00:13:50,615 - ProfileScraper - INFO - TIKTOK PROFILE & VIDEO SCRAPER
-2025-12-30 00:13:50,615 - ProfileScraper - INFO - Total profiles: 22
-2025-12-30 00:13:50,615 - ProfileScraper - INFO - ======================================================================
-2025-12-30 00:13:50,620 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/profiles_20251230_progress.db
-2025-12-30 00:13:50,623 - TTCS.ObjTracker - INFO - Database tables created successfully
-2025-12-30 00:13:50,623 - TTCS.ObjTracker - INFO - Database indexes created successfully
-2025-12-30 00:13:50,624 - ProfileTracker - INFO - Added 22 profiles to tracker
-2025-12-30 00:13:50,625 - ProfileScraper - INFO - Resume mode: 0 already completed, 22 pending
