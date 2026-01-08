@@ -16,3 +16,6 @@ video_comments_data/
 progress_tracking/
 dataset/
 comments_data/
+browser_fingerprint.json
+exported_cookie.txt
+tiktok_cookies.json
