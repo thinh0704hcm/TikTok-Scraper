@@ -1031,6 +1031,20 @@ class PlaywrightScraper:
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(3)
 
+            # Process any videos intercepted during initial page load (before scroll)
+            if self.intercepted_videos:
+                initial_batch = self.intercepted_videos.copy()
+                self.intercepted_videos.clear()
+                logger.info(f"🌐 Processing {len(initial_batch)} videos from initial page load")
+                for item in initial_batch:
+                    video = self._parse_video_data(item, username)
+                    if video and video.video_id not in seen_ids:
+                        if video.create_timestamp >= cutoff_timestamp:
+                            seen_ids.add(video.video_id)
+                            videos.append(video)
+
+            logger.info(f"✓ Initial load complete: {len(videos)} videos captured")
+
             scroll_count = 0
             max_scrolls = 50
             no_new_data = 0
