@@ -11,3 +11,6 @@ test_folder/
 db_connection.py
 *.db
 logs/
+processed*/
+video_data/
+video_comments_data/
