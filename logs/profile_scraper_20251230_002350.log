@@ -1,0 +1,109 @@
+2025-12-30 00:23:50,214 - ProfileScraper - INFO - ======================================================================
+2025-12-30 00:23:50,214 - ProfileScraper - INFO - TIKTOK PROFILE & VIDEO SCRAPER
+2025-12-30 00:23:50,214 - ProfileScraper - INFO - Total profiles: 2
+2025-12-30 00:23:50,214 - ProfileScraper - INFO - ======================================================================
+2025-12-30 00:23:50,215 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/profiles_20251230_progress.db
+2025-12-30 00:23:50,215 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-30 00:23:50,215 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-30 00:23:50,216 - ProfileTracker - INFO - Added 2 profiles to tracker
+2025-12-30 00:23:50,216 - ProfileScraper - INFO - Resume mode: 1 already completed, 14 pending
+2025-12-30 00:23:50,216 - TikTok.TimeSeriesScraper - INFO - ✓ Loaded fingerprint from browser_fingerprint.json
+2025-12-30 00:23:50,216 - TikTok.TimeSeriesScraper - INFO -   Device: Win32
+2025-12-30 00:23:50,216 - TikTok.TimeSeriesScraper - INFO -   GPU: ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001681) Direct3D11 ...
+2025-12-30 00:23:50,216 - TikTok.TimeSeriesScraper - INFO - Proxy server: http://14.224.198.119:44182
+2025-12-30 00:23:50,216 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 00:23:50,217 - TikTok.TimeSeriesScraper - INFO - STARTING PRODUCTION-READY STEALTH BROWSER (BRAVE)
+2025-12-30 00:23:50,217 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 00:23:50,584 - TikTok.TimeSeriesScraper - INFO - Found Brave: /usr/bin/brave-browser
+2025-12-30 00:23:50,584 - TikTok.TimeSeriesScraper - INFO - ✓ Using Brave: /usr/bin/brave-browser
+2025-12-30 00:23:50,584 - TikTok.TimeSeriesScraper - INFO - Proxy: http://14.224.198.119:44182
+2025-12-30 00:23:50,584 - TikTok.TimeSeriesScraper - INFO - Launching browser...
+2025-12-30 00:23:50,886 - TikTok.TimeSeriesScraper - INFO - ✓ Browser launched successfully
+2025-12-30 00:23:50,887 - TikTok.TimeSeriesScraper - INFO - Creating browser context...
+2025-12-30 00:23:50,903 - TikTok.TimeSeriesScraper - INFO - ✓ Context created
+2025-12-30 00:23:50,909 - TikTok.TimeSeriesScraper - WARNING - tiktok_cookies.json not found. You may need to log in.
+2025-12-30 00:23:50,913 - TikTok.TimeSeriesScraper - INFO - Creating new page...
+2025-12-30 00:23:51,226 - TikTok.TimeSeriesScraper - INFO - ✓ Page created
+2025-12-30 00:23:51,228 - TikTok.TimeSeriesScraper - INFO - Console logging started: logs/console/console_20251230_002351.log
+2025-12-30 00:23:51,240 - TikTok.TimeSeriesScraper - INFO - ✓ CDP session established
+2025-12-30 00:23:51,244 - TikTok.TimeSeriesScraper - INFO - Navigating to TikTok...
+2025-12-30 00:23:54,067 - TikTok.TimeSeriesScraper - INFO - ✓ Successfully loaded TikTok
+2025-12-30 00:23:54,287 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] Reflect is already polyfilled.
+2025-12-30 00:23:54,404 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,405 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,406 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,406 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,412 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,413 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,414 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,415 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,461 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,468 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 00:23:54,468 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+2025-12-30 00:23:54,635 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 00:23:54,835 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 00:23:54,884 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to XMLHttpRequest at 'https://libraweb-sg.tiktok.com/service/2/abtest_config/' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:54,885 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED
+2025-12-30 00:23:55,335 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:55,338 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED
+2025-12-30 00:23:55,429 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to fetch at 'https://v16-webapp.tiktok.com/365d757cfebde16c8caa9204ae8da975/69555b19/video/tos/maliva/tos-maliva-ve-0068c799-us/o0JopINEBz1Q6ASBwifRAPQFiimLC0BCn2JIuH/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C&cv=1&br=3150&bt=1575&cs=0&ds=3&ft=-Elcom7nPD12N7t50d-Uxi.5NY6e3wv25rcAp&mime_type=video_mp4&qs=0&rc=ZmQ6M2RkOzw8NjY3NTYzaEBpajRoNXA5cjluODMzZzczNEAyMl40NDYuXy4xLi9iMmAyYSMxMXJnMmRzZDBhLS1kMS9zcw%3D%3D&vvpl=1&l=20251230011911E4E8919F482B50DB22CB&btag=e000b0000' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:55,431 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED
+2025-12-30 00:23:55,432 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [00:02.328][warn][demux.fetch](6) TypeError: Failed to fetch
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+    at D.load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:39155)
+    at Z.load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:12:14004)
+    at ta._load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:12:109006)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:12:106103
+    at Object.set (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:25:59172)
+    at set src (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:25:66347)
+    at tk.load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:24:117122)
+    at tk._init (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:24:111142)
+2025-12-30 00:23:55,540 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to fetch at 'https://v16-webapp.tiktok.com/365d757cfebde16c8caa9204ae8da975/69555b19/video/tos/maliva/tos-maliva-ve-0068c799-us/o0JopINEBz1Q6ASBwifRAPQFiimLC0BCn2JIuH/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C&cv=1&br=3150&bt=1575&cs=0&ds=3&ft=-Elcom7nPD12N7t50d-Uxi.5NY6e3wv25rcAp&mime_type=video_mp4&qs=0&rc=ZmQ6M2RkOzw8NjY3NTYzaEBpajRoNXA5cjluODMzZzczNEAyMl40NDYuXy4xLi9iMmAyYSMxMXJnMmRzZDBhLS1kMS9zcw%3D%3D&vvpl=1&l=20251230011911E4E8919F482B50DB22CB&btag=e000b0000' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:55,541 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED
+2025-12-30 00:23:55,541 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [00:02.437][warn][demux.fetch](6) TypeError: Failed to fetch
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74444)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74530)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+    at D.$processErrorAndFallback (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:37860)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43850
+2025-12-30 00:23:55,739 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:55,741 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED
+2025-12-30 00:23:55,994 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to fetch at 'https://v19-web-newkey.tiktokcdn.com/b21d2a35cab2999ddd7edea9e5ac972c/69530d95/video/tos/maliva/tos-maliva-ve-0068c799-us/o0JopINEBz1Q6ASBwifRAPQFiimLC0BCn2JIuH/?a=1988&bti=bGRuZHxvMXIxcm53Zm1cYF9ebWFzaHFmOg%3D%3D&ch=0&cr=0&dr=0&er=0&cd=0%7C0%7C0%7C0&cv=1&br=3150&bt=1575&cs=0&ds=3&ft=JE3-IDHhNF6VQZqG0mq-sdb4rxXqYl3E5F5~hWLrK&mime_type=video_mp4&qs=0&rc=ZmQ6M2RkOzw8NjY3NTYzaEBpajRoNXA5cjluODMzZzczNEAyMl40NDYuXy4xLi9iMmAyYSMxMXJnMmRzZDBhLS1kMS9zcw%3D%3D&vvpl=1&l=20251230012355AC3205A0B8D6BD2ACAD7&btag=e000b0000' (redirected from 'https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=5ec053e224134319b9189a7a70a75a5c&is_play_url=1&item_id=7586112300378033422&line=0&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjIzOTY3NjU3N2VhOTMzMzVhZjZlNzdjNGJiMjVmZDY1&video_id=v12044gd0000d53kg6vog65mj2ue414g') from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:55,995 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED
+2025-12-30 00:23:55,995 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] [00:02.890][error][demux.fetch](6) TypeError: Failed to fetch
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74444)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74530)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+    at D.$processErrorAndFallback (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:37860)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43850
+2025-12-30 00:23:55,997 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [00:02.893][warn][controller](1) AbortError: The play() request was interrupted by a new load request. https://goo.gl/LdLk22
+2025-12-30 00:23:55,998 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [00:02.893][warn][controller](1) AbortError: The play() request was interrupted by a new load request. https://goo.gl/LdLk22
+2025-12-30 00:23:56,607 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+2025-12-30 00:23:56,609 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Failed to load resource: net::ERR_FAILED

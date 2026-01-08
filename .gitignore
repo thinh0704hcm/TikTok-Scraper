@@ -14,3 +14,5 @@ logs/
 processed*/
 video_data/
 video_comments_data/
+progress_tracking/
+dataset/

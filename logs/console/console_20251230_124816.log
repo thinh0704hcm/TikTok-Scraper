@@ -1,0 +1,347 @@
+================================================================================
+Browser Console Log - 2025-12-30T12:48:16.755299
+================================================================================
+
+[12:48:19.805] [DEBUG] set global cache {exploreItemList: Object}
+[12:48:19.857] [WARNING] Reflect is already polyfilled.
+[12:48:20.122] [WARNING] AppContext will be overwritten
+[12:48:20.130] [WARNING] AppContext will be overwritten
+[12:48:20.132] [WARNING] AppContext will be overwritten
+[12:48:20.137] [WARNING] AppContext will be overwritten
+[12:48:20.140] [WARNING] AppContext will be overwritten
+[12:48:20.141] [WARNING] AppContext will be overwritten
+[12:48:20.146] [WARNING] AppContext will be overwritten
+[12:48:20.150] [WARNING] AppContext will be overwritten
+[12:48:20.259] [WARNING] AppContext will be overwritten
+[12:48:20.279] [WARNING] AppContext will be overwritten
+[12:48:20.280] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:48:21.312] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:48:21.852] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:48:22.169] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:22.169] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:23.455] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:23.460] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:23.937] [INFO] .
+[12:48:24.378] [ERROR] Feature access control initialization error TypeError: Failed to fetch
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74444)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74530)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:124784)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:135236
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/secsdk/secsdk-lastest.umd.js:5211:40)
+    at e.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/biz.common.lib.48401b98.js:1:32915)
+    at Object.next (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:215775)
+[12:48:25.205] [INFO] .
+[12:48:25.264] [DEBUG] set global cache {userPostList: Object}
+[12:48:25.265] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:48:25.275] [DEBUG] Error
+[12:48:25.279] [DEBUG] Error
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:48:25.485] [WARNING] Reflect is already polyfilled.
+[12:48:25.623] [WARNING] AppContext will be overwritten
+[12:48:25.625] [WARNING] AppContext will be overwritten
+[12:48:25.629] [WARNING] AppContext will be overwritten
+[12:48:25.629] [WARNING] AppContext will be overwritten
+[12:48:25.631] [WARNING] AppContext will be overwritten
+[12:48:25.631] [WARNING] AppContext will be overwritten
+[12:48:25.631] [WARNING] AppContext will be overwritten
+[12:48:25.632] [WARNING] AppContext will be overwritten
+[12:48:25.702] [WARNING] AppContext will be overwritten
+[12:48:25.711] [WARNING] AppContext will be overwritten
+[12:48:25.713] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:48:25.771] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:25.776] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:26.149] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:48:26.630] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:26.637] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:29.093] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:29.107] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:30.559] [DEBUG] Error
+[12:48:30.722] [LOG] ws.opened
+[12:48:33.786] [WARNING] [00:10.136][warn][multiplex](1) demux waterlevel change to full, abort request
+[12:48:34.030] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[12:48:34.559] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:48:34.571] [LOG] â Found data!
+[12:48:34.575] [LOG] Keys: []
+[12:48:34.575] [LOG] â Data copied to clipboard!
+[12:48:36.310] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073716218] appid: 1988, userInfo:{"user_unique_id":"7589523727780840980","web_id":"7589523738442728981"}
+[12:48:36.312] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073716218] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[12:48:36.498] [WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+[12:48:36.664] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_cookie_banner_slardar&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:36.668] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:36.669] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_consent_system&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:36.672] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:37.203] [DEBUG] Error
+[12:48:37.372] [DEBUG] Error
+[12:48:37.646] [LOG] [browser check] %s, os:  Chrome Windows
+[12:48:37.768] [INFO] Loading the script 'https://accounts.google.com/gsi/client' violates the following Content Security Policy directive: "script-src 'report-sample' 'unsafe-eval' apis.google.com c.paypal.com cdn.ampproject.org client-api.arkoselabs.com code.jquery.com connect.facebook.net developers.kakao.com interactives.ap.org js.hcaptcha.com js.hsforms.net pay.google.com recaptcha.google.com s20.tiktokcdn.com s3.amazonaws.com sf16-website-login.neutral.ttwstatic.com sf16-website.neutral.ttwstatic.com sf16m-website-login.neutral.ttwstatic.com ssl.bing.com static.captchami.com tiktok.captchami.com unpkg.com www.vimeo.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken.
+[12:48:38.129] [LOG] === Page Data Extraction ===
+[12:48:38.129] [LOG] Found __UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:48:38.132] [LOG] Data type: object
+[12:48:38.133] [LOG] Successfully cloned data
+[12:48:38.261] [LOG] Trying alternative extraction...
+[12:48:38.264] [LOG] Found data in: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:48:38.266] [LOG] Successfully serialized from: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:48:38.425] [DEBUG] Error
+[12:48:38.480] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+[12:48:41.367] [INFO] .
+[12:48:41.509] [DEBUG] set global cache {userPostList: Object}
+[12:48:41.509] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:48:41.510] [DEBUG] Error
+[12:48:41.511] [DEBUG] Error
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:48:41.666] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:41.671] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:42.011] [WARNING] Reflect is already polyfilled.
+[12:48:42.062] [WARNING] AppContext will be overwritten
+[12:48:42.068] [WARNING] AppContext will be overwritten
+[12:48:42.069] [WARNING] AppContext will be overwritten
+[12:48:42.072] [WARNING] AppContext will be overwritten
+[12:48:42.075] [WARNING] AppContext will be overwritten
+[12:48:42.076] [WARNING] AppContext will be overwritten
+[12:48:42.077] [WARNING] AppContext will be overwritten
+[12:48:42.078] [WARNING] AppContext will be overwritten
+[12:48:42.081] [WARNING] AppContext will be overwritten
+[12:48:42.085] [WARNING] AppContext will be overwritten
+[12:48:42.089] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:48:42.654] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:48:42.996] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:42.996] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:43.011] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:43.014] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:46.837] [DEBUG] Error
+[12:48:47.000] [LOG] ws.opened
+[12:48:48.227] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[12:48:48.433] [WARNING] [00:08.029][warn][multiplex](1) demux waterlevel change to full, abort request
+[12:48:48.697] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073728608] appid: 1988, userInfo:{"user_unique_id":"7589523727780840980","web_id":"7589523738442728981"}
+[12:48:48.700] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073728608] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[12:48:49.043] [LOG] [browser check] %s, os:  Chrome Windows
+[12:48:49.116] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_cookie_banner_slardar&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:49.119] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:49.121] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_consent_system&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:49.126] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:49.153] [INFO] Loading the script 'https://accounts.google.com/gsi/client' violates the following Content Security Policy directive: "script-src 'report-sample' 'unsafe-eval' apis.google.com c.paypal.com cdn.ampproject.org client-api.arkoselabs.com code.jquery.com connect.facebook.net developers.kakao.com interactives.ap.org js.hcaptcha.com js.hsforms.net pay.google.com recaptcha.google.com s20.tiktokcdn.com s3.amazonaws.com sf16-website-login.neutral.ttwstatic.com sf16-website.neutral.ttwstatic.com sf16m-website-login.neutral.ttwstatic.com ssl.bing.com static.captchami.com tiktok.captchami.com unpkg.com www.vimeo.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken.
+[12:48:49.173] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:48:49.813] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+[12:48:50.699] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:48:50.709] [WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+[12:48:50.713] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:48:50.865] [DEBUG] Error
+[12:48:50.971] [DEBUG] Error
+[12:48:51.605] [DEBUG] Error
+[12:48:54.351] [LOG] === Page Data Extraction ===
+[12:48:54.353] [LOG] Found __UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:48:54.354] [LOG] Data type: object
+[12:48:54.355] [LOG] Successfully cloned data
+[12:48:54.374] [LOG] Trying alternative extraction...
+[12:48:54.375] [LOG] Found data in: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:48:54.376] [LOG] Successfully serialized from: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:48:55.881] [LOG] â Found data!
+[12:48:55.882] [LOG] Keys: []
+[12:48:55.883] [LOG] â Data copied to clipboard!
+[12:48:57.297] [INFO] .
+[12:48:57.325] [DEBUG] set global cache {userPostList: Object}
+[12:48:57.326] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:48:57.336] [DEBUG] Error
+[12:48:57.336] [DEBUG] Error
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:48:57.458] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:57.460] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:57.484] [WARNING] Reflect is already polyfilled.
+[12:48:57.526] [WARNING] AppContext will be overwritten
+[12:48:57.529] [WARNING] AppContext will be overwritten
+[12:48:57.531] [WARNING] AppContext will be overwritten
+[12:48:57.533] [WARNING] AppContext will be overwritten
+[12:48:57.536] [WARNING] AppContext will be overwritten
+[12:48:57.537] [WARNING] AppContext will be overwritten
+[12:48:57.538] [WARNING] AppContext will be overwritten
+[12:48:57.539] [WARNING] AppContext will be overwritten
+[12:48:57.555] [WARNING] AppContext will be overwritten
+[12:48:57.558] [WARNING] AppContext will be overwritten
+[12:48:57.563] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:48:57.836] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:48:58.029] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:58.030] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:48:59.378] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:48:59.378] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:01.141] [DEBUG] Error
+[12:49:01.142] [LOG] ws.opened
+[12:49:02.272] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:49:02.538] [DEBUG] Error
+[12:49:02.559] [DEBUG] Error
+[12:49:03.976] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:49:03.977] [WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+[12:49:03.977] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:49:05.312] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[12:49:08.662] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073748590] appid: 1988, userInfo:{"user_unique_id":"7589523727780840980","web_id":"7589523738442728981"}
+[12:49:08.665] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073748590] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[12:49:08.937] [LOG] [browser check] %s, os:  Chrome Windows
+[12:49:08.954] [INFO] Loading the script 'https://accounts.google.com/gsi/client' violates the following Content Security Policy directive: "script-src 'report-sample' 'unsafe-eval' apis.google.com c.paypal.com cdn.ampproject.org client-api.arkoselabs.com code.jquery.com connect.facebook.net developers.kakao.com interactives.ap.org js.hcaptcha.com js.hsforms.net pay.google.com recaptcha.google.com s20.tiktokcdn.com s3.amazonaws.com sf16-website-login.neutral.ttwstatic.com sf16-website.neutral.ttwstatic.com sf16m-website-login.neutral.ttwstatic.com ssl.bing.com static.captchami.com tiktok.captchami.com unpkg.com www.vimeo.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken.
+[12:49:09.106] [DEBUG] Error
+[12:49:09.185] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_cookie_banner_slardar&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:09.189] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:09.192] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_consent_system&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:09.194] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:09.325] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+[12:49:10.379] [LOG] === Page Data Extraction ===
+[12:49:10.382] [LOG] Found __UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:49:10.383] [LOG] Data type: object
+[12:49:10.383] [LOG] Successfully cloned data
+[12:49:10.405] [LOG] Trying alternative extraction...
+[12:49:10.411] [LOG] Found data in: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:49:10.412] [LOG] Successfully serialized from: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:49:13.265] [INFO] .
+[12:49:13.285] [DEBUG] set global cache {userPostList: Object}
+[12:49:13.286] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:49:13.308] [DEBUG] Error
+[12:49:13.319] [DEBUG] Error
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:49:13.481] [WARNING] Reflect is already polyfilled.
+[12:49:13.526] [WARNING] AppContext will be overwritten
+[12:49:13.532] [WARNING] AppContext will be overwritten
+[12:49:13.532] [WARNING] AppContext will be overwritten
+[12:49:13.536] [WARNING] AppContext will be overwritten
+[12:49:13.537] [WARNING] AppContext will be overwritten
+[12:49:13.537] [WARNING] AppContext will be overwritten
+[12:49:13.537] [WARNING] AppContext will be overwritten
+[12:49:13.539] [WARNING] AppContext will be overwritten
+[12:49:13.567] [WARNING] AppContext will be overwritten
+[12:49:13.574] [WARNING] AppContext will be overwritten
+[12:49:13.575] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:49:13.646] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:13.651] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:13.887] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:49:14.114] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:14.115] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:14.288] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:14.300] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:18.484] [DEBUG] Error
+[12:49:18.484] [LOG] ws.opened
+[12:49:20.497] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[12:49:20.675] [WARNING] [00:08.132][warn][multiplex](1) demux waterlevel change to full, abort request
+[12:49:20.773] [WARNING] The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio
+[12:49:20.810] [LOG] â Found data!
+[12:49:20.811] [LOG] Keys: []
+[12:49:20.812] [LOG] â Data copied to clipboard!
+[12:49:21.023] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073760942] appid: 1988, userInfo:{"user_unique_id":"7589523727780840980","web_id":"7589523738442728981"}
+[12:49:21.023] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767073760942] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[12:49:21.306] [LOG] [browser check] %s, os:  Chrome Windows
+[12:49:21.380] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_cookie_banner_slardar&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:21.385] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:21.387] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_consent_system&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+[12:49:21.387] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:49:21.397] [INFO] Loading the script 'https://accounts.google.com/gsi/client' violates the following Content Security Policy directive: "script-src 'report-sample' 'unsafe-eval' apis.google.com c.paypal.com cdn.ampproject.org client-api.arkoselabs.com code.jquery.com connect.facebook.net developers.kakao.com interactives.ap.org js.hcaptcha.com js.hsforms.net pay.google.com recaptcha.google.com s20.tiktokcdn.com s3.amazonaws.com sf16-website-login.neutral.ttwstatic.com sf16-website.neutral.ttwstatic.com sf16m-website-login.neutral.ttwstatic.com ssl.bing.com static.captchami.com tiktok.captchami.com unpkg.com www.vimeo.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken.
+[12:49:22.528] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+[12:49:22.649] [WARNING] [TikTok desktop app SDK Monitor]:   WARN:[printFirstFeedShow]The current environment is not inside the client.
+[12:49:23.190] [DEBUG] Error
+[12:49:23.243] [DEBUG] Error
+[12:49:23.786] [DEBUG] Error
+[12:49:26.274] [LOG] === Page Data Extraction ===
+[12:49:26.277] [LOG] Found __UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:49:26.280] [LOG] Data type: object
+[12:49:26.286] [LOG] Successfully cloned data
+[12:49:26.685] [LOG] Trying alternative extraction...
+[12:49:26.686] [LOG] Found data in: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+[12:49:26.686] [LOG] Successfully serialized from: window.__UNIVERSAL_DATA_FOR_REHYDRATION__
+
+================================================================================
+Console logging ended - 2025-12-30T12:49:27.586148
+================================================================================

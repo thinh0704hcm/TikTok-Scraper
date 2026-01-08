@@ -1,0 +1,134 @@
+================================================================================
+Browser Console Log - 2025-12-30T12:27:49.323645
+================================================================================
+
+[12:27:52.102] [DEBUG] set global cache {exploreItemList: Object}
+[12:27:52.183] [WARNING] Reflect is already polyfilled.
+[12:27:52.433] [WARNING] AppContext will be overwritten
+[12:27:52.439] [WARNING] AppContext will be overwritten
+[12:27:52.444] [WARNING] AppContext will be overwritten
+[12:27:52.448] [WARNING] AppContext will be overwritten
+[12:27:52.462] [WARNING] AppContext will be overwritten
+[12:27:52.462] [WARNING] AppContext will be overwritten
+[12:27:52.467] [WARNING] AppContext will be overwritten
+[12:27:52.471] [WARNING] AppContext will be overwritten
+[12:27:52.574] [WARNING] AppContext will be overwritten
+[12:27:52.589] [WARNING] AppContext will be overwritten
+[12:27:52.596] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:27:53.054] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:27:54.433] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:27:54.547] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193055
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177787)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:175165
+[12:27:55.527] [INFO] .
+[12:27:56.711] [DEBUG] Error
+[12:27:56.721] [DEBUG] Error
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:27:56.885] [ERROR] Feature access control initialization error Response
+[12:27:56.920] [ERROR] Check show get coins entrance failed TypeError: Cannot read properties of undefined (reading 'data')
+[12:27:56.921] [WARNING] [00:06.000][warn][demux.fetch](6) TypeError: Failed to fetch
+    at h (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.933/index.js:4:75087)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.933/index.js:4:75174)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:124784)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:135236
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/secsdk/secsdk-lastest.umd.js:5211:40)
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+[12:27:57.379] [INFO] .
+[12:27:57.919] [DEBUG] set global cache {userPostList: Object}
+[12:27:57.922] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:27:57.939] [DEBUG] Error
+[12:27:57.948] [DEBUG] Error
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:27:58.172] [WARNING] Reflect is already polyfilled.
+[12:27:58.324] [WARNING] AppContext will be overwritten
+[12:27:58.327] [WARNING] AppContext will be overwritten
+[12:27:58.331] [WARNING] AppContext will be overwritten
+[12:27:58.334] [WARNING] AppContext will be overwritten
+[12:27:58.335] [WARNING] AppContext will be overwritten
+[12:27:58.336] [WARNING] AppContext will be overwritten
+[12:27:58.337] [WARNING] AppContext will be overwritten
+[12:27:58.337] [WARNING] AppContext will be overwritten
+[12:27:58.432] [WARNING] AppContext will be overwritten
+[12:27:58.452] [WARNING] AppContext will be overwritten
+[12:27:58.453] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:27:58.690] [ERROR] prefetch image SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:86732
+    at Object.next (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:20381)
+    at e (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16717)
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16914)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16973
+    at new Promise (<anonymous>)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16855
+    at tT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:87096)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:91016
+[12:27:58.829] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:27:59.861] [DEBUG] Error
+[12:28:00.108] [DEBUG] Error
+[12:28:00.261] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[12:28:00.470] [WARNING] user post atom, error getItemList! Response
+[12:28:01.683] [LOG] ws.opened
+[12:28:05.287] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767072485204] appid: 1988, userInfo:{"user_unique_id":"7589518451421660690","web_id":"7589518464047810068"}
+[12:28:05.290] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767072485204] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[12:28:05.444] [DEBUG] Error
+[12:28:06.375] [DEBUG] Error
+[12:28:12.369] [WARNING] user post atom, error getItemList! Response

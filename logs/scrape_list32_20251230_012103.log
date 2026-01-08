@@ -1,0 +1,8 @@
+2025-12-30 01:21:03,244 - Crawler - INFO - ======================================================================
+2025-12-30 01:21:03,244 - Crawler - INFO - TIKTOK PROFILE TIME SERIES SCRAPER
+2025-12-30 01:21:03,244 - Crawler - INFO - Target Profiles: 32
+2025-12-30 01:21:03,244 - Crawler - INFO - Milestone Date: 2025-12-28 14:00:00
+2025-12-30 01:21:03,244 - Crawler - INFO - ======================================================================
+2025-12-30 01:21:03,245 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/run_list32_20251230_progress.db
+2025-12-30 01:21:03,245 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-30 01:21:03,246 - TTCS.ObjTracker - INFO - Database indexes created successfully

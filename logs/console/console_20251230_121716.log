@@ -1,0 +1,325 @@
+================================================================================
+Browser Console Log - 2025-12-30T12:17:16.362851
+================================================================================
+
+[12:17:20.121] [DEBUG] set global cache {exploreItemList: Object}
+[12:17:20.515] [WARNING] Reflect is already polyfilled.
+[12:17:20.726] [WARNING] AppContext will be overwritten
+[12:17:20.729] [WARNING] AppContext will be overwritten
+[12:17:20.731] [WARNING] AppContext will be overwritten
+[12:17:20.733] [WARNING] AppContext will be overwritten
+[12:17:20.745] [WARNING] AppContext will be overwritten
+[12:17:20.749] [WARNING] AppContext will be overwritten
+[12:17:20.749] [WARNING] AppContext will be overwritten
+[12:17:20.750] [WARNING] AppContext will be overwritten
+[12:17:20.890] [WARNING] AppContext will be overwritten
+[12:17:20.891] [WARNING] AppContext will be overwritten
+[12:17:20.892] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:17:21.241] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:17:21.449] [ERROR] Access to XMLHttpRequest at 'https://libraweb-sg.tiktok.com/service/2/abtest_config/' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:21.467] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:21.473] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:21.473] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:21.611] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:17:21.826] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:21.827] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:22.494] [ERROR] Access to fetch at 'https://v16-webapp.tiktok.com/b83b43a73ac425572ed3152cdabfec18/6956036c/video/tos/alisg/tos-alisg-pve-0037c001/oEfprgRBE3DSfJxE6BFVGIXUBTBjEgBrQWQUKA/?a=1988&bti=ODszNWYuMDE6&ch=0&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C&cv=1&br=1484&bt=742&cs=0&ds=6&ft=-Elcom7nPD12N1k60d-Ux5~2mY9e3wv252cAp&mime_type=video_mp4&qs=0&rc=ZGc1aDw6ZWloNDM2NjM8aEBpanB4bm85cmtqODMzODczNEBeNTEwYzJjXjIxNV8uYTRhYSM2LWNmMmRrXjFhLS1kMTFzcw%3D%3D&vvpl=1&l=202512301317178479189DF1806C3F9B6F&btag=e000b8000' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:22.500] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:22.501] [WARNING] [00:03.537][warn][demux.fetch](6) TypeError: Failed to fetch
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74444)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74530)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+    at D.load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:39155)
+    at Z.load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:12:14004)
+    at ta._load (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:12:109006)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:12:106103
+[12:17:22.722] [INFO] .
+[12:17:22.897] [WARNING] [00:03.868][warn][demux.fetch](6) TypeError: Failed to fetch
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74444)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.927/index.js:4:74530)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+    at D.$processErrorAndFallback (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:37860)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/async/54690.7856583b.js:11:43850
+[12:17:23.455] [WARNING] Reflect is already polyfilled.
+[12:17:23.586] [WARNING] AppContext will be overwritten
+[12:17:23.586] [WARNING] AppContext will be overwritten
+[12:17:23.595] [WARNING] AppContext will be overwritten
+[12:17:23.607] [WARNING] AppContext will be overwritten
+[12:17:23.607] [WARNING] AppContext will be overwritten
+[12:17:23.608] [WARNING] AppContext will be overwritten
+[12:17:23.618] [WARNING] AppContext will be overwritten
+[12:17:23.620] [WARNING] AppContext will be overwritten
+[12:17:23.749] [WARNING] AppContext will be overwritten
+[12:17:23.749] [WARNING] AppContext will be overwritten
+[12:17:23.750] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:17:24.058] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:17:24.114] [ERROR] Access to XMLHttpRequest at 'https://libraweb-sg.tiktok.com/service/2/abtest_config/' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:24.115] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:24.443] [INFO] .
+[12:17:24.519] [DEBUG] set global cache {userPostList: Object}
+[12:17:24.521] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:17:24.521] [DEBUG] Error
+[12:17:24.521] [DEBUG] Error
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.<anonymous> (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:17:24.737] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:24.739] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:24.953] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:24.959] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:25.021] [ERROR] prefetch image SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:86732
+    at Object.next (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:20381)
+    at e (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16717)
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16914)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16973
+    at new Promise (<anonymous>)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16855
+    at tT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:87096)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:91016
+[12:17:25.035] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:25.041] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:25.620] [LOG] ws.opened
+[12:17:25.738] [WARNING] user post atom, error getItemList! Response
+[12:17:25.891] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/resource?eq=25pes5BUHQSHU9TiktYXnIsXU4zsGECF7w5lwonKU12wZ1pqiD1YyVn67XuqTvlB1ucnycoviwx8cOO7wTy18IxZQ5b2Wj8=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:25.899] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:26.022] [DEBUG] Error
+[12:17:26.252] [DEBUG] Error
+[12:17:27.195] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?biz_id=tiktok_webapp' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:27.198] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:27.278] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/report?msToken=x2fiCGDg0ckN7uMNT0eODbhwJdCwVFUYZ-UlL62PExxUIs9CFSBtwsNdQ_-rFcS-pzpYgE0lJjdIX33xqg6mfQV4RyrfKN63Ed5OH2ZlVr6x8q1rimpdycDOw11CYg==&X-Bogus=DFSzsIVYDDB7FyEvCmALdkBuDTXD&X-Gnarly=M83ZUFt/XtCCZ4lWVrxwC1L1VumtQIVQneFChH2EaW2sdz4cbXpCae7VarvpXj3i0rJDb4YNVGIkfuKIwQZkkfCd-jvm6gPkIwAHZyBekDeaB42E5ZGgM9TBVhYOUpJ4-IC2rjU9yMjqmPQ0Y7ygHymqStwgyzms2y14qgWTILHG7XrmUxnh34qpW1RRN5iBmr5QcYUhLfHpQ3C-Q4bpp4VFhMVld4/pH9eL0PpdWXeL/suV8/-br9-teEVHh/lMloE3aR9WKUygSHpiTf5mcv5IjOUqnfwb1LIV4jcusjjKzWnu/oPgaudbKAzV4-xXyP/=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:27.340] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:27.452] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/common?msToken=x2fiCGDg0ckN7uMNT0eODbhwJdCwVFUYZ-UlL62PExxUIs9CFSBtwsNdQ_-rFcS-pzpYgE0lJjdIX33xqg6mfQV4RyrfKN63Ed5OH2ZlVr6x8q1rimpdycDOw11CYg==&X-Bogus=DFSzsIVYDDB7FyEvCmALdkBuDTXD&X-Gnarly=MHTJTD26cHPCfBkYfAMYitWIKtPczI0udSpDfWCeJ8rUpl/vn4Fx7LZN7qB39VuxmZGabXXdpoIrRtEqQW3vQ/ZWDQkBK0xBlkt80MhwDa11vJ3/li8mFJr3eD8detbLkaStQ9ah0iEXjNJYDaaTX5//yE1316lKWkUNJQibZUkP0Ke8ok0Ckohb2ARHz15KIkaUCPWWL4raKgJri/6fbodwadV1kw6RocP/r/0ieX5G2itfMI4bXaji8JY1Ld12-pAGSQ7RKb-pZKRbBIK8GHFlo4KSaQHUHx6q21pChZfiPbW9ccQ180sLy9cqAm80cdz=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:27.455] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:27.974] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/resource?eq=25pes5BUHQSHU9TiktYXnIsXU4zsGECF7w5lwonKU12wZ1pqiD1YyVn67XuqTvlB1ucnycoviwx8cOO7wTy18IxZQ5b2Wj8=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:27.975] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:29.008] [ERROR] Access to fetch at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?bid=tiktok_pns_web_runtime' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:29.012] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:29.375] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?biz_id=tiktok_webapp' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:29.379] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:32.744] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/resource?eq=25pes5BUHQSHU9TiktYXnIsXU4zsGECF7w5lwonKU12wZ1pqiD1YyVn67XuqTvlB1ucnycoviwx8cOO7wTy18IxZQ5b2Wj8=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:32.745] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:35.662] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193055
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177787)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:175165
+[12:17:36.793] [ERROR] Check show get coins entrance failed TypeError: Cannot read properties of undefined (reading 'data')
+[12:17:37.726] [INFO] .
+[12:17:38.415] [DEBUG] set global cache {userPostList: Object}
+[12:17:38.416] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:17:38.436] [DEBUG] Error
+[12:17:38.438] [DEBUG] Error
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:17:38.875] [WARNING] Reflect is already polyfilled.
+[12:17:39.114] [WARNING] AppContext will be overwritten
+[12:17:39.117] [WARNING] AppContext will be overwritten
+[12:17:39.118] [WARNING] AppContext will be overwritten
+[12:17:39.121] [WARNING] AppContext will be overwritten
+[12:17:39.126] [WARNING] AppContext will be overwritten
+[12:17:39.128] [WARNING] AppContext will be overwritten
+[12:17:39.130] [WARNING] AppContext will be overwritten
+[12:17:39.132] [WARNING] AppContext will be overwritten
+[12:17:39.323] [WARNING] AppContext will be overwritten
+[12:17:39.336] [WARNING] AppContext will be overwritten
+[12:17:39.338] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:17:39.374] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:39.386] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:39.767] [ERROR] prefetch image SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:86732
+    at Object.next (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:20381)
+    at e (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16717)
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16914)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16973
+    at new Promise (<anonymous>)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16855
+    at tT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:87096)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:91016
+[12:17:39.890] [ERROR] Access to XMLHttpRequest at 'https://libraweb-sg.tiktok.com/service/2/abtest_config/' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:39.893] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:40.206] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:17:41.014] [INFO] .
+[12:17:41.279] [DEBUG] set global cache {userPostList: Object}
+[12:17:41.282] [DEBUG] set global cache {userPostList: Object, userPlayList: Object}
+[12:17:41.295] [DEBUG] Error
+[12:17:41.298] [DEBUG] Error
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:5522)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81351)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:71251)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:81541)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:119076)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at v (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:82258)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:148339)
+[12:17:41.671] [WARNING] Reflect is already polyfilled.
+[12:17:41.927] [WARNING] AppContext will be overwritten
+[12:17:41.933] [WARNING] AppContext will be overwritten
+[12:17:41.935] [WARNING] AppContext will be overwritten
+[12:17:41.937] [WARNING] AppContext will be overwritten
+[12:17:41.974] [WARNING] AppContext will be overwritten
+[12:17:41.974] [WARNING] AppContext will be overwritten
+[12:17:41.975] [WARNING] AppContext will be overwritten
+[12:17:41.975] [WARNING] AppContext will be overwritten
+[12:17:42.099] [WARNING] AppContext will be overwritten
+[12:17:42.108] [WARNING] AppContext will be overwritten
+[12:17:42.109] [WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+[12:17:42.420] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=webmssdk&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:42.423] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:42.607] [ERROR] prefetch image SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:86732
+    at Object.next (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:20381)
+    at e (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16717)
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16914)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16973
+    at new Promise (<anonymous>)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:16855
+    at tT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:87096)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/experimental/webapp-desktop/user-prefetch.46d1dc82.js:2:91016
+[12:17:42.754] [ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/93271.43d8d1c9.js:2:102006)
+    at x (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:150765)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/webapp-desktop.02006c2b.js:1:152027
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+[12:17:43.034] [ERROR] Access to XMLHttpRequest at 'https://libraweb-sg.tiktok.com/service/2/abtest_config/' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:43.034] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:43.039] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/resource?eq=/qasEQzAb2Ow1RXot1ygLLDQhpATterc-GIdR-HkMlWv9RVmTTKFAfRBgsflnvTNYx6Ab1lgwkbdRoH16PbHwa-1Fzwu4lL=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:43.040] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:43.170] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=tiktok_webapp&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:43.178] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:43.212] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_communication_service&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:43.215] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:44.842] [WARNING] user post atom, error getItemList! Response
+[12:17:44.946] [LOG] ws.opened
+[12:17:44.947] [WARNING] [SDK] 1767071864940        0 already inited
+[12:17:45.025] [DEBUG] Error
+[12:17:45.220] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/resource?eq=/qasEQzAb2Ow1RXot1ygLLDQhpATterc-GIdR-HkMlWv9RVmTTKFAfRBgsflnvTNYx6Ab1lgwkbdRoH16PbHwa-1Fzwu4lL=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:45.221] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:45.351] [DEBUG] Error
+[12:17:46.186] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?biz_id=tiktok_webapp' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:46.193] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:46.554] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/report?msToken=JFoX8rkAsALY0epysiJsLDnEpESv0q_BwK2TK2IBfG79I0tL4IO-9Vg-hYjd5z2IFbfXQN0bH3z4utPuGfUEl4hKXgPQyr-gF6nTSj_GdemZue2klBB-W92KqClX5Q==&X-Bogus=DFSzsIVORqtyvKlZCmALh5apqSzL&X-Gnarly=M/9HhOC/uGu-cDrx32Zwap/7FQdjWZ-pkTFvmvbdHVIWRhdA2r67eso9kJvNyOkfwaoqAtKv-0TyEVa0D/1aDa0m36oLK89XE1oDu6BpOBZEjJ0dmJVwG77fN9C75nl2hvx3zDsYze70L3K8-HmETUKfQjEN9d0jeQ6jD4jqH5CeMu5WK9tZQQ1M3ZEcIz2Xyv6R1Xh7w2Yy86hyRzLfqQjeE-h-FUyoypj-p2lA8e3MaFrE7ALxr1khTbKzJN1C/FEV2scr36nujEyH49XTN6Xu/qIKAgs2uaIfiqh/VyGybvwdNQtNj-hfThvqd3pmXOe=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:46.634] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:46.720] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/common?msToken=JFoX8rkAsALY0epysiJsLDnEpESv0q_BwK2TK2IBfG79I0tL4IO-9Vg-hYjd5z2IFbfXQN0bH3z4utPuGfUEl4hKXgPQyr-gF6nTSj_GdemZue2klBB-W92KqClX5Q==&X-Bogus=DFSzsIVORqtyvKlZCmALh5apqSzL&X-Gnarly=MCcNKGEalhZJaOiVCeShVZwJ-4JWeAzND2e8XqvSoL81oUtgUbMmgcYfP9Npx3YW4wyPWp0EUEHEYVqoCLHhsnhLx1Mk5LalyDYbTlFrA0zm7Zsoy5u0B2BXIyKrMizERUGlK5l70mXWrZ4i1Zs0rPXVmpx70vZQw0PZMxhUBGudxNeOpyi7Q8CbAVMri/MUEt1gNDKmHhb0O/r-Hjj5/IgVco9T3KFLIiesplI5jtJ1AqX9KT7SwggB9TMM-ySAVtyyyrGCLwV6A0HDOIg1527IaYGH7pR-XMshrJy9/jd4W6-SbFABPixAOGK1Acogz6I=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:46.724] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:47.203] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?biz_id=tiktok_webapp' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:47.208] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:49.645] [ERROR] Access to XMLHttpRequest at 'https://mssdk-sg.tiktok.com/web/resource?eq=/qasEQzAb2Ow1RXot1ygLLDQhpATterc-GIdR-HkMlWv9RVmTTKFAfRBgsflnvTNYx6Ab1lgwkbdRoH16PbHwa-1Fzwu4lL=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:49.647] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:50.304] [ERROR] Access to fetch at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?bid=tiktok_pns_web_runtime' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:50.305] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:51.801] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767071871639] appid: 1988, userInfo:{"user_unique_id":"7589515737849562642","web_id":"7589515751758841364"}
+[12:17:51.802] [LOG] %c %s color: yellow; background-color: black; [instance: pns_sdk_common_modules_0.0.0_1767071871639] appid: 1988, sdk is ready, version is 5.3.12_oversea, you can report now !!!
+[12:17:52.111] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_cookie_banner_slardar&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:52.117] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:52.649] [WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+[12:17:52.755] [ERROR] Access to fetch at 'https://webcast.tiktok.com/webcast/wallet_api_tiktok/recharge/check_external_entry?WebIdLastTime=1767071839&aid=1988&app_language=en&app_name=tiktok_web&browser_language=en-US&browser_name=Mozilla&browser_online=true&browser_platform=Win32&browser_version=5.0%20%28Windows%20NT%2010.0%3B%20Win64%3B%20x64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F143.0.0.0%20Safari%2F537.36&channel=tiktok_web&cookie_enabled=true&data_collection_enabled=false&device_id=7589515737849562642&device_platform=web_pc&focus_state=false&from_page=user&history_len=3&is_experiment_group=false&is_fullscreen=false&is_page_visible=true&odinId=7589515492660102165&os=windows&page_source=0&priority_region=&referer=&region=VN&root_referer=https%3A%2F%2Fwww.tiktok.com%2F&screen_height=960&screen_width=1536&tz_name=Asia%2FSaigon&user_is_login=false&webcast_language=en&msToken=U0H0wlt8Ni9N8POa1AVhVHtsXP4XcHbl9yvZx4lkq5YVbDRzvvS9oB9zcLRECDPNS3X7qFR2I7BPtkTi_F3ktBksialHz6CddxokiHig5qZH_6zKPFhHf3889_-m7Q==&X-Bogus=DFSzsIVOhIkANVlZCmALacapqSu1&X-Gnarly=MCicQufNWSFbG9I8zqMfJYW-QYJnpwYjX/tldd8rLwuwk9esdvcb3AfUI4nMa78Ek7zJ4F7xiRIHW9gfgGa3H1AvBC6CS8uWDZ72R-t3NzGcfF3r2xgrhpd94onVu26NjwbpHUrNjflGiPzJoV7qyaqAmOwvXa0xq7/RAwIMfDV0-97C0zQfZro5kEaU0qeB/rMwRpAqLMqorKB0G9ABVgrTwAW56vGmYqteYijv3z8619/Y/sNfnx2lEriZKEAgdceW4VvjjT9qXg0L/9Rtx3lQkWmF5IQhInUMIi6TT6jcQYazIoNrHEMg4J-B3E4XOpw=' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:52.756] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:52.777] [ERROR] Check show get coins entrance failed TypeError: Cannot read properties of undefined (reading 'data')
+[12:17:52.989] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_web/settings/browser-settings?bid=pns_consent_system&store=1' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:52.990] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:55.305] [ERROR] Access to XMLHttpRequest at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?biz_id=tiktok_webapp' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:55.308] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:56.091] [ERROR] Access to fetch at 'https://mon.tiktokv.com/monitor_browser/collect/batch/?bid=tiktok_pns_web_runtime' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Request header field upgrade-insecure-requests is not allowed by Access-Control-Allow-Headers in preflight response.
+[12:17:56.098] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:56.392] [ERROR] Access to XMLHttpRequest at 'https://starling-sg.tiktokv.com/check_and_get_text/5dc26cf008d511e9b571e1bc0c9e23b5/normal/WebApp_Login?lang=en,zh' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+[12:17:56.393] [ERROR] [I18nContext] load starling error Error: Network Error
+    at new t (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:15704)
+    at i.onerror (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:16589)
+[12:17:56.393] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:56.400] [ERROR] Access to XMLHttpRequest at 'https://starling-sg.tiktokv.com/check_and_get_text/2e1fcc60aeaa11e99ef535aeebd27c9b/normal/account_server?lang=en,zh' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+[12:17:56.405] [ERROR] [I18nContext] load starling error Error: Network Error
+    at new t (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:15704)
+    at i.onerror (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:16589)
+[12:17:56.407] [ERROR] Failed to load resource: net::ERR_FAILED
+[12:17:56.637] [LOG] [browser check] %s, os:  Chrome Windows
+[12:17:56.674] [INFO] Loading the script 'https://accounts.google.com/gsi/client' violates the following Content Security Policy directive: "script-src 'report-sample' 'unsafe-eval' apis.google.com c.paypal.com cdn.ampproject.org client-api.arkoselabs.com code.jquery.com connect.facebook.net developers.kakao.com interactives.ap.org js.hcaptcha.com js.hsforms.net pay.google.com recaptcha.google.com s20.tiktokcdn.com s3.amazonaws.com sf16-website-login.neutral.ttwstatic.com sf16-website.neutral.ttwstatic.com sf16m-website-login.neutral.ttwstatic.com ssl.bing.com static.captchami.com tiktok.captchami.com unpkg.com www.vimeo.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The policy is report-only, so the violation has been logged but no further action has been taken.
+[12:17:56.696] [ERROR] [I18nContext] load starling error Error: Network Error
+    at new t (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:15704)
+    at i.onerror (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:16589)
+[12:17:56.709] [ERROR] [I18nContext] load starling error Error: Network Error
+    at new t (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:15704)
+    at i.onerror (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/landing-opt/webapp-desktop/static/js/i18n.04d6df56.js:2:16589)
+[12:17:57.254] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+[12:17:57.446] [ERROR] Access to XMLHttpRequest at 'https://accounts.google.com/gsi/status?client_id=1096011445005-sdea0nf5jvj14eia93icpttv27cidkvk.apps.googleusercontent.com&cas=qUQD3VrZyKO5am6vK0vOAlM5CRoy1TrtHqsjbuyug9A&bs=WqNOx%2BmeM5Yupz5oML00fSzI9w0I7nEzmKrYoEw28gQ&has_opted_out_fedcm=false&is_itp=false' from origin 'https://www.tiktok.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+[12:17:57.454] [ERROR] [GSI_LOGGER]: Check credential status returns invalid response.
+[12:17:57.454] [ERROR] Failed to load resource: net::ERR_FAILED
+
+================================================================================
+Console logging ended - 2025-12-30T12:17:57.742289
+================================================================================

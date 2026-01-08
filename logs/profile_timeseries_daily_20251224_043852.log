@@ -1,0 +1,51 @@
+2025-12-24 04:38:52,112 - ProfileTimeSeries - INFO - ======================================================================
+2025-12-24 04:38:52,112 - ProfileTimeSeries - INFO - TIKTOK PROFILE TIME SERIES SCRAPING
+2025-12-24 04:38:52,112 - ProfileTimeSeries - INFO - Period: daily
+2025-12-24 04:38:52,113 - ProfileTimeSeries - INFO - Lookback: 365 days
+2025-12-24 04:38:52,113 - ProfileTimeSeries - INFO - Max videos per profile: 1000
+2025-12-24 04:38:52,113 - ProfileTimeSeries - INFO - Total profiles: 22
+2025-12-24 04:38:52,113 - ProfileTimeSeries - INFO - Headless mode: False
+2025-12-24 04:38:52,113 - ProfileTimeSeries - INFO - ======================================================================
+2025-12-24 04:38:52,114 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/timeseries_daily_20251224_progress.db
+2025-12-24 04:38:52,114 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-24 04:38:52,114 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-24 04:38:52,115 - ProfileTracker - INFO - Added 22 profiles to tracker
+2025-12-24 04:38:52,115 - ProfileTimeSeries - INFO - Resume mode: 0 already completed, 21 pending
+2025-12-24 04:38:52,115 - TikTok.ProfileScraper - INFO - Proxy credentials found: HcgsFh:***
+2025-12-24 04:38:52,115 - TikTok.ProfileScraper - INFO - Proxy server: http://14.224.198.119:44182
+2025-12-24 04:38:52,116 - TikTok.ProfileScraper - INFO - Starting Playwright browser...
+2025-12-24 04:38:52,116 - TikTok.ProfileScraper - INFO - Browser mode: NON-HEADLESS (visible)
+2025-12-24 04:38:52,116 - TikTok.ProfileScraper - INFO - Detected X display: :99 (possibly Xvfb virtual display)
+2025-12-24 04:38:52,417 - TikTok.ProfileScraper - INFO - Using proxy: http://14.224.198.119:44182
+2025-12-24 04:38:52,826 - TikTok.ProfileScraper - INFO - Proxy credentials added to context
+2025-12-24 04:38:52,977 - TikTok.ProfileScraper - INFO - Navigating to TikTok...
+2025-12-24 04:38:57,335 - TikTok.ProfileScraper - INFO - Browser ready!
+2025-12-24 04:38:57,335 - ProfileTimeSeries - INFO - 
+[1/21] Processing: ising52hz
+2025-12-24 04:38:57,335 - TikTok.ProfileScraper - INFO - Starting time series scrape for @ising52hz
+2025-12-24 04:38:57,335 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 04:38:57,335 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 04:38:57,335 - TikTok.ProfileScraper - INFO - Navigating to @ising52hz...
+2025-12-24 04:38:58,126 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766551133&aid=1988&app_language=en&app_nam
+2025-12-24 04:39:09,926 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 04:39:09,930 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 04:39:09,931 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 512, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 04:39:09,931 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 04:39:14,950 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 04:39:14,950 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 04:39:14,950 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 04:39:14,950 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 04:39:14,950 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 04:39:14,952 - ProfileTracker - WARNING - Marked account ising52hz as error: No videos found
+2025-12-24 04:39:14,952 - ProfileTimeSeries - INFO - 
+[2/21] Processing: hansara.official
+2025-12-24 04:39:16,953 - TikTok.ProfileScraper - INFO - Starting time series scrape for @hansara.official
+2025-12-24 04:39:16,953 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 04:39:16,953 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 04:39:16,953 - TikTok.ProfileScraper - INFO - Navigating to @hansara.official...
+2025-12-24 04:39:17,248 - XvfbDisplay - INFO - Xvfb stopped

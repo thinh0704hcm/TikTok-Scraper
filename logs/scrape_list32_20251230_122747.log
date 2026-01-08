@@ -1,0 +1,140 @@
+2025-12-30 12:27:47,722 - Crawler - INFO - ======================================================================
+2025-12-30 12:27:47,722 - Crawler - INFO - TIKTOK PROFILE TIME SERIES SCRAPER
+2025-12-30 12:27:47,722 - Crawler - INFO - Target Profiles: 32
+2025-12-30 12:27:47,722 - Crawler - INFO - Milestone Date: 2025-12-28 14:00:00
+2025-12-30 12:27:47,722 - Crawler - INFO - ======================================================================
+2025-12-30 12:27:47,723 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/run_list32_20251230_progress.db
+2025-12-30 12:27:47,723 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-30 12:27:47,723 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-30 12:27:47,725 - TikTok.TimeSeriesScraper - INFO - ✓ Loaded fingerprint from browser_fingerprint.json
+2025-12-30 12:27:47,725 - TikTok.TimeSeriesScraper - INFO -   Device: Win32
+2025-12-30 12:27:47,725 - TikTok.TimeSeriesScraper - INFO -   GPU: ANGLE (AMD, AMD Radeon(TM) Graphics (0x00001681) Direct3D11 ...
+2025-12-30 12:27:47,725 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 12:27:47,725 - TikTok.TimeSeriesScraper - INFO - STARTING PRODUCTION-READY STEALTH BROWSER (BRAVE)
+2025-12-30 12:27:47,725 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 12:27:48,256 - TikTok.TimeSeriesScraper - INFO - Found Brave: /usr/bin/brave-browser
+2025-12-30 12:27:48,258 - TikTok.TimeSeriesScraper - INFO - ✓ Using Brave: /usr/bin/brave-browser
+2025-12-30 12:27:48,258 - TikTok.TimeSeriesScraper - INFO - Launching browser...
+2025-12-30 12:27:48,702 - TikTok.TimeSeriesScraper - INFO - ✓ Browser launched successfully
+2025-12-30 12:27:48,703 - TikTok.TimeSeriesScraper - INFO - Creating browser context...
+2025-12-30 12:27:48,742 - TikTok.TimeSeriesScraper - INFO - ✓ Context created
+2025-12-30 12:27:48,758 - TikTok.TimeSeriesScraper - INFO - ✓ Loaded 0 cookies from tiktok_cookies.json
+2025-12-30 12:27:48,763 - TikTok.TimeSeriesScraper - INFO - Creating new page...
+2025-12-30 12:27:49,315 - TikTok.TimeSeriesScraper - INFO - ✓ Page created
+2025-12-30 12:27:49,323 - TikTok.TimeSeriesScraper - INFO - Console logging started: logs/console/console_20251230_122749.log
+2025-12-30 12:27:49,370 - TikTok.TimeSeriesScraper - INFO - ✓ CDP session established
+2025-12-30 12:27:49,381 - TikTok.TimeSeriesScraper - INFO - Navigating to TikTok...
+2025-12-30 12:27:52,183 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] Reflect is already polyfilled.
+2025-12-30 12:27:52,434 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,444 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,445 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,449 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,462 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,462 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,467 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,471 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,574 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,589 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:52,597 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+2025-12-30 12:27:52,800 - TikTok.TimeSeriesScraper - INFO - ✓ Successfully loaded TikTok
+2025-12-30 12:27:53,054 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 12:27:54,433 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 12:27:54,547 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193055
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177787)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:175165
+2025-12-30 12:27:56,097 - TikTok.TimeSeriesScraper - INFO - ✓ Browser ready!
+2025-12-30 12:27:56,099 - TikTok.TimeSeriesScraper - INFO - ======================================================================
+2025-12-30 12:27:56,100 - Crawler - INFO - 
+[1/32] Processing: phuongmychiofficial
+2025-12-30 12:27:56,100 - TikTok.TimeSeriesScraper - INFO - Starting time series scrape for @phuongmychiofficial
+2025-12-30 12:27:56,101 - TikTok.TimeSeriesScraper - INFO - Using milestone: 2025-12-28 14:00:00
+2025-12-30 12:27:56,101 - TikTok.TimeSeriesScraper - INFO - Date range: 2025-12-28 to 2025-12-30
+2025-12-30 12:27:56,101 - TikTok.TimeSeriesScraper - INFO - Using milestone datetime: 2025-12-28 14:00:00
+2025-12-30 12:27:56,101 - TikTok.TimeSeriesScraper - INFO - Navigating to @phuongmychiofficial...
+2025-12-30 12:27:56,885 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Feature access control initialization error Response
+2025-12-30 12:27:56,920 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Check show get coins entrance failed TypeError: Cannot read properties of undefined (reading 'data')
+2025-12-30 12:27:56,921 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [00:06.000][warn][demux.fetch](6) TypeError: Failed to fetch
+    at h (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.933/index.js:4:75087)
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok_privacy_protection_framework/loader/1.0.0.933/index.js:4:75174)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:15616
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/slardar/fe/sdk-web/browser.sg.js?bid=tiktok_webapp&globalName=SlardarClient:1:3178)
+    at Array.d (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:124784)
+    at S (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:226826)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/webmssdk/1.0.0.328/webmssdk.js:1:135236
+    at window.fetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/secsdk/secsdk-lastest.umd.js:5211:40)
+    at D.__splitFetch (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/async/54690.7856583b.js:11:41253)
+    at D.loadRange (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/async/54690.7856583b.js:11:43786)
+2025-12-30 12:27:58,173 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] Reflect is already polyfilled.
+2025-12-30 12:27:58,324 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,328 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,331 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,334 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,336 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,336 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,337 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,337 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,432 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,452 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] AppContext will be overwritten
+2025-12-30 12:27:58,453 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] loadable: `loadableReady()` requires state, please use `getScriptTags` or `getScriptElements` server-side
+2025-12-30 12:27:58,690 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] prefetch image SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:86732
+    at Object.next (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:20381)
+    at e (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16717)
+    at o (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16914)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16973
+    at new Promise (<anonymous>)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:16855
+    at tT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:87096)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/user-prefetch.46d1dc82.js:2:91016
+2025-12-30 12:27:58,829 - TikTok.TimeSeriesScraper - DEBUG - [Browser ERROR] Error: Unable to determine theme from timezone. Falling back to local time-based method. Error: Timezone "Asia/Saigon" not found
+    at w (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/64709.b132f7f3.js:2:102006)
+    at I (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:155831)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/webapp-desktop.b0db16dd.js:1:157092
+    at lI (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:165676)
+    at iU (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:194669)
+    at iT (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:177525)
+    at r6 (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:126479)
+    at https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193115
+    at i$ (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:193121)
+    at iE (https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/react-v18/webapp-desktop/static/js/npm-react.c57fe319.js:2:176528)
+2025-12-30 12:27:59,341 - TikTok.TimeSeriesScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767072471&aid=1988&app_language=en&app_nam
+2025-12-30 12:28:00,266 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] [i18n] missing key [en] Webapp Close_button Close_button
+2025-12-30 12:28:00,470 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] user post atom, error getItemList! Response
+2025-12-30 12:28:01,547 - TikTok.TimeSeriesScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767072471&aid=1988&app_language=en&app_nam
+2025-12-30 12:28:12,369 - TikTok.TimeSeriesScraper - DEBUG - [Browser WARNING] user post atom, error getItemList! Response
+2025-12-30 12:28:12,394 - TikTok.TimeSeriesScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1767072471&aid=1988&app_language=en&app_nam
+2025-12-30 12:28:17,913 - TikTok.TimeSeriesScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-30 12:28:17,987 - TikTok.TimeSeriesScraper - DEBUG - Error extracting page data: Page.evaluate: Target page, context or browser has been closed
+2025-12-30 12:28:18,000 - TikTok.TimeSeriesScraper - ERROR - Error getting user videos: Page.evaluate: Target page, context or browser has been closed
+2025-12-30 12:28:18,000 - TikTok.TimeSeriesScraper - ERROR - No videos fetched
+2025-12-30 12:28:18,001 - Crawler - WARNING -   Failed: No videos found
+2025-12-30 12:28:18,003 - Crawler - INFO - 
+[2/32] Processing: ising52hz

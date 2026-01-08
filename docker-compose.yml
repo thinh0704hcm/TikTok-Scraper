@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  tiktok-scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tiktok-scraper
+    restart: unless-stopped
+    
+    # Mount volumes for persistent data
+    volumes:
+      # Data output
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./progress_tracking:/app/progress_tracking
+      
+      # Configuration files (read-only)
+      - ./crawl_account:/app/crawl_account:ro
+      - ./tiktok_cookies.json:/app/tiktok_cookies.json:ro
+      - ./browser_fingerprint.json:/app/browser_fingerprint.json:ro
+      - ./milestone_datetime.txt:/app/milestone_datetime.txt:ro
+    
+    # Environment variables (optional overrides)
+    environment:
+      - DISPLAY=:99
+      - PYTHONUNBUFFERED=1
+      # - PROXY=your_proxy_here  # Uncomment if using proxy
+    
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    
+    # Shared memory size for browser
+    shm_size: 2gb

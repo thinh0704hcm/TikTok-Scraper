@@ -1,0 +1,19 @@
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - ======================================================================
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - TIKTOK PROFILE TIME SERIES SCRAPING
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - Period: daily
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - Lookback: 365 days
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - Max videos per profile: 1000
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - Total profiles: 22
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - Headless mode: False
+2025-12-24 04:57:13,163 - ProfileTimeSeries - INFO - ======================================================================
+2025-12-24 04:57:13,164 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/timeseries_daily_20251224_progress.db
+2025-12-24 04:57:13,164 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-24 04:57:13,164 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-24 04:57:13,165 - ProfileTracker - INFO - Added 22 profiles to tracker
+2025-12-24 04:57:13,165 - ProfileTimeSeries - INFO - Resume mode: 0 already completed, 20 pending
+2025-12-24 04:57:13,165 - TikTok.ProfileScraper - INFO - Proxy credentials found: HcgsFh:***
+2025-12-24 04:57:13,165 - TikTok.ProfileScraper - INFO - Proxy server: http://14.224.198.119:44182
+2025-12-24 04:57:13,165 - TikTok.ProfileScraper - INFO - Starting Playwright browser...
+2025-12-24 04:57:13,165 - TikTok.ProfileScraper - INFO - Browser mode: NON-HEADLESS (visible)
+2025-12-24 04:57:13,165 - TikTok.ProfileScraper - INFO - Platform: linux
+2025-12-24 04:57:13,491 - TikTok.ProfileScraper - INFO - Using proxy: http://14.224.198.119:44182

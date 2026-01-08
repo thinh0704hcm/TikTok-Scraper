@@ -1,0 +1,243 @@
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - ======================================================================
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - TIKTOK PROFILE TIME SERIES SCRAPING
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - Period: daily
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - Lookback: 365 days
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - Max videos per profile: 1000
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - Total profiles: 2
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - Headless mode: False
+2025-12-24 05:04:30,075 - ProfileTimeSeries - INFO - ======================================================================
+2025-12-24 05:04:30,076 - TTCS.ObjTracker - INFO - Connected to SQLite database: progress_tracking/timeseries_daily_20251224_progress.db
+2025-12-24 05:04:30,076 - TTCS.ObjTracker - INFO - Database tables created successfully
+2025-12-24 05:04:30,076 - TTCS.ObjTracker - INFO - Database indexes created successfully
+2025-12-24 05:04:30,076 - ProfileTracker - INFO - Added 2 profiles to tracker
+2025-12-24 05:04:30,077 - ProfileTimeSeries - INFO - Resume mode: 8 already completed, 11 pending
+2025-12-24 05:04:30,077 - TikTok.ProfileScraper - INFO - Proxy credentials found: HcgsFh:***
+2025-12-24 05:04:30,077 - TikTok.ProfileScraper - INFO - Proxy server: http://14.224.198.119:44182
+2025-12-24 05:04:30,077 - TikTok.ProfileScraper - INFO - Starting Playwright browser...
+2025-12-24 05:04:30,077 - TikTok.ProfileScraper - INFO - Browser mode: NON-HEADLESS (visible)
+2025-12-24 05:04:30,077 - TikTok.ProfileScraper - INFO - Platform: linux
+2025-12-24 05:04:30,077 - TikTok.ProfileScraper - INFO - X Display: :1
+2025-12-24 05:04:30,415 - TikTok.ProfileScraper - INFO - Using proxy: http://14.224.198.119:44182
+2025-12-24 05:04:30,649 - TikTok.ProfileScraper - INFO - Proxy credentials added
+2025-12-24 05:04:30,769 - TikTok.ProfileScraper - INFO - Navigating to TikTok...
+2025-12-24 05:04:37,237 - TikTok.ProfileScraper - INFO - Browser ready!
+2025-12-24 05:04:37,237 - ProfileTimeSeries - INFO - 
+[1/11] Processing: bac_hello2
+2025-12-24 05:04:37,237 - TikTok.ProfileScraper - INFO - Starting time series scrape for @bac_hello2
+2025-12-24 05:04:37,237 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:04:37,237 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:04:37,238 - TikTok.ProfileScraper - INFO - Navigating to @bac_hello2...
+2025-12-24 05:04:39,173 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:04:49,950 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:04:49,955 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:04:49,955 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:04:49,955 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:04:54,997 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:04:54,997 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:04:54,997 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:04:54,997 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:04:54,997 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:04:54,999 - ProfileTracker - WARNING - Marked account bac_hello2 as error: No videos found
+2025-12-24 05:04:54,999 - ProfileTimeSeries - INFO - 
+[2/11] Processing: fhn2812
+2025-12-24 05:04:57,000 - TikTok.ProfileScraper - INFO - Starting time series scrape for @fhn2812
+2025-12-24 05:04:57,000 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:04:57,000 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:04:57,001 - TikTok.ProfileScraper - INFO - Navigating to @fhn2812...
+2025-12-24 05:04:58,299 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:05:09,858 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:05:09,862 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:05:09,862 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:05:09,862 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:05:14,886 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:05:14,886 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:05:14,886 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:05:14,886 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:05:14,886 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:05:14,887 - ProfileTracker - WARNING - Marked account fhn2812 as error: No videos found
+2025-12-24 05:05:14,887 - ProfileTimeSeries - INFO - 
+[3/11] Processing: lyduc17
+2025-12-24 05:05:16,887 - TikTok.ProfileScraper - INFO - Starting time series scrape for @lyduc17
+2025-12-24 05:05:16,887 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:05:16,888 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:05:16,888 - TikTok.ProfileScraper - INFO - Navigating to @lyduc17...
+2025-12-24 05:05:18,661 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:05:30,606 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:05:30,623 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:05:30,624 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:05:30,624 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:05:35,650 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:05:35,650 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:05:35,651 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:05:35,651 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:05:35,651 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:05:35,651 - ProfileTracker - WARNING - Marked account lyduc17 as error: No videos found
+2025-12-24 05:05:35,651 - ProfileTimeSeries - INFO - 
+[4/11] Processing: ngthanhnhan2807
+2025-12-24 05:05:37,653 - TikTok.ProfileScraper - INFO - Starting time series scrape for @ngthanhnhan2807
+2025-12-24 05:05:37,653 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:05:37,653 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:05:37,654 - TikTok.ProfileScraper - INFO - Navigating to @ngthanhnhan2807...
+2025-12-24 05:05:39,489 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:05:39,578 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:05:50,323 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:05:50,328 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:05:50,329 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:05:50,329 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:05:55,353 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:05:55,353 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:05:55,353 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:05:55,353 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:05:55,353 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:05:55,354 - ProfileTracker - WARNING - Marked account ngthanhnhan2807 as error: No videos found
+2025-12-24 05:05:55,354 - ProfileTimeSeries - INFO - 
+[5/11] Processing: donhathoang13
+2025-12-24 05:05:57,355 - TikTok.ProfileScraper - INFO - Starting time series scrape for @donhathoang13
+2025-12-24 05:05:57,355 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:05:57,355 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:05:57,356 - TikTok.ProfileScraper - INFO - Navigating to @donhathoang13...
+2025-12-24 05:05:58,786 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:05:58,931 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:06:10,045 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:06:10,048 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:06:10,049 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:06:10,049 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:06:15,074 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:06:15,074 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:06:15,074 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:06:15,074 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:06:15,074 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:06:15,074 - ProfileTracker - WARNING - Marked account donhathoang13 as error: No videos found
+2025-12-24 05:06:15,074 - ProfileTimeSeries - INFO - 
+[6/11] Processing: huynguyen.3101
+2025-12-24 05:06:17,075 - TikTok.ProfileScraper - INFO - Starting time series scrape for @huynguyen.3101
+2025-12-24 05:06:17,075 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:06:17,075 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:06:17,075 - TikTok.ProfileScraper - INFO - Navigating to @huynguyen.3101...
+2025-12-24 05:06:18,365 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:06:19,303 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:06:29,886 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:06:29,889 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:06:29,890 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:06:29,890 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:06:34,916 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:06:34,916 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:06:34,916 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:06:34,916 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:06:34,916 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:06:34,917 - ProfileTracker - WARNING - Marked account huynguyen.3101 as error: No videos found
+2025-12-24 05:06:34,917 - ProfileTimeSeries - INFO - 
+[7/11] Processing: doan_quoc_dam
+2025-12-24 05:06:36,918 - TikTok.ProfileScraper - INFO - Starting time series scrape for @doan_quoc_dam
+2025-12-24 05:06:36,918 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:06:36,919 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:06:36,919 - TikTok.ProfileScraper - INFO - Navigating to @doan_quoc_dam...
+2025-12-24 05:06:39,251 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:06:39,874 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:06:50,135 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:06:50,138 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:06:50,138 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:06:50,138 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:06:55,165 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:06:55,165 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:06:55,165 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:06:55,165 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:06:55,166 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:06:55,166 - ProfileTracker - WARNING - Marked account doan_quoc_dam as error: No videos found
+2025-12-24 05:06:55,166 - ProfileTimeSeries - INFO - 
+[8/11] Processing: phuongnam.dv
+2025-12-24 05:06:57,166 - TikTok.ProfileScraper - INFO - Starting time series scrape for @phuongnam.dv
+2025-12-24 05:06:57,166 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:06:57,167 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:06:57,167 - TikTok.ProfileScraper - INFO - Navigating to @phuongnam.dv...
+2025-12-24 05:06:59,075 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:06:59,207 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:07:09,932 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:07:09,935 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:07:09,935 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:07:09,936 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:07:14,962 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:07:14,962 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:07:14,962 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:07:14,962 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:07:14,962 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:07:14,963 - ProfileTracker - WARNING - Marked account phuongnam.dv as error: No videos found
+2025-12-24 05:07:14,963 - ProfileTimeSeries - INFO - 
+[9/11] Processing: lehoanglong4493
+2025-12-24 05:07:16,964 - TikTok.ProfileScraper - INFO - Starting time series scrape for @lehoanglong4493
+2025-12-24 05:07:16,964 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:07:16,964 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:07:16,964 - TikTok.ProfileScraper - INFO - Navigating to @lehoanglong4493...
+2025-12-24 05:07:18,816 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:07:19,187 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:07:29,689 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:07:29,693 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:07:29,693 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:07:29,693 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
+2025-12-24 05:07:34,717 - TikTok.ProfileScraper - INFO - No new videos in date range after 5 scrolls, stopping
+2025-12-24 05:07:34,717 - TikTok.ProfileScraper - INFO - Total skipped (too old): 0 videos
+2025-12-24 05:07:34,717 - TikTok.ProfileScraper - INFO - Total videos fetched: 0 (within 365 days)
+2025-12-24 05:07:34,717 - TikTok.ProfileScraper - ERROR - No videos fetched
+2025-12-24 05:07:34,717 - ProfileTimeSeries - WARNING -   Failed: No videos found
+2025-12-24 05:07:34,718 - ProfileTracker - WARNING - Marked account lehoanglong4493 as error: No videos found
+2025-12-24 05:07:34,718 - ProfileTimeSeries - INFO - 
+[10/11] Processing: mixigaming
+2025-12-24 05:07:36,720 - TikTok.ProfileScraper - INFO - Starting time series scrape for @mixigaming
+2025-12-24 05:07:36,720 - TikTok.ProfileScraper - INFO - Period: daily, Lookback: 365 days
+2025-12-24 05:07:36,720 - TikTok.ProfileScraper - INFO - Date range: 2024-12-24 to 2025-12-24
+2025-12-24 05:07:36,721 - TikTok.ProfileScraper - INFO - Navigating to @mixigaming...
+2025-12-24 05:07:38,071 - TikTok.ProfileScraper - DEBUG - Intercepted API response: https://www.tiktok.com/api/post/item_list/?WebIdLastTime=1766552673&aid=1988&app_language=en&app_nam
+2025-12-24 05:07:49,927 - TikTok.ProfileScraper - WARNING - Video grid not found, continuing anyway...
+2025-12-24 05:07:49,940 - TikTok.ProfileScraper - DEBUG - Error extracting videos from page data: 'str' object has no attribute 'get'
+2025-12-24 05:07:49,940 - TikTok.ProfileScraper - DEBUG - Traceback (most recent call last):
+  File "/root/TikTok-Content-Scraper/TT_Content_Scraper/src/scraper_functions/playwright_scraper.py", line 656, in _extract_videos_from_page_data
+    default_scope = data.get('__DEFAULT_SCOPE__', {})
+                    ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-12-24 05:07:49,940 - TikTok.ProfileScraper - INFO - Extracted 0 videos from page data
