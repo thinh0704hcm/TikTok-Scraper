@@ -15,7 +15,7 @@ Write-Host ""
 
 # URL list file (output from Pipeline 2a)
 # Example: "video_list/20260107/phuongmychiofficial.txt"
-$URL_FILE = "video_list\20260108_131623\all_videos.txt"
+$URL_FILE = "video_list\20260108_143706\all_videos.txt"
 
 # Max comments per video
 $MAX_COMMENTS = 100

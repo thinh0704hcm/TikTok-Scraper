@@ -1,0 +1,13 @@
+{
+  "pipeline": 4,
+  "run_timestamp": "20260113_051928",
+  "quality": "960",
+  "lookback_days": 100,
+  "total_users": 1,
+  "total_videos": 36,
+  "total_downloaded": 0,
+  "total_failed": 0,
+  "success_rate": 0.0,
+  "output_directory": "thumbnails/20260113_051928",
+  "scraped_at": "2026-01-13T05:19:55.074566"
+}

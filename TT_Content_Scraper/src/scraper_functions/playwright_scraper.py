@@ -185,6 +185,7 @@ class VideoData:
     diversification_labels: List[str] = field(default_factory=list)  # NEW: For Pipeline 2
     music_title: Optional[str] = None
     scraped_at: Optional[str] = None
+    thumbnail_urls: Dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -626,7 +627,7 @@ class PlaywrightScraper:
             if self.page:
                 # Remove all event listeners
                 for handler in [self._response_handler, self._console_handler, 
-                               self._label_handler, self._comment_handler]:
+                            self._label_handler, self._comment_handler]:
                     if handler:
                         try:
                             self.page.remove_listener("response", handler)
@@ -954,6 +955,24 @@ class PlaywrightScraper:
             
             # Extract diversification labels
             labels = item.get('diversificationLabels', []) or []
+
+            video_dict = item.get('video', {})
+            if not isinstance(video_dict, dict):
+                video_dict = {}
+            
+            zoom_cover = video_dict.get('zoomCover', {})
+            if not isinstance(zoom_cover, dict):
+                zoom_cover = {}
+            
+            thumbnail_urls = {
+                'origin': video_dict.get('originCover', ''),
+                'cover': video_dict.get('cover', ''),
+                'dynamic': video_dict.get('dynamicCover', ''),
+                'zoom_960': zoom_cover.get('960', ''),
+                'zoom_720': zoom_cover.get('720', ''),
+                'zoom_480': zoom_cover.get('480', ''),
+                'zoom_240': zoom_cover.get('240', ''),
+            }
             
             return VideoData(
                 video_id=video_id,
@@ -967,7 +986,8 @@ class PlaywrightScraper:
                 url=url,
                 diversification_labels=labels,
                 music_title=music.get('title', '') if music else None,
-                scraped_at=datetime.now().isoformat()
+                scraped_at=datetime.now().isoformat(),
+                thumbnail_urls=thumbnail_urls  # NEW
             )
         except Exception as e:
             logger.debug(f"Error parsing video: {e}")
@@ -1196,7 +1216,7 @@ class PlaywrightScraper:
         self, 
         video_id: str, 
         username: str, 
-        max_comments: int = 500
+        max_comments: int = 40
     ) -> List[CommentData]:
         """
         Navigate to video and scrape comments using Mouse Wheel scrolling.
@@ -1553,13 +1573,68 @@ class PlaywrightScraper:
 
             except Exception as e:
                 logger.error(f"Error on {url}: {e}")
+
+    async def run_pipeline_2c_process_from_file(self, file_path: str, run_timestamp: str):
+        """Pipeline 2c: Process video URL list from file (network-only metadata)."""
+        if not os.path.exists(file_path):
+            logger.error("File not found.")
+            return
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            urls = [line.strip() for line in f if line.strip()]
+
+        logger.info(f"📂 Processing {len(urls)} videos from {file_path}")
+
+        input_path = Path(file_path)
+        username_from_file = input_path.stem
+        base_output_dir = Path("video_metadata") / run_timestamp
+        base_output_dir.mkdir(parents=True, exist_ok=True)
+
+        await self._setup_label_interceptor()
+
+        for idx, url in enumerate(urls, 1):
+            try:
+                logger.info(f"Processing {idx}/{len(urls)}: {url}")
+
+                video_data = await self.get_video_metadata_from_network(url)
+                if not video_data:
+                    logger.warning("   ❌ Skipping (No metadata captured)")
+                    continue
+
+                if video_data.video_id in self.video_labels_cache:
+                    video_data.diversification_labels = self.video_labels_cache[video_data.video_id]
+
+                data = {
+                    "video_metadata": asdict(video_data),
+                }
+
+                user_dir = base_output_dir / (video_data.author_username or username_from_file)
+                user_dir.mkdir(parents=True, exist_ok=True)
+                save_path = user_dir / f"{video_data.video_id}.json"
+                with open(save_path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2, ensure_ascii=False)
+
+                # Memory gate: restart if RSS exceeds configured threshold
+                if await self._maybe_restart_for_memory():
+                    await self._setup_label_interceptor()
+                    continue
+
+                if idx % 5 == 0:
+                    await asyncio.sleep(5)
+                if idx % self.restart_browser_every == 0:
+                    await self.restart_browser()
+                    await self._setup_label_interceptor()
+
+            except Exception as e:
+                logger.error(f"Error on {url}: {e}")
     
     async def run_pipeline_2_detailed(
         self, 
         username: str, 
         lookback_days: int,
         run_timestamp: str,
-        max_comments_per_video: int = 500
+        max_comments_per_video: int = 500,
+        crawl_comments: bool = True
     ):
         """
         PIPELINE 2: Deep scraping with comments and labels
@@ -1604,11 +1679,12 @@ class PlaywrightScraper:
                 await self._setup_label_interceptor()
                 
                 # Scrape comments (this also triggers label interception)
-                comments = await self.get_video_comments(
-                    video.video_id, 
-                    username, 
-                    max_comments=max_comments_per_video
-                )
+                if crawl_comments:
+                    comments = await self.get_video_comments(
+                        video.video_id, 
+                        username, 
+                        max_comments=max_comments_per_video
+                    )
                 
                 # Check if we got labels from interception
                 if not video.diversification_labels and video.video_id in self.video_labels_cache:
@@ -1618,8 +1694,8 @@ class PlaywrightScraper:
                 # Prepare output
                 output_data = {
                     "video_metadata": asdict(video),
-                    "comments_count": len(comments),
-                    "comments": [asdict(c) for c in comments]
+                    "comments_count": len(comments) if crawl_comments else 0,
+                    "comments": [asdict(c) for c in comments] if crawl_comments else []
                 }
                 
                 # Save immediately
@@ -1645,7 +1721,546 @@ class PlaywrightScraper:
         logger.info(f"   - Videos processed: {len(recent_videos)}")
         logger.info(f"   - Output directory: {base_dir}")
         logger.info("=" * 70)
+    
+    # ========================================================================
+    # PIPELINE 3: EXPLORE PAGE SCRAPING (RANDOM VIDEOS)
+    # ========================================================================
+    
+    async def get_explore_videos(
+        self,
+        max_items: int = 200,
+        lang: str = "vi",
+        lookback_days: int = 0
+    ) -> List[VideoData]:
+        """
+        Scrape videos from TikTok explore page filtered by language and date.
+        
+        Args:
+            max_items: Maximum number of videos to collect
+            lang: Filter by textLanguage (vi = Vietnamese)
+            lookback_days: Limit to videos from last N days (0 = no limit)
+        
+        Returns:
+            List of VideoData objects matching filters
+        """
+        url = "https://www.tiktok.com/explore"
+        videos: List[VideoData] = []
+        seen_ids: Set[str] = set()
+        cutoff_timestamp = 0
+        
+        if lookback_days > 0:
+            cutoff_timestamp = int((datetime.now() - timedelta(days=lookback_days)).timestamp())
+        
+        self.intercepted_videos.clear()
 
+        async def handle_explore_response(response: Response):
+            """Intercept explore/recommend API responses"""
+            explore_endpoints = [
+                "api/explore/item_list",
+                "api/recommend/item_list",
+                "api/general/search"
+            ]
+            
+            if response.status == 200 and any(ep in response.url for ep in explore_endpoints):
+                try:
+                    json_data = await response.json()
+                    item_list = json_data.get("itemList", [])
+                    if item_list:
+                        self.intercepted_videos.extend(item_list)
+                        logger.info(f"🌐 Intercepted {len(item_list)} items from explore API")
+                except Exception:
+                    pass
+
+        self._response_handler = handle_explore_response
+        self.page.on("response", self._response_handler)
+
+        try:
+            logger.info(f"Navigating to explore page...")
+            await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
+            await asyncio.sleep(3)
+
+            # Process any videos intercepted during initial page load
+            if self.intercepted_videos:
+                initial_batch = self.intercepted_videos.copy()
+                self.intercepted_videos.clear()
+                logger.info(f"🌐 Processing {len(initial_batch)} items from initial page load")
+                
+                for item in initial_batch:
+                    # Apply filters
+                    if item.get("textLanguage") != lang:
+                        continue
+                    
+                    # Check date filter if lookback_days is set
+                    if lookback_days > 0:
+                        create_timestamp = int(item.get('createTime', 0))
+                        if create_timestamp < cutoff_timestamp:
+                            continue
+                    
+                    # Extract username from author
+                    author = item.get("author", {})
+                    if isinstance(author, dict):
+                        username = author.get("uniqueId", "explore")
+                    else:
+                        username = "explore"
+                    
+                    video = self._parse_video_data(item, username)
+                    if video and video.video_id not in seen_ids:
+                        seen_ids.add(video.video_id)
+                        videos.append(video)
+
+            logger.info(f"✓ Initial load complete: {len(videos)} videos captured (filtered)")
+
+            # Scroll loop to load more videos
+            scroll_count = 0
+            no_new_data = 0
+
+            while len(videos) < max_items:
+                await self.page.evaluate('window.scrollBy(0, window.innerHeight * 2)')
+                await asyncio.sleep(2)
+
+                if self.intercepted_videos:
+                    current_batch = self.intercepted_videos.copy()
+                    self.intercepted_videos.clear()
+
+                    added_in_batch = 0
+                    for item in current_batch:
+                        # Apply filters
+                        if item.get("textLanguage") != lang:
+                            continue
+                        
+                        # Check date filter if lookback_days is set
+                        if lookback_days > 0:
+                            create_timestamp = int(item.get('createTime', 0))
+                            if create_timestamp < cutoff_timestamp:
+                                continue
+                        
+                        # Extract username from author
+                        author = item.get("author", {})
+                        if isinstance(author, dict):
+                            username = author.get("uniqueId", "explore")
+                        else:
+                            username = "explore"
+                        
+                        video = self._parse_video_data(item, username)
+                        if video and video.video_id not in seen_ids:
+                            seen_ids.add(video.video_id)
+                            videos.append(video)
+                            added_in_batch += 1
+
+                    if added_in_batch > 0:
+                        logger.info(f"Scroll {scroll_count}: +{added_in_batch} videos (Total: {len(videos)}/{max_items})")
+                        no_new_data = 0
+                    else:
+                        no_new_data += 1
+                else:
+                    no_new_data += 1
+                    logger.debug(f"Scroll {scroll_count}: No API data yet...")
+
+                if no_new_data >= 5:
+                    logger.info("No new API data after 5 scrolls. Stopping.")
+                    break
+
+                scroll_count += 1
+
+            return videos
+
+        finally:
+            if self._response_handler:
+                try:
+                    self.page.remove_listener("response", self._response_handler)
+                except Exception:
+                    pass
+                self._response_handler = None
+            self.intercepted_videos.clear()
+    
+    async def run_pipeline_3_explore(
+        self,
+        num_runs: int = 5,
+        max_items_per_run: int = 100,
+        lang: str = "vi",
+        lookback_days: int = 0,
+        delay_between_runs: tuple = (5, 15)
+    ) -> Dict[str, Any]:
+        """
+        PIPELINE 3: Explore page scraping - repeatedly crawl explore for random videos
+        
+        Crawls the explore page multiple times, filtering by language and date.
+        Saves each run's results to separate files.
+        
+        Args:
+            num_runs: Number of times to crawl explore page
+            max_items_per_run: Max videos per run
+            lang: Filter by textLanguage (default "vi" for Vietnamese)
+            lookback_days: Limit to videos from last N days (0 = no limit)
+            delay_between_runs: (min, max) seconds to wait between runs
+        
+        Returns:
+            Summary dict with statistics
+        """
+        logger.info("=" * 70)
+        logger.info(f"🚀 PIPELINE 3: Explore scraping ({num_runs} runs)")
+        logger.info(f"   Language: {lang}")
+        if lookback_days > 0:
+            logger.info(f"   Lookback: {lookback_days} days")
+        logger.info("=" * 70)
+        
+        # Setup output directory
+        base_dir = Path("video_metadata/explore")
+        base_dir.mkdir(parents=True, exist_ok=True)
+        
+        run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        all_videos = []
+        total_unique = 0
+        
+        for run_num in range(1, num_runs + 1):
+            logger.info(f"\n📍 Run {run_num}/{num_runs}")
+            
+            try:
+                # Crawl explore page
+                videos = await self.get_explore_videos(
+                    max_items=max_items_per_run,
+                    lang=lang,
+                    lookback_days=lookback_days
+                )
+                
+                if videos:
+                    logger.info(f"   ✓ Collected {len(videos)} videos")
+                    
+                    # Save run results
+                    run_file = base_dir / f"explore_{run_timestamp}_run{run_num:02d}.json"
+                    with open(run_file, 'w', encoding='utf-8') as f:
+                        json.dump([asdict(v) for v in videos], f, ensure_ascii=False, indent=2)
+                    
+                    # Track unique videos
+                    for v in videos:
+                        if v.video_id not in [existing.video_id for existing in all_videos]:
+                            all_videos.append(v)
+                    
+                    total_unique = len(all_videos)
+                    logger.info(f"   📊 Unique videos so far: {total_unique}")
+                else:
+                    logger.warning(f"   ⚠️ No videos collected in run {run_num}")
+                
+                # Delay between runs (except after last run)
+                if run_num < num_runs:
+                    delay = random.uniform(delay_between_runs[0], delay_between_runs[1])
+                    logger.info(f"   ⏸️ Waiting {delay:.1f}s before next run...")
+                    await asyncio.sleep(delay)
+                
+                # Memory management
+                await self._maybe_restart_for_memory()
+                
+            except Exception as e:
+                logger.error(f"   ❌ Error in run {run_num}: {e}")
+                continue
+        
+        # Save consolidated results
+        if all_videos:
+            consolidated_file = base_dir / f"explore_{run_timestamp}_all.json"
+            with open(consolidated_file, 'w', encoding='utf-8') as f:
+                json.dump([asdict(v) for v in all_videos], f, ensure_ascii=False, indent=2)
+            
+            logger.info(f"\n✅ Consolidated results: {len(all_videos)} unique videos")
+            logger.info(f"   📁 Saved to: {consolidated_file}")
+        
+        # Generate summary
+        summary = {
+            "pipeline": 3,
+            "run_timestamp": run_timestamp,
+            "total_runs": num_runs,
+            "videos_per_run": max_items_per_run,
+            "language": lang,
+            "total_videos_collected": len(all_videos),
+            "unique_videos": total_unique,
+            "output_directory": str(base_dir),
+            "scraped_at": datetime.now().isoformat()
+        }
+        
+        summary_file = base_dir / f"explore_{run_timestamp}_summary.json"
+        with open(summary_file, 'w', encoding='utf-8') as f:
+            json.dump(summary, f, ensure_ascii=False, indent=2)
+        
+        logger.info("=" * 70)
+        logger.info(f"✅ PIPELINE 3 COMPLETE")
+        logger.info(f"   - Total runs: {num_runs}")
+        logger.info(f"   - Total unique videos: {total_unique}")
+        logger.info(f"   - Output directory: {base_dir}")
+        logger.info("=" * 70)
+        
+        return summary
+
+    # ============================================================================
+    # PIPELINE 4: BULK THUMBNAL SCRAPING
+    # ============================================================================
+
+    async def download_thumbnail(
+        self, 
+        video_id: str, 
+        thumbnail_url: str, 
+        output_path: Path,
+        max_retries: int = 3
+    ) -> bool:
+        """
+        Download thumbnail using CDP fetch (properly handles proxy)
+        
+        Returns:
+            True if successful, False otherwise
+        """
+        if not thumbnail_url:
+            logger.debug(f"No thumbnail URL for {video_id}")
+            return False
+        
+        for attempt in range(max_retries):
+            try:
+                # Use page.evaluate to fetch from browser context
+                # This properly uses the browser's proxy settings
+                result = await self.page.evaluate("""
+                    async (url) => {
+                        try {
+                            const response = await fetch(url, {
+                                headers: {
+                                    'Referer': 'https://www.tiktok.com/'
+                                }
+                            });
+                            
+                            if (!response.ok) {
+                                return { success: false, status: response.status };
+                            }
+                            
+                            const blob = await response.blob();
+                            const reader = new FileReader();
+                            
+                            return new Promise((resolve) => {
+                                reader.onloadend = () => {
+                                    const base64 = reader.result.split(',')[1];
+                                    resolve({ success: true, data: base64 });
+                                };
+                                reader.readAsDataURL(blob);
+                            });
+                        } catch (error) {
+                            return { success: false, error: error.message };
+                        }
+                    }
+                """, thumbnail_url)
+                
+                if result.get('success'):
+                    # Decode base64 and save
+                    import base64
+                    image_data = base64.b64decode(result['data'])
+                    
+                    output_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(output_path, 'wb') as f:
+                        f.write(image_data)
+                    
+                    logger.debug(f"✓ Downloaded thumbnail: {output_path.name}")
+                    return True
+                else:
+                    status = result.get('status', 'unknown')
+                    error = result.get('error', 'unknown error')
+                    logger.warning(f"Failed to download (attempt {attempt + 1}): {status} - {error}")
+                    if attempt < max_retries - 1:
+                        await asyncio.sleep(1)
+                        
+            except Exception as e:
+                logger.error(f"Error downloading thumbnail (attempt {attempt + 1}): {e}")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(1)
+        
+        return False
+
+    async def run_pipeline_4_thumbnails(
+        self,
+        usernames: List[str],
+        lookback_days: int,
+        run_timestamp: str,
+        quality: str = '960'  # Options: '960', '720', '480', '240', 'origin'
+    ):
+        """
+        PIPELINE 4: Bulk thumbnail fetching
+        
+        1. Fetch video list for each user (like Pipeline 2a)
+        2. Extract thumbnail URLs from intercepted data
+        3. Download all thumbnails
+        
+        Args:
+            usernames: List of TikTok usernames
+            lookback_days: Only fetch videos from last N days
+            run_timestamp: Timestamp for organizing output
+            quality: Thumbnail quality ('960', '720', '480', '240', 'origin')
+        """
+        logger.info("=" * 70)
+        logger.info(f"🚀 PIPELINE 4: Bulk Thumbnail Fetching ({quality}p)")
+        logger.info("=" * 70)
+        logger.info(f"Users: {len(usernames)}")
+        logger.info(f"Lookback: {lookback_days} days")
+        
+        # Setup single output directory for all thumbnails
+        thumbnails_dir = Path("thumbnails") / run_timestamp
+        thumbnails_dir.mkdir(parents=True, exist_ok=True)
+        
+        milestone = datetime.now() - timedelta(days=lookback_days)
+        
+        # Statistics
+        total_videos = 0
+        total_downloaded = 0
+        total_failed = 0
+        
+        for idx, username in enumerate(usernames, 1):
+            logger.info(f"\n{'='*70}")
+            logger.info(f"USER {idx}/{len(usernames)}: @{username}")
+            logger.info(f"{'='*70}")
+            
+            try:
+                # Step 1: Fetch video metadata (reusing existing method)
+                logger.info("Fetching video list...")
+                videos = await self.get_user_videos(username, max_videos=1000, milestone_datetime=milestone)
+                
+                if not videos:
+                    logger.warning(f"No videos found for @{username}")
+                    continue
+                
+                logger.info(f"✓ Found {len(videos)} videos")
+                total_videos += len(videos)
+                
+                # Step 2: Create user thumbnail directory
+                user_dir = base_dir / username
+                user_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Step 3: Download thumbnails
+                logger.info(f"Downloading {quality}p thumbnails...")
+                
+                downloaded = 0
+                failed = 0
+                
+                for video_idx, video in enumerate(videos, 1):
+                    # Select thumbnail URL based on quality preference
+                    if quality == 'origin':
+                        thumbnail_url = video.thumbnail_urls.get('origin')
+                    else:
+                        thumbnail_url = video.thumbnail_urls.get(f'zoom_{quality}')
+                    
+                    # Fallback to other qualities if preferred not available
+                    if not thumbnail_url:
+                        for fallback in ['zoom_960', 'zoom_720', 'zoom_480', 'origin', 'cover']:
+                            thumbnail_url = video.thumbnail_urls.get(fallback)
+                            if thumbnail_url:
+                                logger.debug(f"Using fallback quality: {fallback}")
+                                break
+                    
+                    if not thumbnail_url:
+                        logger.warning(f"No thumbnail URL found for video {video.video_id}")
+                        failed += 1
+                        continue
+                    
+                    # Download with new naming: cover_{video_id}.jpg
+                    output_path = thumbnails_dir / f"cover_{video.video_id}.jpg"
+                    
+                    # Skip if already exists
+                    if output_path.exists():
+                        logger.debug(f"Skipping {video.video_id} (already exists)")
+                        downloaded += 1
+                        
+                        # Still add to metadata
+                        all_metadata.append({
+                            "video_id": video.video_id,
+                            "username": username,
+                            "url": video.url,
+                            "thumbnail_local": str(output_path),
+                            "thumbnail_urls": video.thumbnail_urls,
+                            "create_time": video.create_time,
+                            "stats": video.stats,
+                            "hashtags": video.hashtags,
+                            "description": video.description
+                        })
+                        continue
+                    
+                    success = await self.download_thumbnail(
+                        video.video_id,
+                        thumbnail_url,
+                        output_path
+                    )
+                    
+                    if success:
+                        downloaded += 1
+                        # Add to metadata
+                        all_metadata.append({
+                            "video_id": video.video_id,
+                            "username": username,
+                            "url": video.url,
+                            "thumbnail_local": str(output_path),
+                            "thumbnail_urls": video.thumbnail_urls,
+                            "create_time": video.create_time,
+                            "stats": video.stats,
+                            "hashtags": video.hashtags,
+                            "description": video.description
+                        })
+                    else:
+                        failed += 1
+                    
+                    # Progress update every 10 videos
+                    if video_idx % 10 == 0:
+                        logger.info(f"Progress: {video_idx}/{len(videos)} ({downloaded} downloaded, {failed} failed)")
+                    
+                    # Rate limiting
+                    if video_idx % 5 == 0:
+                        await asyncio.sleep(random.uniform(0.5, 1.5))
+                
+                # User summary
+                logger.info(f"✅ @{username} complete: {downloaded}/{len(videos)} downloaded, {failed} failed")
+                total_downloaded += downloaded
+                total_failed += failed
+                
+                # Memory management
+                await self._maybe_restart_for_memory()
+                
+                # Delay between users
+                if idx < len(usernames):
+                    delay = random.uniform(5, 10)
+                    logger.info(f"Waiting {delay:.1f}s before next user...")
+                    await asyncio.sleep(delay)
+            
+            except Exception as e:
+                logger.error(f"Error processing @{username}: {e}")
+                continue
+        
+        # Save consolidated metadata for all videos
+        metadata_file = thumbnails_dir / f"metadata_all_{run_timestamp}.json"
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(all_metadata, f, indent=2, ensure_ascii=False)
+        logger.info(f"✓ Saved consolidated metadata: {metadata_file}")
+        
+        # Final summary
+        logger.info("\n" + "=" * 70)
+        logger.info("✅ PIPELINE 4 COMPLETE")
+        logger.info("=" * 70)
+        logger.info(f"Total users processed: {len(usernames)}")
+        logger.info(f"Total videos found: {total_videos}")
+        logger.info(f"Total thumbnails downloaded: {total_downloaded}")
+        logger.info(f"Total failed: {total_failed}")
+        logger.info(f"Success rate: {(total_downloaded/total_videos*100):.1f}%")
+        logger.info(f"Output directory: {thumbnails_dir}")
+        logger.info("=" * 70)
+        
+        # Save final summary
+        summary = {
+            "pipeline": 4,
+            "run_timestamp": run_timestamp,
+            "quality": quality,
+            "lookback_days": lookback_days,
+            "total_users": len(usernames),
+            "total_videos": total_videos,
+            "total_downloaded": total_downloaded,
+            "total_failed": total_failed,
+            "success_rate": round(total_downloaded/total_videos*100, 2) if total_videos > 0 else 0,
+            "output_directory": str(thumbnails_dir),
+            "scraped_at": datetime.now().isoformat()
+        }
+        
+        summary_file = thumbnails_dir / f"summary_{run_timestamp}.json"
+        with open(summary_file, 'w', encoding='utf-8') as f:
+            json.dump(summary, f, indent=2, ensure_ascii=False)
+        
+        return summary
 
 # ============================================================================
 # MAIN EXECUTION
@@ -1773,6 +2388,51 @@ async def run_pipeline_2(usernames: List[str], lookback_days: int = 30):
     finally:
         await scraper.stop()
 
+async def run_pipeline_4(usernames: List[str], lookback_days: int = 30, quality: str = '960'):
+    """Execute Pipeline 4: Bulk thumbnail fetching"""
+    
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler("pipeline4_thumbnails.log", encoding='utf-8'),
+            logging.StreamHandler()
+        ]
+    )
+    
+    run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    logger.info("=" * 70)
+    logger.info("PIPELINE 4: BULK THUMBNAIL FETCHING")
+    logger.info("=" * 70)
+    logger.info(f"Profiles: {len(usernames)}")
+    logger.info(f"Quality: {quality}p")
+    logger.info(f"Lookback: {lookback_days} days")
+    logger.info(f"Run timestamp: {run_timestamp}")
+    
+    scraper = PlaywrightScraper(
+        headless=False,
+        restart_browser_every=10
+    )
+    
+    try:
+        await scraper.start()
+        
+        summary = await scraper.run_pipeline_4_thumbnails(
+            usernames=usernames,
+            lookback_days=lookback_days,
+            run_timestamp=run_timestamp,
+            quality=quality
+        )
+        
+        logger.info("\n" + "="*70)
+        logger.info("FINAL SUMMARY")
+        logger.info("="*70)
+        for key, value in summary.items():
+            logger.info(f"{key}: {value}")
+        
+    finally:
+        await scraper.stop()
 
 async def main():
     """Main entry point - choose your pipeline"""
@@ -1793,8 +2453,21 @@ async def main():
         await run_pipeline_1(TARGET_USERNAMES, LOOKBACK_DAYS)
     elif PIPELINE == 2:
         await run_pipeline_2(TARGET_USERNAMES, LOOKBACK_DAYS)
+    elif PIPELINE == 3:
+        # Pipeline 3 requires different parameters
+        scraper = PlaywrightScraper(headless=False)
+        await scraper.start()
+        await scraper.run_pipeline_3_explore(
+            num_runs=5,
+            max_items_per_run=100,
+            lang="vi",
+            lookback_days=LOOKBACK_DAYS
+        )
+        await scraper.stop()
+    elif PIPELINE == 4:
+        await run_pipeline_4(TARGET_USERNAMES, LOOKBACK_DAYS, THUMBNAIL_QUALITY)
     else:
-        print("Invalid pipeline selection. Choose 1 or 2.")
+        print("Invalid pipeline selection. Choose 1, 2, 3, or 4.")
 
 
 if __name__ == "__main__":
