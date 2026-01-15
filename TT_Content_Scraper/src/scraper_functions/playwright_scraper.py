@@ -1245,6 +1245,9 @@ class PlaywrightScraper:
             await self.page.goto(url, wait_until='domcontentloaded', timeout=30000)
             await asyncio.sleep(2)
             
+            # NEW: Close any modals/popups that might be blocking
+            await self._close_blocking_modals()
+            
             # Click the comment button
             try:
                 selector = '[data-e2e="comment-icon"]'
@@ -1255,6 +1258,9 @@ class PlaywrightScraper:
             except:
                 logger.warning("⚠️ Could not click comment button (might be already open or different layout)")
 
+            # NEW: Close modals again after opening comments
+            await self._close_blocking_modals()
+
             # Verify panel open
             comment_container_selector = 'div[class*="DivCommentListContainer"]'
             try:
@@ -1264,7 +1270,7 @@ class PlaywrightScraper:
                 logger.error("❌ Comment panel did not open")
                 return []
 
-            # Scroll loop using MOUSE WHEEL (Fix for Infinite Scroll)
+            # Scroll loop using MOUSE WHEEL
             scrolls = 0
             max_scrolls = min(50, (max_comments // 20) + 5)
             no_new_data_count = 0
@@ -1273,10 +1279,11 @@ class PlaywrightScraper:
             
             while len(comments) < max_comments and scrolls < max_scrolls:
                 try:
-                    # 1. Hover over the container to ensure wheel targets it
-                    await self.page.hover(comment_container_selector)
+                    # Close any modals that might appear during scrolling
+                    await self._close_blocking_modals()
                     
-                    # 2. Use Mouse Wheel (Physical scroll simulation)
+                    # Use Mouse Wheel without hover (which can be blocked by modals)
+                    # Instead of hovering, just scroll on the page
                     await self.page.mouse.wheel(0, 3000)
                     await asyncio.sleep(random.uniform(0.8, 1.2))
                     
@@ -1320,9 +1327,8 @@ class PlaywrightScraper:
 
                 except Exception as e:
                     logger.debug(f"Scroll error: {e}")
-                    # Fallback to general page scroll
-                    await self.page.mouse.wheel(0, 3000)
-                    await asyncio.sleep(2)
+                    # Continue scrolling even if there's an error
+                    await asyncio.sleep(1)
 
             return comments
             
@@ -1337,6 +1343,43 @@ class PlaywrightScraper:
                 except:
                     pass
                 self._comment_handler = None
+
+
+    async def _close_blocking_modals(self):
+        """
+        Close any blocking modals/popups that prevent interaction
+        """
+        try:
+            # Common modal close button selectors
+            close_selectors = [
+                'button[aria-label="Close"]',
+                'button[data-e2e="modal-close-inner-button"]',
+                'svg[data-e2e="modal-close-icon"]',
+                '[class*="close-icon"]',
+                '[class*="Close"]',
+                'div[role="button"][aria-label="Close"]',
+            ]
+            
+            for selector in close_selectors:
+                try:
+                    close_button = await self.page.query_selector(selector)
+                    if close_button:
+                        await close_button.click()
+                        logger.debug(f"✓ Closed modal using {selector}")
+                        await asyncio.sleep(0.5)
+                        break
+                except:
+                    continue
+            
+            # Press Escape key as fallback
+            try:
+                await self.page.keyboard.press('Escape')
+                await asyncio.sleep(0.3)
+            except:
+                pass
+                
+        except Exception as e:
+            logger.debug(f"Modal close attempt: {e}")
 
     async def get_video_metadata_from_dom(self, page: Page) -> Optional[Dict]:
         """
@@ -2104,6 +2147,7 @@ class PlaywrightScraper:
         total_videos = 0
         total_downloaded = 0
         total_failed = 0
+        all_metadata = []
         
         for idx, username in enumerate(usernames, 1):
             logger.info(f"\n{'='*70}")
@@ -2121,10 +2165,6 @@ class PlaywrightScraper:
                 
                 logger.info(f"✓ Found {len(videos)} videos")
                 total_videos += len(videos)
-                
-                # Step 2: Create user thumbnail directory
-                user_dir = base_dir / username
-                user_dir.mkdir(parents=True, exist_ok=True)
                 
                 # Step 3: Download thumbnails
                 logger.info(f"Downloading {quality}p thumbnails...")

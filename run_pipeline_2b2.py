@@ -21,7 +21,7 @@ DEFAULT_MAX_COMMENTS = 40
 DEFAULT_RESTART_EVERY = 10
 SLOW_MO = 50
 DEFAULT_COMPLETED_FOLDERS = ["comments_data/20260108_151848", "comments_data/20260112_182216"]
-
+PROXY = "118.70.171.121:53347:thinh:thinh"
 
 def setup_logging(verbose: bool) -> None:
     logging.basicConfig(
@@ -154,7 +154,7 @@ def main():
     parser.add_argument("--restart-every", type=int, default=DEFAULT_RESTART_EVERY, help="Restart browser every N videos")
     parser.add_argument("--mem-restart-mb", type=int, default=None, help="Restart browser if RSS exceeds this MB")
     parser.add_argument("--headless", action="store_true", help="Run headless")
-    parser.add_argument("--proxy", type=str, default=None, help="Proxy URL")
+    parser.add_argument("--proxy", type=str, default=PROXY, help="Proxy URL")
     parser.add_argument("--verbose", action="store_true", help="Verbose logging")
 
     args = parser.parse_args()
